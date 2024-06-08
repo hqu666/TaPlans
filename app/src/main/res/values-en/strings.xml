@@ -7,9 +7,7 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
-    <string name="menu_home">カレンダー</string>
-    <string name="menu_gallery">対象予定</string>
-    <string name="menu_slideshow">対象予定以外の日</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="menu_home">calendar</string>
+    <string name="menu_gallery">Target Plan</string>
+    <string name="menu_slideshow">Other plans</string>
 </resources>
