@@ -15,9 +15,7 @@ import com.hijiyam_koubou.taplans.databinding.FragmentOtherSettingBinding;
 
 public class OtherSettingFragment extends Fragment {
 
-//    private FragmentSlideshowBinding binding;
     private FragmentOtherSettingBinding binding;
-
 
     /**
      * Viewが生成され始めた時に呼ばれるメソッド
