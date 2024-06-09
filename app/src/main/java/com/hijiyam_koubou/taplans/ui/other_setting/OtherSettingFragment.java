@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 //import com.hijiyam_koubou.taplans.databinding.FragmentSlideshowBinding;
+import com.hijiyam_koubou.taplans.Util;
 import com.hijiyam_koubou.taplans.databinding.FragmentOtherSettingBinding;
 
 public class OtherSettingFragment extends Fragment {
@@ -33,11 +34,31 @@ public class OtherSettingFragment extends Fragment {
         return root;
     }
 
-
-
+    /**
+     * 中身のFragmentがひゃきされた時
+     * */
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
+        final String TAG = "onDestroyView";
+        String dbMsg = "[OtherSettingFragment]";
+        View root = null;
+        try {
+            super.onDestroyView();
+            binding = null;
+            myLog(TAG , dbMsg);
+        } catch (Exception er) {
+            myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+        }
     }
+    /////////////////////////////////////////////////////////////
+    public static void myLog(String TAG , String dbMsg) {
+        Util UTIL = new Util();
+        UTIL.myLog(TAG , dbMsg);
+    }
+
+    public static void myErrorLog(String TAG , String dbMsg) {
+        Util UTIL = new Util();
+        UTIL.myErrorLog(TAG , dbMsg);
+    }
+
 }

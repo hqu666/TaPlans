@@ -10,11 +10,11 @@
             android:title="@string/menu_home" />
         <item
             android:id="@+id/nav_arget_plan"
-            android:icon="@android:drawable/checkbox_on_background"
+            android:icon="@android:drawable/ic_input_get"
             android:title="@string/menu_gallery" />
         <item
             android:id="@+id/nav_other_setting"
-            android:icon="@android:drawable/checkbox_off_background"
+            android:icon="@android:drawable/ic_input_delete"
             android:title="@string/menu_other_setting" />
     </group>
 </menu>
