@@ -10,7 +10,7 @@ public class OtherSettingViewModel extends ViewModel {
 
     public OtherSettingViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is slideshow fragment");
+        mText.setValue("対象外の日の設定");
     }
 
     public LiveData<String> getText() {

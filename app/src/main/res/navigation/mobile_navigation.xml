@@ -18,8 +18,16 @@
         tools:layout="@layout/fragment_gallery" />
 
     <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="com.hijiyam_koubou.taplans.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
+        android:id="@+id/nav_other_setting"
+        android:name="com.hijiyam_koubou.taplans.ui.other_setting.OtherSettingFragment"
+        android:label="@string/menu_other_setting"
+        tools:layout="@layout/fragment_other_setting" />
+
 </navigation>
+
+    <!--    <fragment-->
+    <!--        android:id="@+id/nav_slideshow"-->
+    <!--        android:name="com.hijiyam_koubou.taplans.ui.slideshow.SlideshowFragment"-->
+    <!--        android:label="@string/menu_slideshow"-->
+    <!--        tools:layout="@layout/fragment_slideshow" />-->
+

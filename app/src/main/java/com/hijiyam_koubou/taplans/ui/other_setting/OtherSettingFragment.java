@@ -10,24 +10,32 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.hijiyam_koubou.taplans.databinding.FragmentSlideshowBinding;
+//import com.hijiyam_koubou.taplans.databinding.FragmentSlideshowBinding;
+import com.hijiyam_koubou.taplans.databinding.FragmentOtherSettingBinding;
 
 public class OtherSettingFragment extends Fragment {
 
-    private FragmentSlideshowBinding binding;
+//    private FragmentSlideshowBinding binding;
+    private FragmentOtherSettingBinding binding;
 
+
+    /**
+     * Viewが生成され始めた時に呼ばれるメソッド
+     * */
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        OtherSettingViewModel slideshowViewModel =
+        OtherSettingViewModel  otherSettingViewModel =
                 new ViewModelProvider(this).get(OtherSettingViewModel.class);
 
-        binding = FragmentSlideshowBinding.inflate(inflater, container, false);
+        binding = FragmentOtherSettingBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         final TextView textView = binding.textSlideshow;
-        slideshowViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        otherSettingViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
+
+
 
     @Override
     public void onDestroyView() {

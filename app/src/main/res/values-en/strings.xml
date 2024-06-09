@@ -9,5 +9,5 @@
 
     <string name="menu_home">calendar</string>
     <string name="menu_gallery">Target Plan</string>
-    <string name="menu_slideshow">Other plans</string>
+    <string name="menu_other_setting">Other plans</string>
 </resources>
