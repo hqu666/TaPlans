@@ -99,11 +99,18 @@ public class HomeFragment extends Fragment {
             dbMsg += ","+ targetYear + "年";
             int ysPisition = yearAadapter.getPosition("" + targetYear);
             dbMsg += "は"+ ysPisition + "番目,";
-            yearSpinner.setSelection(ysPisition);
-
+            dbMsg += ",isFocusable=" + yearSpinner.isFocusable() ;
+            if (yearSpinner.isFocusable() == false) {
+                yearSpinner.setSelection(ysPisition);
+                yearSpinner.setFocusable(false);
+            }
             targetMonth = setCal.get(Calendar.MONTH)+1;
             dbMsg +=targetMonth + "月";
-            monthSpinner.setSelection(targetMonth-1);
+            dbMsg += ",isFocusable=" + monthSpinner.isFocusable() ;
+            if (monthSpinner.isFocusable() == false) {
+                monthSpinner.setSelection(targetMonth-1);
+                monthSpinner.setFocusable(false);
+            }
 
             targetDay = setCal.get(Calendar.DATE);
             dbMsg += targetDay + "日";
