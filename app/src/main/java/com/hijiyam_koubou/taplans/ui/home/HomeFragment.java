@@ -14,12 +14,16 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.hijiyam_koubou.taplans.CalendarMembers;
+import com.hijiyam_koubou.taplans.ScheduleItems;
 import com.hijiyam_koubou.taplans.Util;
 import com.hijiyam_koubou.taplans.databinding.FragmentHomeBinding;
 
 import java.io.ObjectInputStream;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class HomeFragment extends Fragment {
 
@@ -41,6 +45,8 @@ public class HomeFragment extends Fragment {
 
     private int targetMonth;
     private int targetDay;
+
+    private ArrayList<CalendarMembers> calendarMembers;
 
     private TextView textView;
 
@@ -133,6 +139,26 @@ public class HomeFragment extends Fragment {
             dbMsg += tMinute + "分";
             int tSecond = setCal.get(Calendar.SECOND);
             dbMsg += tSecond + "秒";
+
+            calendarMembers = new ArrayList<>();
+            Calendar vCalStart = Calendar.getInstance();
+            vCalStart.set(targetYear, targetMonth, 1);
+            dbMsg += ",開始日" + vCalStart.get(Calendar.YEAR) +"年"+ vCalStart.get(Calendar.MONTH) + "月" +vCalStart.get(Calendar.DATE) + "日";
+            int targetStartDOW = vCalStart.get(Calendar.DAY_OF_WEEK);    // Calendar.SUNDAY=1～ Calendar.SATURDAY=7
+            dbMsg += "の曜日は=" + targetStartDOW;
+            vCalStart.add(Calendar.DATE, -targetStartDOW);
+            dbMsg += ",先月の=" + vCalStart.get(Calendar.MONTH) + "月" +vCalStart.get(Calendar.DATE) + "日から";
+            for (int i=0; i < 34; i++) {            //c34cBox　まで
+                CalendarMembers cMember=new CalendarMembers();
+                vCalStart.add(Calendar.DATE, i);
+                cMember.cDate = vCalStart;
+                        //Calendar.getInstance();
+                        //.setDate( vCalStart.add(Calendar.DATE, i));
+                   //     set(vCalStart.get(Calendar.YEAR),vCalStart.get(Calendar.MONTH),vCalStart.get(Calendar.DATE));
+                dbMsg += "("+ i + ")" + cMember.cDate.get(Calendar.MONTH) + "月" +cMember.cDate.get(Calendar.DATE) + "日から";
+                calendarMembers.add(cMember);
+            }
+            dbMsg += ",calendarMembers=" + calendarMembers.size() + "件";
             textView.setText(dbMsg);
 
             myLog(TAG , dbMsg);
