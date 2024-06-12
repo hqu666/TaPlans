@@ -15,6 +15,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        style="?android:attr/spinnerItemStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:ellipsize="marquee"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -30,7 +37,6 @@
         <Spinner
             android:id="@+id/year_spinner"
             android:layout_margin="4pt"
-            android:textAlignment="gravity"
             android:layout_width="match_parent"
             android:layout_weight="1"
             android:layout_height="wrap_content" />
@@ -40,12 +46,13 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="年"/>
+
         <Spinner
             android:id="@+id/month_spinner"
-            android:layout_margin="4pt"
             android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="4pt"
             android:layout_weight="1"
-            android:layout_height="wrap_content"
             />
         <TextView
             android:layout_width="wrap_content"

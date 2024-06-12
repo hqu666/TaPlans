@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -28,6 +29,16 @@ public class HomeFragment extends Fragment {
     private ArrayAdapter<String> yearAadapter;
     private int targetYear;
     private Spinner monthSpinner ;
+
+    /**
+     * 月戻しボタン
+     * */
+    private ImageButton rewButton;
+    /**
+     * 月送りボタン
+     * */
+    private  ImageButton ffButton;
+
     private int targetMonth;
     private int targetDay;
 
@@ -133,11 +144,37 @@ public class HomeFragment extends Fragment {
     /**
      * 表示年月変更
      * */
-    public void setYearMonth() {
+    public void setYearMonth(boolean isAdd) {
         final String TAG = "setYearMonth";
         String dbMsg = "[HomeFragment]";
-        View root = null;
         try {
+            dbMsg += ",現在" + targetYear +"年"+targetMonth + "月";
+            if(isAdd){
+                dbMsg += "に加算";
+                this.cal.add(Calendar.MONTH, 1);
+            }else{
+                dbMsg += "から減算";
+                this.cal.add(Calendar.MONTH, -1);
+            }
+            targetYear = this.cal.get(Calendar.YEAR);
+            targetMonth = this.cal.get(Calendar.MONTH)+1;
+            dbMsg += "＞＞" + targetYear +"年"+targetMonth + "月";
+            yearSpinner.setFocusable(false);
+            monthSpinner.setFocusable(false);
+            setTargetDate(this.cal);
+            int startYear = Integer.parseInt(yearAadapter.getItem(0));
+            int endYear = Integer.parseInt(yearAadapter.getItem(yearAadapter.getCount()-1));
+            dbMsg += ",対象年" + startYear +"～"+endYear + "月";
+            if((targetYear == startYear)&&(targetMonth == 1)){
+                rewButton.setVisibility(View.GONE);
+            }else{
+                rewButton.setVisibility(View.VISIBLE);
+            }
+            if((targetYear == endYear)&&(targetMonth == 12)){
+                ffButton.setVisibility(View.GONE);
+            }else{
+                ffButton.setVisibility(View.VISIBLE);
+            }
             myLog(TAG , dbMsg);
         } catch (Exception er) {
             myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
@@ -223,7 +260,6 @@ public class HomeFragment extends Fragment {
                             int selMonth = Integer.parseInt((String) monthSpinner.getSelectedItem().toString());
                             dbMsg += "," + selMonth + "月";
                             cal.set(targetYear, selMonth-1, targetDay);
-                   //         cal.add(Calendar.DAY_OF_MONTH, targetMonth-selMonth);
                             dbMsg += ">" + (cal.get(Calendar.MONTH)+1)+ "月";
                             monthSpinner.setFocusable(false);
                             setTargetDate(cal);
@@ -239,6 +275,36 @@ public class HomeFragment extends Fragment {
                     final String TAG = "onNothingSelected";
                     String dbMsg = "[monthSpinner]";
                     try {
+                        myLog(TAG , dbMsg);
+                    } catch (Exception er) {
+                        myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+                    }
+                }
+            });
+
+            rewButton = binding.rewButton;
+            rewButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final String TAG = "onClick";
+                    String dbMsg = "[rewButton]";
+                    try {
+                        setYearMonth(false);
+                        myLog(TAG , dbMsg);
+                    } catch (Exception er) {
+                        myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+                    }
+                }
+            });
+
+            ffButton = binding.ffButton;
+            ffButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final String TAG = "onClick";
+                    String dbMsg = "[ffButton]";
+                    try {
+                        setYearMonth(true);
                         myLog(TAG , dbMsg);
                     } catch (Exception er) {
                         myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
