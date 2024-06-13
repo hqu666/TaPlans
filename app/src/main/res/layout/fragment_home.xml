@@ -797,6 +797,140 @@
                 />
         </TableRow>
 
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <CheckBox
+                android:id="@+id/c35cBox"
+                android:text="36"
+                android:gravity="center_vertical|center"
+                android:textColor="#FF0000"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                />
+            <CheckBox
+                android:id="@+id/c36cBox"
+                android:text="37"
+                android:gravity="center_vertical|center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                />
+            <CheckBox
+                android:id="@+id/c37cBox"
+                android:text="38"
+                android:gravity="center_vertical|center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                />
+            <CheckBox
+                android:id="@+id/c38cBox"
+                android:text="39"
+                android:gravity="center_vertical|center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                />
+            <CheckBox
+                android:id="@+id/c39cBox"
+                android:text="40"
+                android:gravity="center_vertical|center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                />
+            <CheckBox
+                android:id="@+id/c40cBox"
+                android:text="41"
+                android:gravity="center_vertical|center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                />
+            <CheckBox
+                android:id="@+id/c41cBox"
+                android:text="42"
+                android:gravity="center_vertical|center"
+                android:textColor="#0000FF"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                />
+        </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <TextView
+                android:id="@+id/c35tx"
+                android:text="36 36 36 36"
+                android:textColor="#ff0000"
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:layout_width="20dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                />
+            <TextView
+                android:id="@+id/c36tx"
+                android:text="37 37 37 37"
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                />
+            <TextView
+                android:id="@+id/c37tx"
+                android:text="38 38 38 38"
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                />
+            <TextView
+                android:id="@+id/c38tx"
+                android:text="39 39 39 39"
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                />
+            <TextView
+                android:id="@+id/c39tx"
+                android:text="40 40 40 40"
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                />
+            <TextView
+                android:id="@+id/c40tx"
+                android:text="41 41 41 41"
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                />
+            <TextView
+                android:id="@+id/c41tx"
+                android:text="42 42 42 42"
+                android:textColor="#0000ff"
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                />
+        </TableRow>
+
     </TableLayout>
 
     <TextView

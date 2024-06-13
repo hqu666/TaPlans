@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -42,6 +43,7 @@ public class HomeFragment extends Fragment {
      * 月送りボタン
      * */
     private  ImageButton ffButton;
+    private ArrayList<CheckBox> dayChecks;
 
     private int targetMonth;
     private int targetDay;
@@ -142,24 +144,24 @@ public class HomeFragment extends Fragment {
 
             calendarMembers = new ArrayList<>();
             Calendar vCalStart = Calendar.getInstance();
-            vCalStart.set(targetYear, targetMonth, 1);
-            dbMsg += ",開始日" + vCalStart.get(Calendar.YEAR) +"年"+ vCalStart.get(Calendar.MONTH) + "月" +vCalStart.get(Calendar.DATE) + "日";
-            int targetStartDOW = vCalStart.get(Calendar.DAY_OF_WEEK);    // Calendar.SUNDAY=1～ Calendar.SATURDAY=7
+            vCalStart.set(targetYear, targetMonth-1, 1);
+            dbMsg += "\n開始日" + vCalStart.get(Calendar.YEAR) +"年"+ (vCalStart.get(Calendar.MONTH)+1) + "月" +vCalStart.get(Calendar.DATE) + "日";
+            int targetStartDOW = vCalStart.get(Calendar.DAY_OF_WEEK)-1;    // Calendar.SUNDAY=1～ Calendar.SATURDAY=7
             dbMsg += "の曜日は=" + targetStartDOW;
             vCalStart.add(Calendar.DATE, -targetStartDOW);
-            dbMsg += ",先月の=" + vCalStart.get(Calendar.MONTH) + "月" +vCalStart.get(Calendar.DATE) + "日から";
-            for (int i=0; i < 34; i++) {            //c34cBox　まで
+            dbMsg += ",先月の=" + (vCalStart.get(Calendar.MONTH) +1)+ "月" +vCalStart.get(Calendar.DATE) + "日から";
+            textView.setText(dbMsg);
+            for (int i=0; i < 42; i++) {            //c34cBox　まで
                 CalendarMembers cMember=new CalendarMembers();
-                vCalStart.add(Calendar.DATE, i);
                 cMember.cDate = vCalStart;
-                        //Calendar.getInstance();
-                        //.setDate( vCalStart.add(Calendar.DATE, i));
-                   //     set(vCalStart.get(Calendar.YEAR),vCalStart.get(Calendar.MONTH),vCalStart.get(Calendar.DATE));
-                dbMsg += "("+ i + ")" + cMember.cDate.get(Calendar.MONTH) + "月" +cMember.cDate.get(Calendar.DATE) + "日から";
+                String tText = cMember.cDate.get(Calendar.DATE) +"";
+                dbMsg += "("+ i + ")" + (cMember.cDate.get(Calendar.MONTH)+1) + "月" +tText+ "日";
                 calendarMembers.add(cMember);
+                CheckBox tCheckBox = dayChecks.get(i);
+                tCheckBox.setText(tText);
+                vCalStart.add(Calendar.DATE,1);
             }
             dbMsg += ",calendarMembers=" + calendarMembers.size() + "件";
-            textView.setText(dbMsg);
 
             myLog(TAG , dbMsg);
         } catch (Exception er) {
@@ -222,6 +224,51 @@ public class HomeFragment extends Fragment {
             root = binding.getRoot();
 
             textView = binding.textHome;
+
+            dayChecks = new ArrayList<>();           //CheckBox
+            dayChecks.add(binding.c00cBox);
+            dayChecks.add(binding.c01cBox);
+            dayChecks.add(binding.c02cBox);
+            dayChecks.add(binding.c03cBox);
+            dayChecks.add(binding.c04cBox);
+            dayChecks.add(binding.c05cBox);
+            dayChecks.add(binding.c06cBox);
+            dayChecks.add(binding.c07cBox);
+            dayChecks.add(binding.c08cBox);
+            dayChecks.add(binding.c09cBox);
+            dayChecks.add(binding.c10cBox);
+            dayChecks.add(binding.c11cBox);
+            dayChecks.add(binding.c12cBox);
+            dayChecks.add(binding.c13cBox);
+            dayChecks.add(binding.c14cBox);
+            dayChecks.add(binding.c15cBox);
+            dayChecks.add(binding.c16cBox);
+            dayChecks.add(binding.c17cBox);
+            dayChecks.add(binding.c18cBox);
+            dayChecks.add(binding.c19cBox);
+            dayChecks.add(binding.c20cBox);
+            dayChecks.add(binding.c21cBox);
+            dayChecks.add(binding.c22cBox);
+            dayChecks.add(binding.c23cBox);
+            dayChecks.add(binding.c24cBox);
+            dayChecks.add(binding.c25cBox);
+            dayChecks.add(binding.c26cBox);
+            dayChecks.add(binding.c27cBox);
+            dayChecks.add(binding.c28cBox);
+            dayChecks.add(binding.c29cBox);
+            dayChecks.add(binding.c30cBox);
+            dayChecks.add(binding.c31cBox);
+            dayChecks.add(binding.c32cBox);
+            dayChecks.add(binding.c33cBox);
+            dayChecks.add(binding.c34cBox);
+            dayChecks.add(binding.c35cBox);
+            dayChecks.add(binding.c36cBox);
+            dayChecks.add(binding.c37cBox);
+            dayChecks.add(binding.c38cBox);
+            dayChecks.add(binding.c39cBox);
+            dayChecks.add(binding.c40cBox);
+            dayChecks.add(binding.c41cBox);
+
             yearSpinner = binding.yearSpinner;
             monthSpinner = binding.monthSpinner;
             // 初回起動時の対応
@@ -337,6 +384,7 @@ public class HomeFragment extends Fragment {
                     }
                 }
             });
+
 
 //            homeViewModel.getText().observe(getViewLifecycl
 //            eOwner(), textView::setText);
