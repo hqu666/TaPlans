@@ -809,6 +809,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="20sp"
+                android:background="#FDE7E7"
                 />
             <CheckBox
                 android:id="@+id/c36cBox"
@@ -864,6 +865,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="20sp"
+                android:background="#EDEDFF"
                 />
         </TableRow>
         <TableRow

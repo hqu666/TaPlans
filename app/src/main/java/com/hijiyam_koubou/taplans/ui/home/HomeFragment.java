@@ -1,5 +1,7 @@
 package com.hijiyam_koubou.taplans.ui.home;
 
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +14,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -60,7 +63,14 @@ public class HomeFragment extends Fragment {
     /**
     *デフォルトのCalendarオブジェクト
     * */
-    public Calendar cal;    //
+    public Calendar cal;
+    /**
+     * 日曜日の背景色：RGB
+     * */
+    public int rBGSunDay;
+    public int rBGSatuDay;
+    public int rBGWeekDay;
+
 
     /**
      * 起動時、本日の日付を取得して年スライダーを設定する
@@ -151,12 +161,15 @@ public class HomeFragment extends Fragment {
             vCalStart.add(Calendar.DATE, -targetStartDOW);
             dbMsg += ",先月の=" + (vCalStart.get(Calendar.MONTH) +1)+ "月" +vCalStart.get(Calendar.DATE) + "日から";
             textView.setText(dbMsg);
+
             for (int i=0; i < 42; i++) {            //c34cBox　まで
                 CalendarMembers cMember=new CalendarMembers();
                 cMember.cDate = vCalStart;
                 int rMonth = cMember.cDate.get(Calendar.MONTH) +1;
                 String rDay = cMember.cDate.get(Calendar.DATE) +"";
-                dbMsg += "("+ i + ")" + rMonth + "月" +rDay+ "日";
+                int rDOW = cMember.cDate.get(Calendar.DAY_OF_WEEK) ;
+
+                dbMsg += "("+ i + ")" + rMonth + "月" +rDay+ "日;" + rDOW;
                 calendarMembers.add(cMember);
                 CheckBox tCheckBox = dayChecks.get(i);
                 tCheckBox.setText(rDay);
@@ -164,6 +177,16 @@ public class HomeFragment extends Fragment {
                     tCheckBox.setTextSize(20.0F);
                 }else{
                     tCheckBox.setTextSize(10.0F);
+                }
+
+                if(rDOW == Calendar.SUNDAY){
+                    dbMsg += "[日曜日]";
+                    tCheckBox.setBackgroundColor(rBGSunDay);
+                }else if(rDOW == Calendar.SATURDAY){
+                    dbMsg += "[土曜日]";
+                    tCheckBox.setBackgroundColor(rBGSatuDay);
+                }else{
+                    tCheckBox.setBackgroundColor(rBGWeekDay);
                 }
                 vCalStart.add(Calendar.DATE,1);
             }
@@ -230,6 +253,10 @@ public class HomeFragment extends Fragment {
             root = binding.getRoot();
 
             textView = binding.textHome;
+
+            rBGSunDay = Color.parseColor("#FDE7E7");
+            rBGSatuDay = Color.parseColor("#EDEDFF");
+            rBGWeekDay = Color.parseColor("#FFFFFF");
 
             dayChecks = new ArrayList<>();           //CheckBox
             dayChecks.add(binding.c00cBox);
