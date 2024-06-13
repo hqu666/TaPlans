@@ -154,11 +154,17 @@ public class HomeFragment extends Fragment {
             for (int i=0; i < 42; i++) {            //c34cBox　まで
                 CalendarMembers cMember=new CalendarMembers();
                 cMember.cDate = vCalStart;
-                String tText = cMember.cDate.get(Calendar.DATE) +"";
-                dbMsg += "("+ i + ")" + (cMember.cDate.get(Calendar.MONTH)+1) + "月" +tText+ "日";
+                int rMonth = cMember.cDate.get(Calendar.MONTH) +1;
+                String rDay = cMember.cDate.get(Calendar.DATE) +"";
+                dbMsg += "("+ i + ")" + rMonth + "月" +rDay+ "日";
                 calendarMembers.add(cMember);
                 CheckBox tCheckBox = dayChecks.get(i);
-                tCheckBox.setText(tText);
+                tCheckBox.setText(rDay);
+                if(targetMonth == rMonth){
+                    tCheckBox.setTextSize(20.0F);
+                }else{
+                    tCheckBox.setTextSize(10.0F);
+                }
                 vCalStart.add(Calendar.DATE,1);
             }
             dbMsg += ",calendarMembers=" + calendarMembers.size() + "件";

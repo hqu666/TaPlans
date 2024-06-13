@@ -808,6 +808,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textSize="20sp"
                 />
             <CheckBox
                 android:id="@+id/c36cBox"
@@ -816,6 +817,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textSize="20sp"
                 />
             <CheckBox
                 android:id="@+id/c37cBox"
@@ -824,6 +826,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textSize="20sp"
                 />
             <CheckBox
                 android:id="@+id/c38cBox"
@@ -832,6 +835,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textSize="20sp"
                 />
             <CheckBox
                 android:id="@+id/c39cBox"
@@ -840,6 +844,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textSize="20sp"
                 />
             <CheckBox
                 android:id="@+id/c40cBox"
@@ -848,6 +853,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textSize="20sp"
                 />
             <CheckBox
                 android:id="@+id/c41cBox"
@@ -857,6 +863,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textSize="20sp"
                 />
         </TableRow>
         <TableRow
