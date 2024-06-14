@@ -47,6 +47,7 @@ public class HomeFragment extends Fragment {
      * */
     private  ImageButton ffButton;
     private ArrayList<CheckBox> dayChecks;
+    private ArrayList<TextView> dayTexts;
 
     private int targetMonth;
     private int targetDay;
@@ -159,7 +160,7 @@ public class HomeFragment extends Fragment {
             int targetStartDOW = vCalStart.get(Calendar.DAY_OF_WEEK)-1;    // Calendar.SUNDAY=1～ Calendar.SATURDAY=7
             dbMsg += "の曜日は=" + targetStartDOW;
             vCalStart.add(Calendar.DATE, -targetStartDOW);
-            dbMsg += ",先月の=" + (vCalStart.get(Calendar.MONTH) +1)+ "月" +vCalStart.get(Calendar.DATE) + "日から";
+            dbMsg += ",開始=" + (vCalStart.get(Calendar.MONTH) +1)+ "月" +vCalStart.get(Calendar.DATE) + "日から";
             textView.setText(dbMsg);
 
             for (int i=0; i < 42; i++) {            //c34cBox　まで
@@ -179,14 +180,18 @@ public class HomeFragment extends Fragment {
                     tCheckBox.setTextSize(10.0F);
                 }
 
+                TextView tTextView = dayTexts.get(i);
                 if(rDOW == Calendar.SUNDAY){
                     dbMsg += "[日曜日]";
                     tCheckBox.setBackgroundColor(rBGSunDay);
+                    tTextView.setBackgroundColor(rBGSunDay);
                 }else if(rDOW == Calendar.SATURDAY){
                     dbMsg += "[土曜日]";
                     tCheckBox.setBackgroundColor(rBGSatuDay);
+                    tTextView.setBackgroundColor(rBGSatuDay);
                 }else{
                     tCheckBox.setBackgroundColor(rBGWeekDay);
+                    tTextView.setBackgroundColor(rBGWeekDay);
                 }
                 vCalStart.add(Calendar.DATE,1);
             }
@@ -301,6 +306,51 @@ public class HomeFragment extends Fragment {
             dayChecks.add(binding.c39cBox);
             dayChecks.add(binding.c40cBox);
             dayChecks.add(binding.c41cBox);
+
+            dayTexts = new ArrayList<>();           //CheckBox
+            dayTexts.add(binding.c00tx);
+            dayTexts.add(binding.c01tx);
+            dayTexts.add(binding.c02tx);
+            dayTexts.add(binding.c03tx);
+            dayTexts.add(binding.c04tx);
+            dayTexts.add(binding.c05tx);
+            dayTexts.add(binding.c06tx);
+            dayTexts.add(binding.c07tx);
+            dayTexts.add(binding.c08tx);
+            dayTexts.add(binding.c09tx);
+            dayTexts.add(binding.c10tx);
+            dayTexts.add(binding.c11tx);
+            dayTexts.add(binding.c12tx);
+            dayTexts.add(binding.c13tx);
+            dayTexts.add(binding.c14tx);
+            dayTexts.add(binding.c15tx);
+            dayTexts.add(binding.c16tx);
+            dayTexts.add(binding.c17tx);
+            dayTexts.add(binding.c18tx);
+            dayTexts.add(binding.c19tx);
+            dayTexts.add(binding.c20tx);
+            dayTexts.add(binding.c21tx);
+            dayTexts.add(binding.c22tx);
+            dayTexts.add(binding.c23tx);
+            dayTexts.add(binding.c24tx);
+            dayTexts.add(binding.c25tx);
+            dayTexts.add(binding.c26tx);
+            dayTexts.add(binding.c27tx);
+            dayTexts.add(binding.c28tx);
+            dayTexts.add(binding.c29tx);
+            dayTexts.add(binding.c30tx);
+            dayTexts.add(binding.c31tx);
+            dayTexts.add(binding.c32tx);
+            dayTexts.add(binding.c33tx);
+            dayTexts.add(binding.c34tx);
+            dayTexts.add(binding.c35tx);
+            dayTexts.add(binding.c36tx);
+            dayTexts.add(binding.c37tx);
+            dayTexts.add(binding.c38tx);
+            dayTexts.add(binding.c39tx);
+            dayTexts.add(binding.c40tx);
+            dayTexts.add(binding.c41tx);
+
 
             yearSpinner = binding.yearSpinner;
             monthSpinner = binding.monthSpinner;
