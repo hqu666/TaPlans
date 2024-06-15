@@ -18,9 +18,16 @@
         tools:layout="@layout/fragment_gallery" />
 
     <fragment
+        android:id="@+id/nav_target_setting"
+        android:name="com.hijiyam_koubou.taplans.ui.target_setting.TargetSettingFragment"
+        android:label="@string/menu_target_setting"
+        tools:layout="@layout/fragment_target_setting" />
+
+    <fragment
         android:id="@+id/nav_other_setting"
         android:name="com.hijiyam_koubou.taplans.ui.other_setting.OtherSettingFragment"
         android:label="@string/menu_other_setting"
         tools:layout="@layout/fragment_other_setting" />
+
 
 </navigation>

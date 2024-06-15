@@ -13,6 +13,10 @@
             android:icon="@android:drawable/ic_input_get"
             android:title="@string/menu_gallery" />
         <item
+            android:id="@+id/nav_target_setting"
+            android:icon="@android:drawable/ic_input_get"
+            android:title="@string/menu_target_setting" />
+        <item
             android:id="@+id/nav_other_setting"
             android:icon="@android:drawable/ic_input_delete"
             android:title="@string/menu_other_setting" />

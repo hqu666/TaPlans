@@ -933,7 +933,7 @@
                 android:id="@+id/c41tx"
                 android:text="42 42 42 42"
                 android:textColor="#0000ff"
-                android:background="#FDE7E7"
+                android:background="#EDEDFF"
                 android:ellipsize="marquee"
                 android:singleLine="true"
                 android:layout_width="20dp"
