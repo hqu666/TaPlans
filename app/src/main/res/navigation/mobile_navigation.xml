@@ -19,7 +19,7 @@
 
     <fragment
         android:id="@+id/nav_target_setting"
-        android:name="com.hijiyam_koubou.taplans.ui.target_setting.TargetSettingFragment"
+        android:name="com.hijiyam_koubou.taplans.ui.target_setting.TargetPlanFragment"
         android:label="@string/menu_target_setting"
         tools:layout="@layout/fragment_target_setting" />
 
