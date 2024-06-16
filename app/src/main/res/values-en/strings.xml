@@ -12,4 +12,15 @@
     <string name="menu_gallery">Google event</string>
     <string name="menu_target_setting">Target plans</string>
     <string name="menu_other_setting">Other plans</string>
+
+    <string name="pref_calender_account">account of calender</string>
+    <string name="pref_view_setting">view setting</string>
+    <string name="pref_sunday_text_color">text color of sunday</string>
+    <string name="pref_sunday_background">background color of sunday</string>
+    <string name="pref_satuday_text_color">text color of satuday</string>
+    <string name="pref_satuday_background">background color of satuday</string>
+    <string name="pref_default_text_color">text color of default</string>
+    <string name="pref_default_background">background color of default</string>
+    <string name="pref_set_default">set to default</string>
+    <string name="pref_tDates">target days</string>
 </resources>

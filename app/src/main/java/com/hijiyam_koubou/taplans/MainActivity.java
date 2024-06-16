@@ -19,10 +19,28 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.hijiyam_koubou.taplans.databinding.ActivityMainBinding;
 
+import java.util.ArrayList;
+import java.util.Date;
+
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
+
+    /**
+     * 登録するカレンダーのアカウント
+     * */
+    public String calenderAccount;          //アカウント
+    public String sundayBackground;          //">#FDE7E7</color>
+    public String sundayTextColor;         //">#ff0000</color>
+    public String satudayBackground;          //">#EDEDFF</color>
+    public String satudayTextColor;            //">#0000FF</color>
+    public String defaultBackground;            //">#FFFFFF</color>
+    public String defaultTextColor;             //">#000000</color>
+    /**
+     * 前後2か月の対象日リスト：Googleカレンダー非連動時の対策
+     * */
+    private ArrayList<Date> tDates;
 
 
     /**

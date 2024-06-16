@@ -6,9 +6,76 @@
         android:key="calendar_account"
         android:selectAllOnFocus="true"
         android:singleLine="false"
-        android:title="登録するカレンダーのアカウント" />
-    <PreferenceCategory android:title="画面設定">
-
+        android:title="@string/pref_calender_account" />
+    <PreferenceCategory
+        android:title="@string/pref_view_setting"
+        >
+        <EditTextPreference
+            android:defaultValue="#FDE7E7"
+            android:key="sundayBackground"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/pref_sunday_background"
+            android:textColor="@color/sunday_text_color"
+            android:background="@color/sunday_background"
+            />
+        <EditTextPreference
+            android:defaultValue="#ff0000"
+            android:key="sundayTextColor"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/pref_sunday_text_color"
+            android:textColor="@color/sunday_text_color"
+            android:background="@color/sunday_background"
+            />
+        <EditTextPreference
+            android:defaultValue="#EDEDFF"
+            android:key="satudayBackground"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/pref_satuday_background"
+            android:textColor="@color/satuday_text_color"
+            android:background="@color/satuday_background"
+            />
+        <EditTextPreference
+            android:defaultValue="#0000FF"
+            android:key="satudayTextColor"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/pref_satuday_text_color"
+            android:textColor="@color/satuday_text_color"
+            android:background="@color/satuday_background"
+            />
+        <EditTextPreference
+            android:defaultValue="#FFFFFF"
+            android:key="defaultBackground"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/pref_default_background"
+            android:textColor="@color/default_text_color"
+            android:background="@color/default_background"
+            />
+        <EditTextPreference
+            android:defaultValue="#000000"
+            android:key="defaultTextColor"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/pref_default_text_color"
+            android:textColor="@color/default_text_color"
+            android:background="@color/default_background"
+            />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="set_default"
+            android:title="@string/pref_set_default"
+            />
     </PreferenceCategory>
-
+    <ListPreference
+        android:defaultValue="1"
+        android:entries="@android:array/postalAddressTypes"
+        android:entryValues="@android:array/postalAddressTypes"
+        android:key="tDates"
+        android:title="@string/pref_tDates"
+        />
+    <!--    * 前後2か月の対象日リスト：Googleカレンダー非連動時の対策-->
 </PreferenceScreen>

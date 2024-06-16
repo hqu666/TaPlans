@@ -12,4 +12,16 @@
     <string name="menu_gallery">Googleカレンダーの登録状況</string>
     <string name="menu_target_setting">対象予定</string>
     <string name="menu_other_setting">対象予定以外の日</string>
-</resources>
+
+    <string name="pref_calender_account">登録するカレンダーのアカウント</string>
+    <string name="pref_view_setting">画面設定</string>
+    <string name="pref_sunday_text_color">日曜、祝日の文字色</string>
+    <string name="pref_sunday_background">日曜、祝日の背景色</string>
+    <string name="pref_satuday_text_color">土曜日の文字色</string>
+    <string name="pref_satuday_background">土曜日の背景色</string>
+    <string name="pref_default_text_color">規定の文字色</string>
+    <string name="pref_default_background">規定の背景色</string>
+    <string name="pref_set_default">規定値に戻す</string>
+    <string name="pref_tDates">対象日リスト</string>
+
+    </resources>
