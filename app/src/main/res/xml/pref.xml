@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <EditTextPreference
+        android:defaultValue="your@gmail.com"
+        android:key="calendar_account"
+        android:selectAllOnFocus="true"
+        android:singleLine="false"
+        android:title="登録するカレンダーのアカウント" />
+    <PreferenceCategory android:title="画面設定">
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
