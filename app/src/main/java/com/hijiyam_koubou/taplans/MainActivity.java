@@ -24,6 +24,8 @@ import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
+    public MyPreferences myPref;
+
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
 
@@ -145,29 +147,57 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        final String TAG = "onCreate";
+        String dbMsg = "[MainActivity]";
+        try {
 
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+            myPref = new MyPreferences();
+            myPref.readPref(this);
+            this.calenderAccount=myPref.calenderAccount;
+            dbMsg += "," + getResources().getString(R.string.pref_calender_account) +"=" + calenderAccount ;
+            this.sundayBackground=myPref.sundayBackground;
+            dbMsg += "," + getResources().getString(R.string.pref_sunday_background) +"=" + sundayBackground ;
+            this.sundayTextColor=myPref.sundayTextColor;
+            dbMsg += "," + getResources().getString(R.string.pref_sunday_text_color) +"=" + sundayTextColor ;
+            this.satudayBackground=myPref.satudayBackground;
+            dbMsg += "," + getResources().getString(R.string.pref_satuday_background) +"=" + satudayBackground ;
+            this.satudayTextColor=myPref.satudayTextColor;
+            dbMsg += "," + getResources().getString(R.string.pref_satuday_background) +"=" + satudayTextColor ;
+            this.defaultBackground = myPref.defaultBackground;
+            dbMsg += "," + getResources().getString(R.string.pref_default_background) +"=" + defaultBackground ;
+            this.defaultTextColor = myPref.defaultTextColor;
+            dbMsg += "," + getResources().getString(R.string.pref_default_text_color) +"=" + defaultTextColor ;
 
-        setSupportActionBar(binding.appBarMain.toolbar);
-        binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null)
-                        .setAnchorView(R.id.fab).show();
-            }
-        });
-        DrawerLayout drawer = binding.drawerLayout;
-        NavigationView navigationView = binding.navView;
-        // Passing each menu ID as a set of Ids because each menu should be considered as top level destinations.
-        mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_target_plan, R.id.nav_target_setting, R.id.nav_other_setting)
-                .setOpenableLayout(drawer)
-                .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-        NavigationUI.setupWithNavController(navigationView, navController);
+
+            binding = ActivityMainBinding.inflate(getLayoutInflater());
+            setContentView(binding.getRoot());
+
+            setSupportActionBar(binding.appBarMain.toolbar);
+            binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null)
+                            .setAnchorView(R.id.fab).show();
+                }
+            });
+            DrawerLayout drawer = binding.drawerLayout;
+            NavigationView navigationView = binding.navView;
+            // Passing each menu ID as a set of Ids because each menu should be considered as top level destinations.
+            mAppBarConfiguration = new AppBarConfiguration.Builder(
+                    R.id.nav_home, R.id.nav_target_plan, R.id.nav_target_setting, R.id.nav_other_setting)
+                    .setOpenableLayout(drawer)
+                    .build();
+            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+            NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
+            NavigationUI.setupWithNavController(navigationView, navController);
+            myLog(TAG, dbMsg);
+        } catch (Exception e) {
+            myErrorLog(TAG ,  dbMsg + "で" + e);
+        }
+
+
+
     }
     //////////////////////////////////////////////////////////////ライフサイクル//
     public static void myLog(String TAG , String dbMsg) {
