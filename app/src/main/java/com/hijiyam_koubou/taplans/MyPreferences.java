@@ -16,6 +16,7 @@ import android.preference.SwitchPreference;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * 設定画面
@@ -54,30 +55,34 @@ public class MyPreferences extends PreferenceActivity {
         String dbMsg = "[MyPreferences]";
         try {
             dbMsg += "MyPreference読込み";
-            if(sharedPref == null){
+             if(sharedPref == null){
                 dbMsg += ",DefaultSharedPreferences読込み";
                 sharedPref = PreferenceManager.getDefaultSharedPreferences(con);            //	this.getSharedPreferences(this, MODE_PRIVATE);		//
             }
-            dbMsg += ",登録するカレンダーのアカウント=" + calenderAccount ;
+            Map<String, ?> inPref = sharedPref.getAll();
+            dbMsg += inPref.size() + "件" ;
+            dbMsg += "," + con.getResources().getString(R.string.pref_calender_account) +"=" + calenderAccount ;
             calenderAccount = sharedPref.getString("calendar_account", "your_account@gmail.com");
             dbMsg += ">>" + calenderAccount ;
-            dbMsg += "," + getResources().getString(R.string.pref_sunday_background) +"=" + sundayBackground ;
-            sundayBackground = sharedPref.getString("sundayBackground", String.valueOf(getResources().getColor(R.color.satuday_background)));
+            dbMsg += "," + con.getResources().getString(R.string.pref_sunday_background) ;
+            dbMsg += "のデフォルト=" + con.getResources().getColor(R.color.satuday_background) ;
+            dbMsg += "；現在=" + sundayBackground ;
+            sundayBackground = sharedPref.getString("sundayBackground", String.valueOf(con.getResources().getColor(R.color.satuday_background)));
             dbMsg += ">>" + sundayBackground ;
-            dbMsg += "," + getResources().getString(R.string.pref_sunday_text_color) +"=" + sundayTextColor ;
-            sundayTextColor = sharedPref.getString("sundayTextColor", String.valueOf(getResources().getColor(R.color.sunday_text_color)));
+            dbMsg += "," + con.getResources().getString(R.string.pref_sunday_text_color) +"=" + sundayTextColor ;
+            sundayTextColor = sharedPref.getString("sundayTextColor", String.valueOf(con.getResources().getColor(R.color.sunday_text_color)));
             dbMsg += ">>" + sundayTextColor ;
-            dbMsg += "," + getResources().getString(R.string.pref_satuday_background) +"=" + satudayBackground ;
-            satudayBackground = sharedPref.getString("satudayBackground", String.valueOf(getResources().getColor(R.color.satuday_background)));         //"#EDEDFF"
+            dbMsg += "," + con.getResources().getString(R.string.pref_satuday_background) +"=" + satudayBackground ;
+            satudayBackground = sharedPref.getString("satudayBackground", String.valueOf(con.getResources().getColor(R.color.satuday_background)));         //"#EDEDFF"
             dbMsg += ">>" + satudayBackground ;
-            dbMsg += "," + getResources().getString(R.string.pref_satuday_background) +"=" + satudayTextColor ;
-            satudayTextColor = sharedPref.getString("satudayTextColor", String.valueOf(getResources().getColor(R.color.satuday_text_color)));         //"#0000FF"
+            dbMsg += "," + con.getResources().getString(R.string.pref_satuday_background) +"=" + satudayTextColor ;
+            satudayTextColor = sharedPref.getString("satudayTextColor", String.valueOf(con.getResources().getColor(R.color.satuday_text_color)));         //"#0000FF"
             dbMsg += ">>" + satudayTextColor ;
-            dbMsg += "," + getResources().getString(R.string.pref_default_background) +"=" + defaultBackground ;
-            defaultBackground = sharedPref.getString("defaultBackground", String.valueOf(getResources().getColor(R.color.default_background)));         //"#FFFFFF"
+            dbMsg += "," + con.getResources().getString(R.string.pref_default_background) +"=" + defaultBackground ;
+            defaultBackground = sharedPref.getString("defaultBackground", String.valueOf(con.getResources().getColor(R.color.default_background)));         //"#FFFFFF"
             dbMsg += ">>" + defaultBackground ;
-            dbMsg += "," + getResources().getString(R.string.pref_default_text_color) +"=" + defaultTextColor ;
-            defaultTextColor = sharedPref.getString("defaultTextColor", String.valueOf(getResources().getColor(R.color.default_text_color)));         //"#000000"
+            dbMsg += "," + con.getResources().getString(R.string.pref_default_text_color) +"=" + defaultTextColor ;
+            defaultTextColor = sharedPref.getString("defaultTextColor", String.valueOf(con.getResources().getColor(R.color.default_text_color)));         //"#000000"
             dbMsg += ">>" + defaultTextColor ;
 
             /*
@@ -96,6 +101,54 @@ public class MyPreferences extends PreferenceActivity {
         }
     }
 
+    /**
+     *
+     * **/
+    public void setAllSummary(Context con) {
+        final String TAG = "setAllSummary";
+        String dbMsg = "[MyPreferences]";
+        try {
+            if(sharedPref == null){
+                dbMsg += ",DefaultSharedPreferences読込み";
+                sharedPref = PreferenceManager.getDefaultSharedPreferences(con);            //	this.getSharedPreferences(this, MODE_PRIVATE);		//
+            }
+            Map<String, ?> inPref = sharedPref.getAll();
+            dbMsg += inPref.size() + "件" ;
+            dbMsg += "," + con.getResources().getString(R.string.pref_calender_account) +"=" + calenderAccount ;
+            calenderAccount = sharedPref.getString("calendar_account", "your_account@gmail.com");
+            dbMsg += ">>" + calenderAccount ;
+            calenderAccount_etp.setSummary(calenderAccount);     //登録するカレンダーのアカウント     android:defaultValue="your@gmail.com"
+            dbMsg += "," + con.getResources().getString(R.string.pref_sunday_background) ;
+            sundayBackground = sharedPref.getString("sundayBackground", String.valueOf(con.getResources().getColor(R.color.satuday_background)));
+            dbMsg += ">>" + sundayBackground ;
+            sundayBackground_etp.setSummary(sundayBackground);     //    defaultValue="#FDE7E7" "@color/sunday_background"
+            dbMsg += "," + con.getResources().getString(R.string.pref_sunday_text_color) +"=" + sundayTextColor ;
+            sundayTextColor = sharedPref.getString("sundayTextColor", String.valueOf(con.getResources().getColor(R.color.sunday_text_color)));
+            dbMsg += ">>" + sundayTextColor ;
+            sundayTextColor_etp.setSummary(sundayTextColor);     //    defaultValue="#ff0000" "@color/sunday_text_color"
+            dbMsg += "," + con.getResources().getString(R.string.pref_satuday_background) +"=" + satudayBackground ;
+            satudayBackground = sharedPref.getString("satudayBackground", String.valueOf(con.getResources().getColor(R.color.satuday_background)));         //"#EDEDFF"
+            dbMsg += ">>" + satudayBackground ;
+            satudayBackground_etp.setSummary(satudayBackground);     //"@color/satuday_background"
+            dbMsg += "," + con.getResources().getString(R.string.pref_satuday_background) +"=" + satudayTextColor ;
+            satudayTextColor = sharedPref.getString("satudayTextColor", String.valueOf(con.getResources().getColor(R.color.satuday_text_color)));         //"#0000FF"
+            dbMsg += ">>" + satudayTextColor ;
+            satudayTextColor_etp.setSummary(satudayTextColor);     //"@color/satuday_text_color"
+            dbMsg += "," + con.getResources().getString(R.string.pref_default_background) +"=" + defaultBackground ;
+            defaultBackground = sharedPref.getString("defaultBackground", String.valueOf(con.getResources().getColor(R.color.default_background)));         //"#FFFFFF"
+            dbMsg += ">>" + defaultBackground ;
+            defaultBackground_etp.setSummary(defaultBackground);     //"@color/default_background"
+            dbMsg += "," + con.getResources().getString(R.string.pref_default_text_color) +"=" + defaultTextColor ;
+            defaultTextColor = sharedPref.getString("defaultTextColor", String.valueOf(con.getResources().getColor(R.color.default_text_color)));         //"#000000"
+            dbMsg += ">>" + defaultTextColor ;
+            defaultTextColor_etp.setSummary(defaultTextColor);     //"@color/default_text_color"
+            dbMsg += "," + con.getResources().getString(R.string.pref_set_default) +"=" + sharedPref.getBoolean("set_default", false);    ;
+            set_default_sp.setChecked(false);
+            myLog(TAG, dbMsg);
+        } catch (Exception e) {
+            myErrorLog(TAG ,  dbMsg + "で" + e);
+        }
+     }
 
     //ライフサイクル//////////////////////////////////////////////////////////////
     @Override
@@ -147,8 +200,36 @@ public class MyPreferences extends PreferenceActivity {
             defaultBackground_etp = (EditTextPreference) findPreference("defaultBackground");     //"@color/default_background"
             defaultTextColor_etp = (EditTextPreference) findPreference("defaultBackground");     //"@color/default_text_color"
             set_default_sp = (SwitchPreference) findPreference("set_default");
+            set_default_sp.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    final String TAG = "onPreferenceChange";
+                    String dbMsg = "[set_default_sp]";
+                    try {
+                        dbMsg += "newValue=" + newValue;
+                        boolean nBool= (boolean) newValue;
+                        if(nBool){
+                            myEditor.clear();
+                            myEditor.putBoolean("set_default", false);
+                            myEditor.commit();
+                            readPref(getApplicationContext());
+                            setAllSummary(getApplicationContext());
+                            set_default_sp.setChecked(false);
+                        }
+                        myLog(TAG, dbMsg);
+                    } catch (Exception e) {
+                        myErrorLog(TAG ,  dbMsg + "で" + e);
+                    }
+                    return true;	//	更新の適用
+                }
+            });
+
+
             tDates_lp = (ListPreference) findPreference("tDates");
 
+
+            readPref(getApplicationContext());
+            setAllSummary(getApplicationContext());
             myLog(TAG, dbMsg);
         } catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);

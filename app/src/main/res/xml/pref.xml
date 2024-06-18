@@ -67,8 +67,7 @@
         <SwitchPreference
             android:defaultValue="false"
             android:key="set_default"
-            android:title="@string/pref_set_default"
-            />
+            android:title="@string/pref_set_default" />
     </PreferenceCategory>
     <ListPreference
         android:defaultValue="1"
