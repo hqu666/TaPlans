@@ -64,7 +64,8 @@
             android:textColor="@color/default_text_color"
             android:background="@color/default_background"
             />
-        <SwitchPreference
+
+        <CheckBoxPreference
             android:defaultValue="false"
             android:key="set_default"
             android:title="@string/pref_set_default" />

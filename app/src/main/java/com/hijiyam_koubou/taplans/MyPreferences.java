@@ -5,13 +5,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.preference.SwitchPreference;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,7 +33,7 @@ public class MyPreferences extends PreferenceActivity {
     public EditTextPreference satudayTextColor_etp;     //"@color/satuday_text_color"
     public EditTextPreference defaultBackground_etp;     //"@color/default_background"
     public EditTextPreference defaultTextColor_etp;     //"@color/default_text_color"
-    public SwitchPreference set_default_sp;
+    public CheckBoxPreference set_default_sp;
     public ListPreference tDates_lp;
 
     public Locale locale;
@@ -163,6 +163,9 @@ public class MyPreferences extends PreferenceActivity {
         }
      }
 
+     /**
+      * 色指定を初期化する
+      * */
     public void setColorDefault(Context con) {
         final String TAG = "setColorDefault";
         String dbMsg = "[MyPreferences]";
@@ -212,7 +215,6 @@ public class MyPreferences extends PreferenceActivity {
 
             myEditor.commit();
 
-            set_default_sp.setChecked(false);
             myLog(TAG, dbMsg);
         } catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -395,7 +397,7 @@ public class MyPreferences extends PreferenceActivity {
                     return true;	//	更新の適用
                 }
             });
-            set_default_sp = (SwitchPreference) findPreference("set_default");
+            set_default_sp = (CheckBoxPreference) findPreference("set_default");
             set_default_sp.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -407,10 +409,9 @@ public class MyPreferences extends PreferenceActivity {
                         if(nBool){
 //                            myEditor.clear();
                             setColorDefault(getApplicationContext());
-                            myEditor.putBoolean("set_default", false);
-                            myEditor.commit();
-//                            readPref(getApplicationContext());
+ //                            readPref(getApplicationContext());
 //                            setAllSummary(getApplicationContext());
+                         //   set_default_sp.wait(1000);
                             set_default_sp.setChecked(false);
                         }
                         myLog(TAG, dbMsg);
@@ -420,6 +421,7 @@ public class MyPreferences extends PreferenceActivity {
                     return true;	//	更新の適用
                 }
             });
+            set_default_sp.setChecked(false);
 
 
             tDates_lp = (ListPreference) findPreference("tDates");
