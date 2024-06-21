@@ -23,4 +23,14 @@
     <string name="pref_default_background">background color of default</string>
     <string name="pref_set_default">set to default</string>
     <string name="pref_tDates">target days</string>
+
+
+    <string name="sunday_background">#FFFDE7E7</string>
+    <string name="sunday_text_color">#FFFF0000</string>
+    <string name="satuday_background">#FFEDEDFF</string>
+    <string name="satuday_text_color">#FF0000FF</string>
+    <string name="default_background">#FFFFFFFF</string>
+    <string name="default_text_color">#FF000000</string>
+    <string name="colorPrimary">#FF3700B3</string>
+
 </resources>
