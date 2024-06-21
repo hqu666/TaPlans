@@ -1,5 +1,6 @@
 package com.hijiyam_koubou.taplans.ui.home;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -19,6 +20,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.hijiyam_koubou.taplans.CalendarMembers;
+import com.hijiyam_koubou.taplans.MainActivity;
+import com.hijiyam_koubou.taplans.R;
 import com.hijiyam_koubou.taplans.ScheduleItems;
 import com.hijiyam_koubou.taplans.Util;
 import com.hijiyam_koubou.taplans.databinding.FragmentHomeBinding;
@@ -31,6 +34,8 @@ import java.util.List;
 
 public class HomeFragment extends Fragment {
 
+
+    private MainActivity pClass;
     private FragmentHomeBinding binding;
 
     private Spinner yearSpinner;
@@ -71,6 +76,7 @@ public class HomeFragment extends Fragment {
     public int rBGSunDay;
     public int rBGSatuDay;
     public int rBGWeekDay;
+    private View root;
 
 
     /**
@@ -251,6 +257,16 @@ public class HomeFragment extends Fragment {
         String dbMsg = "[HomeFragment]";
         View root = null;
         try {
+            Context con = getActivity();
+            pClass=(MainActivity)inflater.getContext();
+            dbMsg += "," + con.getResources().getString(R.string.pref_calender_account) +"=" +pClass.calenderAccount;
+            dbMsg += "," + con.getResources().getString(R.string.pref_sunday_background) +"=" + pClass.sundayBackground ;
+            dbMsg += "," + con.getResources().getString(R.string.pref_sunday_text_color) +"=" + pClass.sundayTextColor ;
+            dbMsg += "," + con.getResources().getString(R.string.pref_satuday_background) +"=" + pClass.satudayBackground ;
+            dbMsg += "," + con.getResources().getString(R.string.pref_satuday_text_color) +"=" + pClass.satudayTextColor ;
+            dbMsg += "," + con.getResources().getString(R.string.pref_default_background) +"=" + pClass.defaultBackground ;
+            dbMsg += "," + con.getResources().getString(R.string.pref_default_text_color) +"=" + pClass.defaultTextColor ;
+
             HomeViewModel homeViewModel =
                     new ViewModelProvider(this).get(HomeViewModel.class);
 
