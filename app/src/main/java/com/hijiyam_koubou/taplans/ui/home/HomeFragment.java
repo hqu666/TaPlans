@@ -261,10 +261,16 @@ public class HomeFragment extends Fragment {
             pClass=(MainActivity)inflater.getContext();
             dbMsg += "," + con.getResources().getString(R.string.pref_calender_account) +"=" +pClass.calenderAccount;
             dbMsg += "," + con.getResources().getString(R.string.pref_sunday_background) +"=" + pClass.sundayBackground ;
+            rBGSunDay = Color.parseColor(pClass.sundayBackground );             //"#FDE7E7"
+            dbMsg += "＞rBGSunDay＞" + rBGSunDay;
             dbMsg += "," + con.getResources().getString(R.string.pref_sunday_text_color) +"=" + pClass.sundayTextColor ;
             dbMsg += "," + con.getResources().getString(R.string.pref_satuday_background) +"=" + pClass.satudayBackground ;
+            rBGSatuDay = Color.parseColor(pClass.satudayBackground );           //"#EDEDFF"
+            dbMsg += "＞rBGSatuDay＞" + rBGSatuDay;
             dbMsg += "," + con.getResources().getString(R.string.pref_satuday_text_color) +"=" + pClass.satudayTextColor ;
             dbMsg += "," + con.getResources().getString(R.string.pref_default_background) +"=" + pClass.defaultBackground ;
+            rBGWeekDay = Color.parseColor(pClass.defaultBackground );           //"#FFFFFF"
+            dbMsg += "＞rBGWeekDay＞" + rBGWeekDay;
             dbMsg += "," + con.getResources().getString(R.string.pref_default_text_color) +"=" + pClass.defaultTextColor ;
 
             HomeViewModel homeViewModel =
@@ -275,9 +281,6 @@ public class HomeFragment extends Fragment {
 
             textView = binding.textHome;
 
-            rBGSunDay = Color.parseColor("#FDE7E7");
-            rBGSatuDay = Color.parseColor("#EDEDFF");
-            rBGWeekDay = Color.parseColor("#FFFFFF");
 
             dayChecks = new ArrayList<>();           //CheckBox
             dayChecks.add(binding.c00cBox);
