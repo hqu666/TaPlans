@@ -58,6 +58,7 @@ public class HomeFragment extends Fragment {
     private int targetDay;
 
     private ArrayList<CalendarMembers> calendarMembers;
+    private ArrayList<String> targetDayLidt;
 
     private TextView textView;
 
@@ -179,6 +180,31 @@ public class HomeFragment extends Fragment {
                 dbMsg += "("+ i + ")" + rMonth + "月" +rDay+ "日;" + rDOW;
                 calendarMembers.add(cMember);
                 CheckBox tCheckBox = dayChecks.get(i);
+                tCheckBox.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        final String TAG = "onClick";
+                        String dbMsg = "[tCheckBox]";
+                        View root = null;
+                        try {
+                            CheckBox cBox = (CheckBox) v;
+                            String selectedDayStr = yearSpinner.getSelectedItem().toString() + "/";
+                            selectedDayStr += monthSpinner.getSelectedItem().toString() + "/";
+                            selectedDayStr += cBox.getText().toString();
+                            dbMsg += ",dateStr=" + selectedDayStr;
+                            if(tCheckBox.isChecked() == true) {
+                                // チェックされた状態の時の処理を記述
+                                targetDayLidt.add( selectedDayStr);
+                            }else {
+                                // チェックされていない状態の時の処理を記述
+                            }
+                            dbMsg += ",targetDayLidt=" + targetDayLidt.size() + "件";
+                            myLog(TAG , dbMsg);
+                        } catch (Exception er) {
+                            myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+                        }
+                    }
+                });
                 tCheckBox.setText(rDay);
                 if(targetMonth == rMonth){
                     tCheckBox.setTextSize(20.0F);
@@ -281,7 +307,7 @@ public class HomeFragment extends Fragment {
 
             textView = binding.textHome;
 
-
+            targetDayLidt= new ArrayList<>();
             dayChecks = new ArrayList<>();           //CheckBox
             dayChecks.add(binding.c00cBox);
             dayChecks.add(binding.c01cBox);
