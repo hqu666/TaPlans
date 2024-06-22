@@ -29,6 +29,7 @@ import com.hijiyam_koubou.taplans.databinding.FragmentHomeBinding;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -77,6 +78,9 @@ public class HomeFragment extends Fragment {
     public int rBGSunDay;
     public int rBGSatuDay;
     public int rBGWeekDay;
+    /**当月外*/
+    public int rBGbaMonth;
+
     private View root;
 
 
@@ -188,17 +192,49 @@ public class HomeFragment extends Fragment {
                         View root = null;
                         try {
                             CheckBox cBox = (CheckBox) v;
+                            int cID = cBox.getId();
+                            dbMsg += "[" + cID + "]";               //c00cBox ～　c41cBox
+                            String rEntry = cBox.getResources().getResourceEntryName(cID);
+                            dbMsg += rEntry;
+                            String rResourceName = cBox.getResources().getResourceName(cID);
+                            dbMsg += ","+ rResourceName;
+
                             String selectedDayStr = yearSpinner.getSelectedItem().toString() + "/";
-                            selectedDayStr += monthSpinner.getSelectedItem().toString() + "/";
-                            selectedDayStr += cBox.getText().toString();
+                            int monthInt = Integer.parseInt(monthSpinner.getSelectedItem().toString());
+                            if(monthInt < 10){
+                                selectedDayStr += "0" + monthInt + "/";
+                            }else{
+                                selectedDayStr += monthInt + "/";
+                            }
+                            int dayInt = Integer.parseInt(cBox.getText().toString());
+                            if(dayInt < 10){
+                                selectedDayStr += "0" + dayInt + "/";
+                            }else{
+                                selectedDayStr += dayInt;
+                            }
                             dbMsg += ",dateStr=" + selectedDayStr;
-                            if(tCheckBox.isChecked() == true) {
+                            int index = targetDayLidt.indexOf(selectedDayStr);
+                            dbMsg += ",index=" + index;
+                            if(tCheckBox.isChecked()) {
                                 // チェックされた状態の時の処理を記述
-                                targetDayLidt.add( selectedDayStr);
+                                dbMsg += "＞＞登録操作";
+                                if(index < 0){
+                                    targetDayLidt.add( selectedDayStr);
+                                }else{
+                                    dbMsg += "＞＞登録済み";
+                                }
                             }else {
                                 // チェックされていない状態の時の処理を記述
+                                dbMsg += "＞＞削除操作";
+                                if(-1 < index){
+                                    targetDayLidt.remove( index);
+                                }else{
+                                    dbMsg += "＞＞登録されていない";
+                                }
                             }
+                            Collections.sort(targetDayLidt);
                             dbMsg += ",targetDayLidt=" + targetDayLidt.size() + "件";
+                            dbMsg += ",targetDayLidt=" + targetDayLidt.toString();
                             myLog(TAG , dbMsg);
                         } catch (Exception er) {
                             myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
@@ -206,26 +242,28 @@ public class HomeFragment extends Fragment {
                     }
                 });
                 tCheckBox.setText(rDay);
+                TextView tTextView = dayTexts.get(i);
                 if(targetMonth == rMonth){
                     tCheckBox.setTextSize(20.0F);
+                    if(rDOW == Calendar.SUNDAY){
+                        dbMsg += "[日曜日]";
+                        tCheckBox.setBackgroundColor(rBGSunDay);
+                        tTextView.setBackgroundColor(rBGSunDay);
+                    }else if(rDOW == Calendar.SATURDAY){
+                        dbMsg += "[土曜日]";
+                        tCheckBox.setBackgroundColor(rBGSatuDay);
+                        tTextView.setBackgroundColor(rBGSatuDay);
+                    }else{
+                        tCheckBox.setBackgroundColor(rBGWeekDay);
+                        tTextView.setBackgroundColor(rBGWeekDay);
+                    }
                 }else{
                     tCheckBox.setTextSize(10.0F);
+                    tCheckBox.setBackgroundColor(rBGbaMonth);
+                    tTextView.setBackgroundColor(rBGbaMonth);
                 }
 
-                TextView tTextView = dayTexts.get(i);
-                if(rDOW == Calendar.SUNDAY){
-                    dbMsg += "[日曜日]";
-                    tCheckBox.setBackgroundColor(rBGSunDay);
-                    tTextView.setBackgroundColor(rBGSunDay);
-                }else if(rDOW == Calendar.SATURDAY){
-                    dbMsg += "[土曜日]";
-                    tCheckBox.setBackgroundColor(rBGSatuDay);
-                    tTextView.setBackgroundColor(rBGSatuDay);
-                }else{
-                    tCheckBox.setBackgroundColor(rBGWeekDay);
-                    tTextView.setBackgroundColor(rBGWeekDay);
-                }
-                vCalStart.add(Calendar.DATE,1);
+                  vCalStart.add(Calendar.DATE,1);
             }
             dbMsg += ",calendarMembers=" + calendarMembers.size() + "件";
 
@@ -298,6 +336,8 @@ public class HomeFragment extends Fragment {
             rBGWeekDay = Color.parseColor(pClass.defaultBackground );           //"#FFFFFF"
             dbMsg += "＞rBGWeekDay＞" + rBGWeekDay;
             dbMsg += "," + con.getResources().getString(R.string.pref_default_text_color) +"=" + pClass.defaultTextColor ;
+            rBGbaMonth = Color.parseColor("DCDCDC");
+            dbMsg += ",当月外=" + rBGbaMonth;
 
             HomeViewModel homeViewModel =
                     new ViewModelProvider(this).get(HomeViewModel.class);
