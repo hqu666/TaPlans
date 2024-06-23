@@ -2,6 +2,7 @@ package com.hijiyam_koubou.taplans.ui.home;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -192,21 +193,43 @@ public class HomeFragment extends Fragment {
                         View root = null;
                         try {
                             CheckBox cBox = (CheckBox) v;
+                            int dayInt = Integer.parseInt(cBox.getText().toString());
+                            dbMsg += ","+ dayInt + "日";                   //taplans:id/c03cBox
                             int cID = cBox.getId();
                             dbMsg += "[" + cID + "]";               //c00cBox ～　c41cBox
-                            String rEntry = cBox.getResources().getResourceEntryName(cID);
-                            dbMsg += rEntry;
                             String rResourceName = cBox.getResources().getResourceName(cID);
-                            dbMsg += ","+ rResourceName;
-
-                            String selectedDayStr = yearSpinner.getSelectedItem().toString() + "/";
+                            dbMsg += ",ResourceName="+ rResourceName;                   //taplans:id/c03cBox
+                            ColorDrawable rBackground = (ColorDrawable) cBox.getBackground();
+                            int colorInt = rBackground.getColor();
+                            dbMsg += ",colorInt="+ colorInt+"(rBGbaMonth="+ rBGbaMonth + ")";
+                            int yearInt = Integer.parseInt(yearSpinner.getSelectedItem().toString());
                             int monthInt = Integer.parseInt(monthSpinner.getSelectedItem().toString());
+                            dbMsg += ",当月は="+ yearInt + "年" + monthInt + "月";
+                            if(colorInt==rBGbaMonth){
+                                if((0 < dayInt)&&(dayInt < 7) ){
+                                    dbMsg += ",次月";
+                                    monthInt=monthInt+1;
+                                    if(12<monthInt){
+                                        monthInt=1;
+                                        yearInt=yearInt+1;
+                                        dbMsg += ">>"+ yearInt + "年" + monthInt + "月";
+                                    }
+                                }else if((25 < dayInt)&&(dayInt < 31) ){
+                                    dbMsg += ",前月";
+                                    monthInt=monthInt-1;
+                                    if(12<monthInt){
+                                        monthInt=12;
+                                        yearInt=yearInt-1;
+                                        dbMsg += ">>"+ yearInt + "年" + monthInt + "月";
+                                    }
+                                }
+                            }
+                            String selectedDayStr = yearInt + "/";
                             if(monthInt < 10){
                                 selectedDayStr += "0" + monthInt + "/";
                             }else{
                                 selectedDayStr += monthInt + "/";
                             }
-                            int dayInt = Integer.parseInt(cBox.getText().toString());
                             if(dayInt < 10){
                                 selectedDayStr += "0" + dayInt + "/";
                             }else{
@@ -336,7 +359,7 @@ public class HomeFragment extends Fragment {
             rBGWeekDay = Color.parseColor(pClass.defaultBackground );           //"#FFFFFF"
             dbMsg += "＞rBGWeekDay＞" + rBGWeekDay;
             dbMsg += "," + con.getResources().getString(R.string.pref_default_text_color) +"=" + pClass.defaultTextColor ;
-            rBGbaMonth = Color.parseColor("DCDCDC");
+            rBGbaMonth = Color.parseColor("#FFDCDCDC");
             dbMsg += ",当月外=" + rBGbaMonth;
 
             HomeViewModel homeViewModel =
