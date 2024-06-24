@@ -185,13 +185,30 @@ public class HomeFragment extends Fragment {
             for (int i=0; i < 42; i++) {            //c34cBox　まで
                 CalendarMembers cMember=new CalendarMembers();
                 cMember.cDate = vCalStart;
+                int rYear = cMember.cDate.get(Calendar.YEAR);
                 int rMonth = cMember.cDate.get(Calendar.MONTH) +1;
-                String rDay = cMember.cDate.get(Calendar.DATE) +"";
+                int rDay = cMember.cDate.get(Calendar.DATE) ;
                 int rDOW = cMember.cDate.get(Calendar.DAY_OF_WEEK) ;
-
                 dbMsg += "("+ i + ")" + rMonth + "月" +rDay+ "日;" + rDOW;
                 calendarMembers.add(cMember);
+                String fDate = rYear+"";
+                if(rMonth<10){
+                    fDate += "/0" + rMonth;
+                }else{
+                    fDate += "/" + rMonth;
+                }
+                if(rDay<10){
+                    fDate += "/0" + rDay;
+                }else{
+                    fDate += "/" + rDay;
+                }
+                dbMsg += ",fDate=" + fDate;
+                boolean isTarget = targetDayLidt.contains(fDate);
+                dbMsg += ",対象=" + isTarget;
+
                 CheckBox tCheckBox = dayChecks.get(i);
+                tCheckBox.setText(rDay + "");
+                tCheckBox.setChecked(isTarget);
                 tCheckBox.setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View v) {
@@ -199,7 +216,7 @@ public class HomeFragment extends Fragment {
 
                    }
                 });
-                tCheckBox.setText(rDay);
+
                 TextView tTextView = dayTexts.get(i);
                 if(targetMonth == rMonth){
                     tCheckBox.setTextSize(20.0F);
