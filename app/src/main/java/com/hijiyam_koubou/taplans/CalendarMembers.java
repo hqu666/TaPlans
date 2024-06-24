@@ -8,6 +8,7 @@ import java.util.Date;
  * カレンダー一か月分のデータ
  * */
 public class CalendarMembers {
+    public String cDateStr;
     public Calendar cDate;
 //    public void setDate(Date rDate) {
 //        cDate.getInstance();

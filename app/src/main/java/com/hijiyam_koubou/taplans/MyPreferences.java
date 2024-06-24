@@ -33,6 +33,7 @@ public class MyPreferences extends PreferenceActivity {
     public EditTextPreference satudayTextColor_etp;     //"@color/satuday_text_color"
     public EditTextPreference defaultBackground_etp;     //"@color/default_background"
     public EditTextPreference defaultTextColor_etp;     //"@color/default_text_color"
+    public EditTextPreference targetDays_etp;
     public CheckBoxPreference set_default_sp;
     public ListPreference tDates_lp;
 
@@ -49,6 +50,8 @@ public class MyPreferences extends PreferenceActivity {
      * 前後2か月の対象日リスト：Googleカレンダー非連動時の対策
      * */
     private ArrayList<Date> tDates;
+    public String targetDays;
+
 
     public void readPref(Context con) {
         final String TAG = "readPref";
@@ -88,6 +91,10 @@ public class MyPreferences extends PreferenceActivity {
             dbMsg += "," + con.getResources().getString(R.string.pref_default_text_color) +"=" + defaultTextColor ;
             defaultTextColor = sharedPref.getString("defaultTextColor", String.valueOf(con.getResources().getColor(R.color.default_text_color)));         //"#000000"
             dbMsg += ">>" + defaultTextColor ;
+
+            dbMsg += "," + con.getResources().getString(R.string.pref_tDates) +"=" + targetDays ;
+            targetDays = sharedPref.getString("targetDays", "");
+            dbMsg += ">>" + targetDays ;
 
             /*
      <ListPreference
@@ -154,9 +161,13 @@ public class MyPreferences extends PreferenceActivity {
             dbMsg += ">>" + defaultTextColor ;
             defaultTextColor_etp.setSummary(defaultTextColor);     //"@color/default_text_color"
 
+            dbMsg += "," + con.getResources().getString(R.string.pref_tDates) +"=" + targetDays ;
+            targetDays = sharedPref.getString("targetDays","");
+            dbMsg += ">>" + targetDays ;
+            targetDays_etp.setSummary(targetDays);
+
             dbMsg += "," + con.getResources().getString(R.string.pref_set_default) +"=" + sharedPref.getBoolean("set_default", false);    ;
             set_default_sp.setChecked(false);
-
             myLog(TAG, dbMsg);
         } catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -222,8 +233,7 @@ public class MyPreferences extends PreferenceActivity {
         }
     }
 
-
-    //ライフサイクル//////////////////////////////////////////////////////////////
+     //ライフサイクル//////////////////////////////////////////////////////////////
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -235,18 +245,6 @@ public class MyPreferences extends PreferenceActivity {
             myEditor = sharedPref.edit();
             Locale locale = Locale.getDefault();        // アプリで使用されているロケール情報を取得
             dbMsg += "locale="+locale;
-            sundayBackground = String.valueOf(getResources().getString(R.string.satuday_background));
-            dbMsg += "," + getResources().getString(R.string.pref_sunday_background) + sundayBackground ;
-            sundayTextColor = String.valueOf(getResources().getString(R.string.sunday_text_color));
-            dbMsg += "," + getResources().getString(R.string.pref_sunday_text_color) + sundayTextColor ;
-            satudayBackground = String.valueOf(getResources().getString(R.string.satuday_background));         //"#EDEDFF"
-            dbMsg += "," + getResources().getString(R.string.pref_satuday_background) + satudayBackground ;
-            satudayTextColor = String.valueOf(getResources().getString(R.string.satuday_text_color));         //"#0000FF"
-            dbMsg += "," + getResources().getString(R.string.pref_satuday_text_color) + satudayTextColor ;
-            defaultBackground = String.valueOf(getResources().getString(R.string.default_background));         //"#FFFFFF"
-            dbMsg += "," + getResources().getString(R.string.pref_default_background) + defaultBackground ;
-            defaultTextColor = String.valueOf(getResources().getString(R.string.default_text_color));         //"#000000"
-            dbMsg += "," + getResources().getString(R.string.pref_default_text_color) + defaultTextColor ;
 
             addPreferencesFromResource(R.xml.pref);
 
@@ -272,6 +270,8 @@ public class MyPreferences extends PreferenceActivity {
                 }
             });
 
+            sundayBackground = String.valueOf(getResources().getString(R.string.satuday_background));
+            dbMsg += "," + getResources().getString(R.string.pref_sunday_background) + sundayBackground ;
             sundayBackground_etp = (EditTextPreference) findPreference("sundayBackground");     //    defaultValue="#FDE7E7" "@color/sunday_background"
             sundayBackground_etp.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
@@ -294,7 +294,9 @@ public class MyPreferences extends PreferenceActivity {
                 }
             });
 
-            sundayBackground_etp = (EditTextPreference) findPreference("sundayBackground");     //    defaultValue="#ff0000" "@color/sunday_text_color"
+            sundayTextColor = String.valueOf(getResources().getString(R.string.sunday_text_color));
+            dbMsg += "," + getResources().getString(R.string.pref_sunday_text_color) + sundayTextColor ;
+            sundayTextColor_etp = (EditTextPreference) findPreference("sundayBackground");     //    defaultValue="#ff0000" "@color/sunday_text_color"
             sundayTextColor_etp.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -316,6 +318,8 @@ public class MyPreferences extends PreferenceActivity {
                 }
             });
 
+            satudayBackground = String.valueOf(getResources().getString(R.string.satuday_background));         //"#EDEDFF"
+            dbMsg += "," + getResources().getString(R.string.pref_satuday_background) + satudayBackground ;
             satudayBackground_etp = (EditTextPreference) findPreference("satudayBackground");     //"@color/satuday_background"
             satudayBackground_etp.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
@@ -338,6 +342,8 @@ public class MyPreferences extends PreferenceActivity {
                 }
             });
 
+            satudayTextColor = String.valueOf(getResources().getString(R.string.satuday_text_color));         //"#0000FF"
+            dbMsg += "," + getResources().getString(R.string.pref_satuday_text_color) + satudayTextColor ;
             satudayTextColor_etp = (EditTextPreference) findPreference("satudayBackground");     //"@color/satuday_text_color"
             satudayTextColor_etp.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
@@ -360,6 +366,8 @@ public class MyPreferences extends PreferenceActivity {
                 }
             });
 
+            defaultBackground = String.valueOf(getResources().getString(R.string.default_background));         //"#FFFFFF"
+            dbMsg += "," + getResources().getString(R.string.pref_default_background) + defaultBackground ;
             defaultBackground_etp = (EditTextPreference) findPreference("defaultBackground");     //"@color/default_background"
             defaultBackground_etp.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
@@ -382,7 +390,9 @@ public class MyPreferences extends PreferenceActivity {
                 }
             });
 
-            defaultBackground_etp = (EditTextPreference) findPreference("defaultBackground");     //"@color/default_text_color"
+            defaultTextColor = String.valueOf(getResources().getString(R.string.default_text_color));         //"#000000"
+            dbMsg += "," + getResources().getString(R.string.pref_default_text_color) + defaultTextColor ;
+             defaultTextColor_etp = (EditTextPreference) findPreference("defaultBackground");     //"@color/default_text_color"
             defaultTextColor_etp.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -404,7 +414,7 @@ public class MyPreferences extends PreferenceActivity {
                 }
             });
 
-            defaultBackground_etp = (EditTextPreference) findPreference("set_default");
+            set_default_sp = (CheckBoxPreference) findPreference("set_default");
             set_default_sp.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -430,11 +440,10 @@ public class MyPreferences extends PreferenceActivity {
             });
             set_default_sp.setChecked(false);
 
+            targetDays_etp = (EditTextPreference) findPreference("targetDays");     //"@color/default_text_color"
+    //        tDates_lp = (ListPreference) findPreference("tDates");
 
-            tDates_lp = (ListPreference) findPreference("tDates");
-
-
-            readPref(getApplicationContext());
+    //        readPref(getApplicationContext());
             setAllSummary(getApplicationContext());
             myLog(TAG, dbMsg);
         } catch (Exception e) {

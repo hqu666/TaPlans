@@ -1,10 +1,12 @@
 package com.hijiyam_koubou.taplans.ui.home;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,10 +24,15 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.hijiyam_koubou.taplans.CalendarMembers;
 import com.hijiyam_koubou.taplans.MainActivity;
+import com.hijiyam_koubou.taplans.MyPreferences;
 import com.hijiyam_koubou.taplans.R;
 import com.hijiyam_koubou.taplans.ScheduleItems;
 import com.hijiyam_koubou.taplans.Util;
 import com.hijiyam_koubou.taplans.databinding.FragmentHomeBinding;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
@@ -188,81 +195,9 @@ public class HomeFragment extends Fragment {
                 tCheckBox.setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View v) {
-                        final String TAG = "onClick";
-                        String dbMsg = "[tCheckBox]";
-                        View root = null;
-                        try {
-                            CheckBox cBox = (CheckBox) v;
-                            int dayInt = Integer.parseInt(cBox.getText().toString());
-                            dbMsg += ","+ dayInt + "日";                   //taplans:id/c03cBox
-                            int cID = cBox.getId();
-                            dbMsg += "[" + cID + "]";               //c00cBox ～　c41cBox
-                            String rResourceName = cBox.getResources().getResourceName(cID);
-                            dbMsg += ",ResourceName="+ rResourceName;                   //taplans:id/c03cBox
-                            ColorDrawable rBackground = (ColorDrawable) cBox.getBackground();
-                            int colorInt = rBackground.getColor();
-                            dbMsg += ",colorInt="+ colorInt+"(rBGbaMonth="+ rBGbaMonth + ")";
-                            int yearInt = Integer.parseInt(yearSpinner.getSelectedItem().toString());
-                            int monthInt = Integer.parseInt(monthSpinner.getSelectedItem().toString());
-                            dbMsg += ",当月は="+ yearInt + "年" + monthInt + "月";
-                            if(colorInt==rBGbaMonth){
-                                if((0 < dayInt)&&(dayInt < 7) ){
-                                    dbMsg += ",次月";
-                                    monthInt=monthInt+1;
-                                    if(12<monthInt){
-                                        monthInt=1;
-                                        yearInt=yearInt+1;
-                                        dbMsg += ">>"+ yearInt + "年" + monthInt + "月";
-                                    }
-                                }else if((25 < dayInt)&&(dayInt < 31) ){
-                                    dbMsg += ",前月";
-                                    monthInt=monthInt-1;
-                                    if(12<monthInt){
-                                        monthInt=12;
-                                        yearInt=yearInt-1;
-                                        dbMsg += ">>"+ yearInt + "年" + monthInt + "月";
-                                    }
-                                }
-                            }
-                            String selectedDayStr = yearInt + "/";
-                            if(monthInt < 10){
-                                selectedDayStr += "0" + monthInt + "/";
-                            }else{
-                                selectedDayStr += monthInt + "/";
-                            }
-                            if(dayInt < 10){
-                                selectedDayStr += "0" + dayInt + "/";
-                            }else{
-                                selectedDayStr += dayInt;
-                            }
-                            dbMsg += ",dateStr=" + selectedDayStr;
-                            int index = targetDayLidt.indexOf(selectedDayStr);
-                            dbMsg += ",index=" + index;
-                            if(tCheckBox.isChecked()) {
-                                // チェックされた状態の時の処理を記述
-                                dbMsg += "＞＞登録操作";
-                                if(index < 0){
-                                    targetDayLidt.add( selectedDayStr);
-                                }else{
-                                    dbMsg += "＞＞登録済み";
-                                }
-                            }else {
-                                // チェックされていない状態の時の処理を記述
-                                dbMsg += "＞＞削除操作";
-                                if(-1 < index){
-                                    targetDayLidt.remove( index);
-                                }else{
-                                    dbMsg += "＞＞登録されていない";
-                                }
-                            }
-                            Collections.sort(targetDayLidt);
-                            dbMsg += ",targetDayLidt=" + targetDayLidt.size() + "件";
-                            dbMsg += ",targetDayLidt=" + targetDayLidt.toString();
-                            myLog(TAG , dbMsg);
-                        } catch (Exception er) {
-                            myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
-                        }
-                    }
+                        setTargetDays(v);
+
+                   }
                 });
                 tCheckBox.setText(rDay);
                 TextView tTextView = dayTexts.get(i);
@@ -336,6 +271,118 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    /**
+     * ここのチェックボックス操作
+     * */
+    public void setTargetDays(View v) {
+        final String TAG = "setTargetDays";
+        String dbMsg = "[HomeFragment]";
+        try {
+            CheckBox cBox = (CheckBox) v;
+            int dayInt = Integer.parseInt(cBox.getText().toString());
+            dbMsg += ","+ dayInt + "日";                   //taplans:id/c03cBox
+            int cID = cBox.getId();
+            dbMsg += "[" + cID + "]";               //c00cBox ～　c41cBox
+            String rResourceName = cBox.getResources().getResourceName(cID);
+            dbMsg += ",ResourceName="+ rResourceName;                   //taplans:id/c03cBox
+            ColorDrawable rBackground = (ColorDrawable) cBox.getBackground();
+            int colorInt = rBackground.getColor();
+            dbMsg += ",colorInt="+ colorInt+"(rBGbaMonth="+ rBGbaMonth + ")";
+            int yearInt = Integer.parseInt(yearSpinner.getSelectedItem().toString());
+            int monthInt = Integer.parseInt(monthSpinner.getSelectedItem().toString());
+            dbMsg += ",当月は="+ yearInt + "年" + monthInt + "月";
+            if(colorInt==rBGbaMonth){
+                if((0 < dayInt)&&(dayInt < 7) ){
+                    dbMsg += ",次月";
+                    monthInt=monthInt+1;
+                    if(12<monthInt){
+                        monthInt=1;
+                        yearInt=yearInt+1;
+                        dbMsg += ">>"+ yearInt + "年" + monthInt + "月";
+                    }
+                }else if((25 < dayInt)&&(dayInt < 31) ){
+                    dbMsg += ",前月";
+                    monthInt=monthInt-1;
+                    if(12<monthInt){
+                        monthInt=12;
+                        yearInt=yearInt-1;
+                        dbMsg += ">>"+ yearInt + "年" + monthInt + "月";
+                    }
+                }
+            }
+            String selectedDayStr = yearInt + "/";
+            if(monthInt < 10){
+                selectedDayStr += "0" + monthInt + "/";
+            }else{
+                selectedDayStr += monthInt + "/";
+            }
+            if(dayInt < 10){
+                selectedDayStr += "0" + dayInt + "/";
+            }else{
+                selectedDayStr += dayInt;
+            }
+            dbMsg += ",dateStr=" + selectedDayStr;
+            int index = targetDayLidt.indexOf(selectedDayStr);
+            dbMsg += ",index=" + index;
+            if(cBox.isChecked()) {
+                // チェックされた状態の時の処理を記述
+                dbMsg += "＞＞登録操作";
+                if(index < 0){
+                    targetDayLidt.add( selectedDayStr);
+                }else{
+                    dbMsg += "＞＞登録済み";
+                }
+            }else {
+                // チェックされていない状態の時の処理を記述
+                dbMsg += "＞＞削除操作";
+                if(-1 < index){
+                    targetDayLidt.remove( index);
+                }else{
+                    dbMsg += "＞＞登録されていない";
+                }
+            }
+            Collections.sort(targetDayLidt);
+            dbMsg += ",targetDayLidt=" + targetDayLidt.size() + "件";
+            dbMsg += ",targetDayLidt=" + targetDayLidt.toString();
+            myLog(TAG, dbMsg);
+        } catch (Exception e) {
+            myErrorLog(TAG ,  dbMsg + "で" + e);
+        }
+    }
+
+
+    /**
+     * チェックされた日をリスト化してプリファレンスに書き込む
+     * */
+    public void saveData() {
+        final String TAG = "saveData";
+        String dbMsg = "[HomeFragment]";
+        try {
+            dbMsg += ",targetDayLidt=" + targetDayLidt.size() + "件";
+            String wStr = targetDayLidt.toString();
+//            JSONObject jsonObj = new JSONObject(targetDayLidt.toString());
+//            JSONArray items = jsonObj.getJSONArray("users");
+//
+//            for (int i = 0; i < targetDayLidt.size(); i++) {
+//                json.put("tDay",targetDayLidt.get(i));
+//            }
+//            dbMsg += ",json=" + json.toString();
+//            JSONデータの読み取り（Java） https://mjeeeey.hatenablog.com/entry/2020/07/13/215929
+//            AndroidでJSONを使う http://blog.chatlune.jp/2019/04/03/post-1187/
+
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+            SharedPreferences.Editor myEditor = sharedPref.edit();
+            myEditor.putString("targetDays", wStr);
+            myEditor.apply();
+
+            myLog(TAG , dbMsg);
+//        }catch(JSONException ej){
+//            myErrorLog(TAG , dbMsg + ";でエラー発生；" + ej);
+        } catch (Exception er) {
+            myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+        }
+    }
+
 
     //ライフサイクル//////////////////////////////////////////////////////////////
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -370,7 +417,17 @@ public class HomeFragment extends Fragment {
 
             textView = binding.textHome;
 
+            dbMsg += "," + con.getResources().getString(R.string.pref_tDates) +"=" + pClass.targetDays ;
+            String rStr = pClass.targetDays.replace("[","");
+            rStr = rStr.replace("}","");
+            String[] dList = rStr.split(", ");
             targetDayLidt= new ArrayList<>();
+            for (int i = 0; i < dList.length; i++) {
+                targetDayLidt.add(dList[i]);
+            }
+            dbMsg += ">>" + targetDayLidt.toString() ;
+
+
             dayChecks = new ArrayList<>();           //CheckBox
             dayChecks.add(binding.c00cBox);
             dayChecks.add(binding.c01cBox);
@@ -458,7 +515,6 @@ public class HomeFragment extends Fragment {
             dayTexts.add(binding.c39tx);
             dayTexts.add(binding.c40tx);
             dayTexts.add(binding.c41tx);
-
 
             yearSpinner = binding.yearSpinner;
             monthSpinner = binding.monthSpinner;
@@ -576,6 +632,20 @@ public class HomeFragment extends Fragment {
                 }
             });
 
+            ImageButton saveButton = binding.saveButton;
+            saveButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final String TAG = "onClick";
+                    String dbMsg = "[saveButton]";
+                    try {
+                        saveData();
+                        myLog(TAG , dbMsg);
+                    } catch (Exception er) {
+                        myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+                    }
+                }
+            });
 
 //            homeViewModel.getText().observe(getViewLifecycl
 //            eOwner(), textView::setText);

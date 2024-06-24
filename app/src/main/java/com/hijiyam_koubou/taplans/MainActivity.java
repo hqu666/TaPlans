@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
      * 前後2か月の対象日リスト：Googleカレンダー非連動時の対策
      * */
     private ArrayList<Date> tDates;
+    public String targetDays;
 
 
     /**
@@ -167,7 +168,8 @@ public class MainActivity extends AppCompatActivity {
             dbMsg += "," + getResources().getString(R.string.pref_default_background) +"=" + defaultBackground ;
             this.defaultTextColor = myPref.defaultTextColor;
             dbMsg += "," + getResources().getString(R.string.pref_default_text_color) +"=" + defaultTextColor ;
-
+            this.targetDays = myPref.targetDays;
+            dbMsg += "," + getResources().getString(R.string.pref_tDates) +"=" + targetDays ;
 
             binding = ActivityMainBinding.inflate(getLayoutInflater());
             setContentView(binding.getRoot());
