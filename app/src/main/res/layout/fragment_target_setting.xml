@@ -16,93 +16,106 @@
         android:textAlignment="center"
         android:textSize="20sp"
         />
-    <ScrollView
+<!--    <ScrollView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent">-->
+    <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
-        <TableLayout
+        <TableRow
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TableRow
+            android:layout_height="match_parent" >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_span="2"
+                android:layout_gravity="right"
+                android:text="@string/sett_event_name" />
+            <EditText
+                android:id="@+id/t_event_name"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" >
-                <TextView
+                android:layout_height="wrap_content"
+                android:ems="15"
+                />
+        </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:text="@string/sett_alarm_time" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:text="1;" />
+            <EditText
+                android:id="@+id/t_ararm_time1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="time" />
+        </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_span="3"
+                android:layout_gravity="right"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/ta100cBox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:text="予定名称:" />
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="予定名称" />
-            </TableRow>
+                    android:text="@string/comm_sunday" />
 
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" >
-                <TextView
+                <CheckBox
+                    android:id="@+id/ta101cBox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:text="アラーム時刻1:" />
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="06:00" />
-            </TableRow>
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" >
-                <TextView
+                    android:text="@string/comm_monday" />
+
+                <CheckBox
+                    android:id="@+id/ta102cBox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:text="時刻1の曜日:" />
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-                    <CheckBox
-                        android:id="@+id/p100cBox"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="月" />
+                    android:text="@string/comm_tuesday" />
 
-                    <CheckBox
-                        android:id="@+id/p101cBox"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="火" />
+                <CheckBox
+                    android:id="@+id/ta103cBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/comm_wednesday" />
 
-                    <CheckBox
-                        android:id="@+id/p102cBox"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="水" />
+                <CheckBox
+                    android:id="@+id/ta104cBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/comm_thursday" />
 
-                    <CheckBox
-                        android:id="@+id/p103cBox"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="木" />
+                <CheckBox
+                    android:id="@+id/ta105cBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/comm_friday" />
 
-                    <CheckBox
-                        android:id="@+id/p104cBox"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="金" />
+                <CheckBox
+                    android:id="@+id/ta106cBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/comm_saturday" />
 
-                    <CheckBox
-                        android:id="@+id/p105cBox"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="土" />
+            </LinearLayout>
+        </TableRow>
 
-                </LinearLayout>
+    </TableLayout>
 
-            </TableRow>
-        </TableLayout>
-    </ScrollView>
+
+    <!--    </ScrollView>-->
 
 </LinearLayout>

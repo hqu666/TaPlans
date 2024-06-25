@@ -1,5 +1,8 @@
 package com.hijiyam_koubou.taplans;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -45,7 +48,8 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Date> tDates;
     public String targetDays;
 
-
+    public long alarmTimeMillis = 0;
+    public AlarmManager alarmManager;
     /**
      * ツールバー右のメニューアイコンからメニューを表示
      * */
@@ -193,14 +197,23 @@ public class MainActivity extends AppCompatActivity {
             NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
             NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
             NavigationUI.setupWithNavController(navigationView, navController);
+
+            alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            PendingIntent pendingIntent = getPendingIntent();
+            alarmManager.setAlarmClock(new AlarmManager.AlarmClockInfo(alarmTimeMillis, null), pendingIntent);
+
+
             myLog(TAG, dbMsg);
         } catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);
         }
-
-
-
     }
+
+    private PendingIntent getPendingIntent() {
+        PendingIntent pInt =null;
+        return pInt;
+    }
+
     //////////////////////////////////////////////////////////////ライフサイクル//
     public static void myLog(String TAG , String dbMsg) {
         Util UTIL = new Util();

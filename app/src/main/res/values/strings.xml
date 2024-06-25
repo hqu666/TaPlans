@@ -32,4 +32,14 @@
     <string name="default_text_color">#FF000000</string>
     <string name="colorPrimary">#FF3700B3</string>
 
+    <string name="sett_alarm_time">アラーム時刻</string>
+    <string name="sett_event_name">予定の名称</string>
+    <string name="comm_sunday">日</string>
+    <string name="comm_monday">月</string>
+    <string name="comm_tuesday">火</string>
+    <string name="comm_wednesday">水</string>
+    <string name="comm_thursday">木</string>
+    <string name="comm_friday">金</string>
+    <string name="comm_saturday">土</string>
+
 </resources>

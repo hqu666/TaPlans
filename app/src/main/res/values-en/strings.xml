@@ -32,5 +32,12 @@
     <string name="default_background">#FFFFFFFF</string>
     <string name="default_text_color">#FF000000</string>
     <string name="colorPrimary">#FF3700B3</string>
+    <string name="sett_alarm_time">alarm time</string>
+    <string name="sett_event_name">event name</string>
+    <string name="comm_sunday">日</string>
+    <string name="comm_wednesday">水</string>
+    <string name="comm_thursday">木</string>
+    <string name="comm_friday">金</string>
+    <string name="comm_saturday">土</string>
 
 </resources>
