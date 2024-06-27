@@ -67,8 +67,6 @@ public class TargetPlanFragment extends Fragment {
     private Boolean ta205c = false;          // アラーム時刻2 の金曜
     private Boolean ta206c = false;              // アラーム時刻2 の土曜
 
-
-
     private FragmentTargetSettingBinding binding;
 
     /**

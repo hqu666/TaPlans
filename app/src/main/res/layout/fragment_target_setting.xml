@@ -8,14 +8,6 @@
     android:orientation="vertical"
     tools:context=".ui.target_setting.TargetPlanFragment"
     >
-
-    <TextView
-        android:id="@+id/text_target_setting"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        />
 <!--    <ScrollView-->
 <!--        android:layout_width="match_parent"-->
 <!--        android:layout_height="match_parent">-->
@@ -204,8 +196,14 @@
         </TableRow>
 
     </TableLayout>
-
-
     <!--    </ScrollView>-->
+
+    <TextView
+        android:id="@+id/text_target_setting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        />
 
 </LinearLayout>

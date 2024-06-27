@@ -47,6 +47,28 @@ public class MainActivity extends AppCompatActivity {
      * */
     private ArrayList<Date> tDates;
     public String targetDays;
+    /**
+     * 設定す津予定
+     * */
+    public String tEventName;             //  予定の名称
+    public String tEventSound;           // アラーム音
+    public String tArarmTime1;           // アラーム時刻1
+    public Boolean ta100c = false;               // アラーム時刻1 の日曜
+    public Boolean ta101c = false;          // アラーム時刻1 の月曜
+    public Boolean ta102c = false;        // アラーム時刻1 の火曜
+    public Boolean ta103c = false;         // アラーム時刻1 の水曜
+    public Boolean ta104c = false;           // アラーム時刻1 の木曜
+    public Boolean ta105c = false;            // アラーム時刻1 の金曜
+    public Boolean ta106c = false;            // アラーム時刻1 の土曜
+
+    public String tArarmTime2;           // アラーム時刻2
+    public Boolean ta200c = false;             // アラーム時刻2 の日曜
+    public Boolean ta201c = false;            // アラーム時刻2 の月曜
+    public Boolean ta202c = false;            // アラーム時刻2 の火曜
+    public Boolean ta203c = false;               // アラーム時刻2 の水曜
+    public Boolean ta204c = false;              // アラーム時刻2 の木曜
+    public Boolean ta205c = false;          // アラーム時刻2 の金曜
+    public Boolean ta206c = false;              // アラーム時刻2 の土曜
 
     public long alarmTimeMillis = 0;
     public AlarmManager alarmManager;
@@ -175,6 +197,44 @@ public class MainActivity extends AppCompatActivity {
             this.targetDays = myPref.targetDays;
             dbMsg += "," + getResources().getString(R.string.pref_tDates) +"=" + targetDays ;
 
+            this.tEventName = myPref.tEventName;
+            dbMsg += "," + getResources().getString(R.string.sett_event_name) +"=" + tEventName ;
+            this.tEventSound = myPref.tEventSound;
+            dbMsg += "," + getResources().getString(R.string.set_alarm_sound) +"=" + tEventSound ;
+            this.tArarmTime1 = myPref.tArarmTime1;
+            dbMsg += "," + getResources().getString(R.string.sett_alarm_time) +"1=" + tArarmTime1 ;
+            this.ta100c = myPref.ta100c;
+            dbMsg += "," + getResources().getString(R.string.sett_alarm_time) +"1の日曜=" + ta100c ;
+            this.ta101c = myPref.ta101c;
+            dbMsg += "," + getResources().getString(R.string.sett_alarm_time) +"1の月曜=" + ta101c ;
+            this.ta102c = myPref.ta102c;
+            dbMsg += "," + getResources().getString(R.string.sett_alarm_time)  +"1の火曜=" + ta102c;
+            this.ta103c = myPref.ta103c;
+            dbMsg += "," + getResources().getString(R.string.sett_alarm_time) +"1の水曜=" + ta103c;
+            this.ta104c = myPref.ta104c;
+            dbMsg += "," + getResources().getString(R.string.sett_alarm_time) +"1の木曜=" + ta104c;
+            this.ta105c = myPref.ta105c;
+            dbMsg += "," + getResources().getString(R.string.sett_alarm_time) +"1の金曜=" + ta105c;
+            this.ta106c = myPref.ta106c;
+            dbMsg += "," + getResources().getString(R.string.sett_alarm_time) +"1の土曜=" + ta106c ;
+
+            this.tArarmTime2 = myPref.tArarmTime2;
+            dbMsg += "," + getResources().getString(R.string.sett_alarm_time) +"2=" + tArarmTime2 ;
+            this.ta200c = myPref.ta200c;
+            dbMsg += "," + getResources().getString(R.string.sett_alarm_time) +"2の日曜=" + ta200c ;
+            this.ta201c = myPref.ta201c;
+            dbMsg += "," + getResources().getString(R.string.sett_alarm_time) +"2の月曜=" + ta201c ;
+            this.ta202c = myPref.ta202c;
+            dbMsg += "," + getResources().getString(R.string.sett_alarm_time) +"2の火曜=" + ta202c ;
+            this.ta203c = myPref.ta203c;
+            dbMsg += "," + getResources().getString(R.string.sett_alarm_time) +"2の水曜=" + ta203c ;
+            this.ta204c = myPref.ta204c;
+            dbMsg += "," + getResources().getString(R.string.sett_alarm_time) +"2の木曜=" + ta204c ;
+            this.ta205c = myPref.ta205c;
+            dbMsg += "," + getResources().getString(R.string.sett_alarm_time)  +"2の金曜=" + ta205c ;
+            this.ta206c = myPref.ta206c;
+            dbMsg += "," + getResources().getString(R.string.sett_alarm_time) +"2の土曜=" + ta206c ;
+
             binding = ActivityMainBinding.inflate(getLayoutInflater());
             setContentView(binding.getRoot());
 
@@ -198,10 +258,10 @@ public class MainActivity extends AppCompatActivity {
             NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
             NavigationUI.setupWithNavController(navigationView, navController);
 
-            alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-            PendingIntent pendingIntent = getPendingIntent();
-            alarmManager.setAlarmClock(new AlarmManager.AlarmClockInfo(alarmTimeMillis, null), pendingIntent);
-
+//            alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//            PendingIntent pendingIntent = getPendingIntent();
+//            alarmManager.setAlarmClock(new AlarmManager.AlarmClockInfo(alarmTimeMillis, null), pendingIntent);
+//
 
             myLog(TAG, dbMsg);
         } catch (Exception e) {
