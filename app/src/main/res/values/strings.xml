@@ -41,5 +41,6 @@
     <string name="comm_thursday">木</string>
     <string name="comm_friday">金</string>
     <string name="comm_saturday">土</string>
+    <string name="set_alarm_sound">アラーム音</string>
 
 </resources>

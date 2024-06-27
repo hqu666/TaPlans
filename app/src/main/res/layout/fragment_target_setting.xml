@@ -33,7 +33,23 @@
                 android:layout_gravity="right"
                 android:text="@string/sett_event_name" />
             <EditText
-                android:id="@+id/t_event_name"
+                android:id="@+id/tEventNameEt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="15"
+                />
+        </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_span="2"
+                android:layout_gravity="right"
+                android:text="@string/set_alarm_sound" />
+            <EditText
+                android:id="@+id/tEventSoundEt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="15"
@@ -53,7 +69,7 @@
                 android:layout_gravity="right"
                 android:text="1;" />
             <EditText
-                android:id="@+id/t_ararm_time1"
+                android:id="@+id/tArarmTime1Et"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="time" />
@@ -106,6 +122,80 @@
 
                 <CheckBox
                     android:id="@+id/ta106cBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/comm_saturday" />
+
+            </LinearLayout>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:text="@string/sett_alarm_time" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:text="2;" />
+            <EditText
+                android:id="@+id/tArarmTime2Et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="time" />
+        </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_span="3"
+                android:layout_gravity="right"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/ta200cBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/comm_sunday" />
+
+                <CheckBox
+                    android:id="@+id/ta201cBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/comm_monday" />
+
+                <CheckBox
+                    android:id="@+id/ta202cBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/comm_tuesday" />
+
+                <CheckBox
+                    android:id="@+id/ta203cBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/comm_wednesday" />
+
+                <CheckBox
+                    android:id="@+id/ta204cBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/comm_thursday" />
+
+                <CheckBox
+                    android:id="@+id/ta205cBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/comm_friday" />
+
+                <CheckBox
+                    android:id="@+id/ta206cBox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/comm_saturday" />

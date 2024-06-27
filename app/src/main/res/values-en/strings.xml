@@ -34,10 +34,13 @@
     <string name="colorPrimary">#FF3700B3</string>
     <string name="sett_alarm_time">alarm time</string>
     <string name="sett_event_name">event name</string>
-    <string name="comm_sunday">日</string>
-    <string name="comm_wednesday">水</string>
-    <string name="comm_thursday">木</string>
-    <string name="comm_friday">金</string>
-    <string name="comm_saturday">土</string>
+    <string name="comm_sunday">Sun</string>
+    <string name="comm_wednesday">Wed</string>
+    <string name="comm_thursday">Thu</string>
+    <string name="comm_friday">Fri</string>
+    <string name="comm_saturday">Sat</string>
+    <string name="set_alarm_sound">アラーム音</string>
+    <string name="comm_monday">Mon</string>
+    <string name="comm_tuesday">Tue</string>
 
 </resources>
