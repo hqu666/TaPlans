@@ -9,12 +9,14 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
+import android.widget.Toolbar;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -24,6 +26,7 @@ import com.hijiyam_koubou.taplans.databinding.ActivityMainBinding;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -78,7 +81,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // メニューを拡張します。これにより、アクション バーが存在する場合に項目が追加されます。
-        getMenuInflater().inflate(R.menu.main, menu);
+        final String TAG = "onCreateOptionsMenu";
+        String dbMsg = "[MainActivity]";
+        try {
+            getMenuInflater().inflate(R.menu.main, menu);
+            myLog(TAG , dbMsg);
+        } catch (Exception er) {
+            myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -92,19 +102,22 @@ public class MainActivity extends AppCompatActivity {
             dbMsg += "[" + itemID + "]";
             CharSequence itemTitle = item.getTitle();
             dbMsg += itemTitle;
-            if(itemTitle.equals(getResources().getString(R.string.action_settings))){
-                dbMsg += getResources().getString(R.string.action_settings);
-                showPref();
-                retBool = true;
-            }else if(itemTitle.equals(getResources().getString(R.string.action_quit))){
-                dbMsg += getResources().getString(R.string.action_quit);
-                quitMe();
-                retBool = true;
+            if(itemTitle == null){
+                dbMsg += ",itemTitle=null";
             }else{
-                retBool =  super.onOptionsItemSelected(item);
-            }
-            // R.id. が定数ではなくなった////////////////////////
-            // 1000099=R.id.action_quitに対してgetItemIdの戻り値は2131230787が返されるの
+                if(itemTitle.equals(getResources().getString(R.string.action_settings))){
+                    dbMsg += getResources().getString(R.string.action_settings);
+                    showPref();
+                    retBool = true;
+                }else if(itemTitle.equals(getResources().getString(R.string.action_quit))){
+                    dbMsg += getResources().getString(R.string.action_quit);
+                    quitMe();
+                    retBool = true;
+                }else{
+                    retBool =  super.onOptionsItemSelected(item);
+                }
+                // R.id. が定数ではなくなった////////////////////////
+                // 1000099=R.id.action_quitに対してgetItemIdの戻り値は2131230787が返されるの
 //                switch (itemID) {
 //                case  R.id.action_settings:         //1000095        R.id.action_settings
 //                    dbMsg += getResources().getString(R.string.action_settings);
@@ -116,7 +129,8 @@ public class MainActivity extends AppCompatActivity {
 //                default:
 //                    retBool =  super.onOptionsItemSelected(item);
 //            }
-            dbMsg += ",retBool=" + retBool;
+            }
+             dbMsg += ",retBool=" + retBool;
             myLog(TAG , dbMsg);
         } catch (Exception er) {
             myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
@@ -129,9 +143,17 @@ public class MainActivity extends AppCompatActivity {
      * */
     @Override
     public boolean onSupportNavigateUp() {
+        final String TAG = "onSupportNavigateUp";
+        String dbMsg = "[MainActivity]";
+
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
-                || super.onSupportNavigateUp();
+
+         try {
+             myLog(TAG, dbMsg);
+        } catch (Exception e) {
+            myErrorLog(TAG ,  dbMsg + "で" + e);
+        }
+        return NavigationUI.navigateUp(navController, mAppBarConfiguration) || super.onSupportNavigateUp();
     }
 
     /**
@@ -238,7 +260,41 @@ public class MainActivity extends AppCompatActivity {
             binding = ActivityMainBinding.inflate(getLayoutInflater());
             setContentView(binding.getRoot());
 
-            setSupportActionBar(binding.appBarMain.toolbar);
+  //          setSupportActionBar(binding.appBarMain.toolbar);
+
+            //ここから以前のやり方////////////////////////// Androidアプリにナビゲーションドロワーを実装する
+            // ナビゲーションホストを取得する
+            NavHostFragment navHostFragment =(NavHostFragment)getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_content_main);
+            // navHostFragmentのナビゲーションコントローラを取得する
+            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+//            NavController navController = Objects.requireNonNull(navHostFragment).getNavController();
+            // アップバーのコンフィグレーションをビルドする
+            AppBarConfiguration appBarConfiguration =
+                    new AppBarConfiguration.Builder(navController.getGraph())
+                            .setOpenableLayout((DrawerLayout)findViewById(R.id.drawer_layout))
+                            .build();
+            // ツールバーを取得する
+        //    Toolbar toolbar = findViewById(R.id.toolbar);           //
+            // ナビゲーションUIをセットアップする
+            NavigationUI.setupWithNavController(binding.appBarMain.toolbar, navController, appBarConfiguration);
+            //////////////////////////ここから以前のやり方//
+            int toolbarH = binding.appBarMain.toolbar.getHeight();
+            dbMsg += ",toolbarH=" + toolbarH;
+
+            NavigationView navigationView = binding.navView;            //(NavigationView)findViewById(R.id.my_nav_view);
+            NavigationUI.setupWithNavController(navigationView, navController);
+
+//            DrawerLayout drawer = binding.drawerLayout;
+//            NavigationView navigationView = binding.navView;
+//            // Passing each menu ID as a set of Ids because each menu should be considered as top level destinations.
+//            mAppBarConfiguration = new AppBarConfiguration.Builder(
+//                    R.id.nav_home, R.id.nav_target_plan, R.id.nav_target_setting, R.id.nav_other_setting)
+//                    .setOpenableLayout(drawer)
+//                    .build();
+//          //  NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+//            NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
+//            NavigationUI.setupWithNavController(navigationView, navController);
+
             binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -247,16 +303,6 @@ public class MainActivity extends AppCompatActivity {
                             .setAnchorView(R.id.fab).show();
                 }
             });
-            DrawerLayout drawer = binding.drawerLayout;
-            NavigationView navigationView = binding.navView;
-            // Passing each menu ID as a set of Ids because each menu should be considered as top level destinations.
-            mAppBarConfiguration = new AppBarConfiguration.Builder(
-                    R.id.nav_home, R.id.nav_target_plan, R.id.nav_target_setting, R.id.nav_other_setting)
-                    .setOpenableLayout(drawer)
-                    .build();
-            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-            NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-            NavigationUI.setupWithNavController(navigationView, navController);
 
 //            alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 //            PendingIntent pendingIntent = getPendingIntent();
@@ -269,10 +315,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private PendingIntent getPendingIntent() {
-        PendingIntent pInt =null;
-        return pInt;
-    }
+//    private PendingIntent getPendingIntent() {
+//        PendingIntent pInt =null;
+//        return pInt;
+//    }
 
     //////////////////////////////////////////////////////////////ライフサイクル//
     public static void myLog(String TAG , String dbMsg) {

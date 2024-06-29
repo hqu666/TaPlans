@@ -367,7 +367,6 @@ public class HomeFragment extends Fragment {
         }
     }
 
-
     /**
      * チェックされた日をリスト化してプリファレンスに書き込む
      * */
@@ -399,7 +398,6 @@ public class HomeFragment extends Fragment {
             myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
         }
     }
-
 
     //ライフサイクル//////////////////////////////////////////////////////////////
     public View onCreateView(@NonNull LayoutInflater inflater,
