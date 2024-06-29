@@ -260,8 +260,7 @@ public class MainActivity extends AppCompatActivity {
             binding = ActivityMainBinding.inflate(getLayoutInflater());
             setContentView(binding.getRoot());
 
-  //          setSupportActionBar(binding.appBarMain.toolbar);
-
+            setSupportActionBar(binding.appBarMain.toolbar);            //メニューボタン表示
             //ここから以前のやり方////////////////////////// Androidアプリにナビゲーションドロワーを実装する
             // ナビゲーションホストを取得する
             NavHostFragment navHostFragment =(NavHostFragment)getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_content_main);
@@ -280,7 +279,7 @@ public class MainActivity extends AppCompatActivity {
             //////////////////////////ここから以前のやり方//
             int toolbarH = binding.appBarMain.toolbar.getHeight();
             dbMsg += ",toolbarH=" + toolbarH;
-
+            //ドロワーからの遷移動作
             NavigationView navigationView = binding.navView;            //(NavigationView)findViewById(R.id.my_nav_view);
             NavigationUI.setupWithNavController(navigationView, navController);
 
