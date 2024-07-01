@@ -219,7 +219,23 @@ public class TargetPlanFragment extends Fragment {
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+//                    final String TAG = "onTextChanged";
+//                    String dbMsg = "[tArarmTime1Et]";
+//                    try {
+//                        dbMsg += "アラーム時刻1="+ s.toString();;
+//                        dbMsg += ","+ start + "～"+ before + ",count=" + count;
+//
+////                        if(s.toString() != null){
+////                            pClass.tArarmTime1= s.toString();
+////                            dbMsg += pClass.tArarmTime1;
+////                            setStrPref("tArarmTime1",pClass.tArarmTime1);
+////                        }else{
+////                            dbMsg += "null";
+////                        }
+//                        myLog(TAG , dbMsg);
+//                    } catch (Exception er) {
+//                        myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+//                    }
                 }
 
                 @Override
@@ -475,7 +491,7 @@ public class TargetPlanFragment extends Fragment {
                     try {
                         dbMsg += "アラーム時刻2=";
                         if(s.toString() != null){
-                            pClass.tArarmTime1= s.toString();
+                            pClass.tArarmTime2= s.toString();
                             dbMsg += pClass.tArarmTime2;
                             setStrPref("tArarmTime2",pClass.tArarmTime2);
                         }else{

@@ -117,6 +117,8 @@ public class MyPreferences extends PreferenceActivity {
 
             dbMsg += "," + con.getResources().getString(R.string.pref_tDates) +"=" + targetDays ;
             targetDays = sharedPref.getString("targetDays", "");
+            targetDays=targetDays.replace("[","");
+            targetDays=targetDays.replaceAll("]","");
             dbMsg += ">>" + targetDays ;
 
             dbMsg += "," + con.getResources().getString(R.string.sett_event_name) +"=" + tEventName ;

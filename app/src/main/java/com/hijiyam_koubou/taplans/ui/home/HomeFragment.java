@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -59,7 +60,9 @@ public class HomeFragment extends Fragment {
     /**
      * 月送りボタン
      * */
-    private  ImageButton ffButton;
+    private ImageButton ffButton;
+
+    private Switch sequentialUpdatesSw;
     private ArrayList<CheckBox> dayChecks;
     private ArrayList<TextView> dayTexts;
 
@@ -308,8 +311,8 @@ public class HomeFragment extends Fragment {
             int yearInt = Integer.parseInt(yearSpinner.getSelectedItem().toString());
             int monthInt = Integer.parseInt(monthSpinner.getSelectedItem().toString());
             dbMsg += ",当月は="+ yearInt + "年" + monthInt + "月";
-            if(colorInt==rBGbaMonth){
-                if((0 < dayInt)&&(dayInt < 7) ){
+            if(colorInt == rBGbaMonth){
+                if((dayInt >0) && (dayInt < 12) ){          //変数が左にないと誤動作する
                     dbMsg += ",次月";
                     monthInt=monthInt+1;
                     if(12<monthInt){
@@ -317,7 +320,7 @@ public class HomeFragment extends Fragment {
                         yearInt=yearInt+1;
                         dbMsg += ">>"+ yearInt + "年" + monthInt + "月";
                     }
-                }else if((25 < dayInt)&&(dayInt < 31) ){
+                }else if((dayInt > 25)&&(dayInt < 31) ){
                     dbMsg += ",前月";
                     monthInt=monthInt-1;
                     if(12<monthInt){
@@ -334,7 +337,7 @@ public class HomeFragment extends Fragment {
                 selectedDayStr += monthInt + "/";
             }
             if(dayInt < 10){
-                selectedDayStr += "0" + dayInt + "/";
+                selectedDayStr += "0" + dayInt;
             }else{
                 selectedDayStr += dayInt;
             }
@@ -361,6 +364,9 @@ public class HomeFragment extends Fragment {
             Collections.sort(targetDayLidt);
             dbMsg += ",targetDayLidt=" + targetDayLidt.size() + "件";
             dbMsg += ",targetDayLidt=" + targetDayLidt.toString();
+            if(sequentialUpdatesSw.isChecked()){
+                saveData();
+            }
             myLog(TAG, dbMsg);
         } catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -661,6 +667,8 @@ public class HomeFragment extends Fragment {
                     }
                 }
             });
+
+            sequentialUpdatesSw = binding.sequentialUpdatesSw;
 
 //            homeViewModel.getText().observe(getViewLifecycl
 //            eOwner(), textView::setText);

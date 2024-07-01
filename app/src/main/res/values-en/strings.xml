@@ -39,8 +39,9 @@
     <string name="comm_thursday">Thu</string>
     <string name="comm_friday">Fri</string>
     <string name="comm_saturday">Sat</string>
-    <string name="set_alarm_sound">アラーム音</string>
+    <string name="set_alarm_sound">alarm sound</string>
     <string name="comm_monday">Mon</string>
     <string name="comm_tuesday">Tue</string>
+    <string name="set_sequential_updates">sequential updates</string>
 
 </resources>
