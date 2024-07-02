@@ -1,5 +1,6 @@
 package com.hijiyam_koubou.taplans.ui.target_setting;
 
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,10 +10,12 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -23,6 +26,8 @@ import com.hijiyam_koubou.taplans.R;
 import com.hijiyam_koubou.taplans.Util;
 import com.hijiyam_koubou.taplans.databinding.FragmentTargetSettingBinding;
 
+import java.util.Calendar;
+
 import kotlin.text.UStringsKt;
 
 public class TargetPlanFragment extends Fragment {
@@ -32,7 +37,8 @@ public class TargetPlanFragment extends Fragment {
 
     private EditText tEventNameEt;             //  予定の名称
     private EditText tEventSoundEt;           // アラーム音
-    private EditText tArarmTime1Et;           // アラーム時刻1
+    private Button tArarmTime1BT;
+ //   private EditText tArarmTime1Et;           // アラーム時刻1
     private CheckBox ta100cBox;               // アラーム時刻1 の日曜
     private CheckBox ta101cBox;               // アラーム時刻1 の月曜
     private CheckBox ta102cBox;               // アラーム時刻1 の火曜
@@ -122,6 +128,67 @@ public class TargetPlanFragment extends Fragment {
         }
     }
 
+    public String timeSeparator= " : ";
+    public String prefName;
+    public String prefValue;
+
+    /**
+     * タイムピッカー表示
+     * */
+    public void showTimePicker(String prefName, String prefValue) {
+        final String TAG = "showTimePicer";
+        String dbMsg = "[TargetPlanFragment]";
+        try {
+            this.prefName = prefName;
+            this.prefValue =prefValue;
+            Calendar calendar = Calendar.getInstance();
+            int hour = calendar.get(Calendar.HOUR_OF_DAY);
+            int minute = calendar.get(Calendar.MINUTE);
+            dbMsg += "既存値="+prefValue;
+            if(prefValue.contains(timeSeparator)){
+                String[] tStr = prefValue.split(timeSeparator);
+                hour = Integer.parseInt(tStr[0]);
+                minute = Integer.parseInt(tStr[1]);
+            }
+            this.prefValue =prefValue;
+
+            TimePickerDialog dialog = new TimePickerDialog(
+                    getActivity(),
+                    new TimePickerDialog.OnTimeSetListener(){
+                        @Override
+                        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                            //                    final String TAG = "onTextChanged";
+                            final String TAG = "onTimeSet";
+                            String dbMsg = "[showTimePicer]";
+                            try {
+                                dbMsg += "アラーム時刻1="+ ","+ hourOfDay + " : " + minute;
+                                pClass.tArarmTime1 = "";
+                                if(hourOfDay < 10){
+                                    TargetPlanFragment.this.prefValue= "0" + hourOfDay + TargetPlanFragment.this.timeSeparator;
+                                }else{
+                                    TargetPlanFragment.this.prefValue= hourOfDay + TargetPlanFragment.this.timeSeparator;
+                                }
+                                if(minute < 10){
+                                    TargetPlanFragment.this.prefValue += "0" + minute;
+                                }else{
+                                    TargetPlanFragment.this.prefValue+= minute + "";
+                                }
+                                dbMsg += " >> "+ TargetPlanFragment.this.prefValue;
+                                setStrPref(TargetPlanFragment.this.prefName,TargetPlanFragment.this.prefValue);
+                                myLog(TAG , dbMsg);
+                            } catch (Exception er) {
+                                myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+                            }
+                            //    Log.d(“test”,String.format(“%02d:%02d”, hourOfDay,minute));
+                        }
+                    },
+                    hour,minute,true);
+            dialog.show();
+            myLog(TAG , dbMsg);
+        } catch (Exception er) {
+            myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+        }
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -209,56 +276,105 @@ public class TargetPlanFragment extends Fragment {
             });
             tEventSoundEt.setText(pClass.tEventSound);
 
-            tArarmTime1Et = binding.tArarmTime1Et;           // アラーム時刻1
-            dbMsg += "アラーム時刻1="+ pClass.tArarmTime1;
-            tArarmTime1Et.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-//                    final String TAG = "onTextChanged";
-//                    String dbMsg = "[tArarmTime1Et]";
-//                    try {
-//                        dbMsg += "アラーム時刻1="+ s.toString();;
-//                        dbMsg += ","+ start + "～"+ before + ",count=" + count;
-//
-////                        if(s.toString() != null){
-////                            pClass.tArarmTime1= s.toString();
-////                            dbMsg += pClass.tArarmTime1;
-////                            setStrPref("tArarmTime1",pClass.tArarmTime1);
-////                        }else{
-////                            dbMsg += "null";
-////                        }
-//                        myLog(TAG , dbMsg);
-//                    } catch (Exception er) {
-//                        myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
-//                    }
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-                    //テキスト変更後
-                    final String TAG = "afterTextChanged";
-                    String dbMsg = "[tArarmTime1Et]";
+            tArarmTime1BT = binding.tArarmTime1BT;           // アラーム時刻1
+            tArarmTime1BT.setOnClickListener(new View.OnClickListener() {
+                 @Override
+                 public void onClick(View v) {
+                    final String TAG = "onClick";
+                    String dbMsg = "[tArarmTime1BT]";
                     try {
-                        dbMsg += "アラーム時刻1=";
-                        if(s.toString() != null){
-                            pClass.tArarmTime1= s.toString();
-                            dbMsg += pClass.tArarmTime1;
-                            setStrPref("tArarmTime1",pClass.tArarmTime1);
-                        }else{
-                            dbMsg += "null";
-                        }
+                        dbMsg += "アラーム時刻1=" +  pClass.tArarmTime1;
+                        showTimePicker("tArarmTime1",pClass.tArarmTime1);
+                        tArarmTime1BT.setText(TargetPlanFragment.this.prefValue);
                          myLog(TAG , dbMsg);
                     } catch (Exception er) {
                         myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
                     }
-                }
-            });
-            tArarmTime1Et.setText(pClass.tArarmTime1);
+                 }
+             });
+            tArarmTime1BT.setText(pClass.tArarmTime1);
+
+//            tArarmTime1Et = binding.tArarmTime1Et;           // アラーム時刻1
+//            dbMsg += "アラーム時刻1="+ pClass.tArarmTime1;
+//            tArarmTime1Et.addTextChangedListener(new TextWatcher() {
+//                @Override
+//                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//                    final String TAG = "beforeTextChanged";
+//                    String dbMsg = "[tArarmTime1Et]";
+//                    try {
+//                        Calendar calendar = Calendar.getInstance();
+//                        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+//                        int minute = calendar.get(Calendar.MINUTE);
+//                        dbMsg += "既存値="+ pClass.tArarmTime1;
+//                        if(pClass.tArarmTime1.contains(":")){
+//                            String[] tStr = pClass.tArarmTime1.split(":");
+//                            hour = Integer.parseInt(tStr[0]);
+//                            minute = Integer.parseInt(tStr[1]);
+//                        }
+//
+//                        TimePickerDialog dialog = new TimePickerDialog(
+//                                getActivity(),
+//                            new TimePickerDialog.OnTimeSetListener(){
+//                                @Override
+//                                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+//                                    //                    final String TAG = "onTextChanged";
+//                                    final String TAG = "onTimeSet";
+//                                    String dbMsg = "[tArarmTime1Et]";
+//                                    try {
+//                                        dbMsg += "アラーム時刻1="+ ","+ hourOfDay + " : " + minute;
+//                                        pClass.tArarmTime1 = "";
+//                                        if(hourOfDay < 10){
+//                                            pClass.tArarmTime1 = "0" + hourOfDay + ":";
+//                                        }else{
+//                                            pClass.tArarmTime1 = hourOfDay + ":";
+//                                        }
+//                                        if(minute < 10){
+//                                            pClass.tArarmTime1 += "0" + minute;
+//                                        }else{
+//                                            pClass.tArarmTime1 += minute + "";
+//                                        }
+//                                        dbMsg += " >> "+ pClass.tArarmTime1;
+//                                        setStrPref("tArarmTime1",pClass.tArarmTime1);
+//                                        myLog(TAG , dbMsg);
+//                                    } catch (Exception er) {
+//                                        myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+//                                    }
+//                                //    Log.d(“test”,String.format(“%02d:%02d”, hourOfDay,minute));
+//                                }
+//                        },hour,minute,true);
+//                        dialog.show();
+//                        myLog(TAG , dbMsg);
+//                    } catch (Exception er) {
+//                        myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+//                    }
+//                }
+//
+//                @Override
+//                public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                }
+//
+//                @Override
+//                public void afterTextChanged(Editable s) {
+//                    //テキスト変更後
+//                    final String TAG = "afterTextChanged";
+//                    String dbMsg = "[tArarmTime1Et]";
+//                    try {
+////                        dbMsg += "アラーム時刻1=";
+////                        if(s.toString() != null){
+////                            pClass.tArarmTime1= s.toString();
+////                            dbMsg += pClass.tArarmTime1;
+////        //                    setStrPref("tArarmTime1",pClass.tArarmTime1);
+////                        }else{
+////                            dbMsg += "null";
+////                        }
+////                        tArarmTime1Et.setText(pClass.tArarmTime1);
+//                         myLog(TAG , dbMsg);
+//                    } catch (Exception er) {
+//                        myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+//                    }
+//                }
+//            });
+//            tArarmTime1Et.setText(pClass.tArarmTime1);
 
             ta100cBox = binding.ta100cBox;               // アラーム時刻1 の日曜
             dbMsg += "アラーム時刻1 の日曜=" + pClass.ta100c;
@@ -715,7 +831,7 @@ public class TargetPlanFragment extends Fragment {
                 }
             });
 
-
+            tEventNameEt.setFocusable(true);
             targetPlaniewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
             myLog(TAG , dbMsg);
         } catch (Exception er) {
