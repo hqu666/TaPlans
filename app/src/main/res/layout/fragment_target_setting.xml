@@ -144,13 +144,19 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:text="2;" />
-            <EditText
-                android:id="@+id/tArarmTime2Et"
-                android:layout_width="match_parent"
+            <Button
+                android:id="@+id/tArarmTime2BT"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:inputType="time"
-                android:hint="07:00"
-                />
+                android:text="Button" />
+
+            <!--            <EditText-->
+<!--                android:id="@+id/tArarmTime2Et"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:inputType="time"-->
+<!--                android:hint="07:00"-->
+<!--                />-->
         </TableRow>
         <TableRow
             android:layout_width="match_parent"

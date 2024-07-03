@@ -2,13 +2,18 @@ package com.hijiyam_koubou.taplans;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
+import android.widget.Button;
+import android.widget.TimePicker;
 import android.widget.Toolbar;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -23,14 +28,18 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.hijiyam_koubou.taplans.databinding.ActivityMainBinding;
+import com.hijiyam_koubou.taplans.ui.target_setting.TargetPlanFragment;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
     public MyPreferences myPref;
+    public SharedPreferences sharedPref;
+    public SharedPreferences.Editor myEditor;
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
@@ -55,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
      * */
     public String tEventName;             //  予定の名称
     public String tEventSound;           // アラーム音
-    public String tArarmTime1;           // アラーム時刻1
+    public String tArarmTime1 = "06 : 00";           // アラーム時刻1
     public Boolean ta100c = false;               // アラーム時刻1 の日曜
     public Boolean ta101c = false;          // アラーム時刻1 の月曜
     public Boolean ta102c = false;        // アラーム時刻1 の火曜
@@ -64,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
     public Boolean ta105c = false;            // アラーム時刻1 の金曜
     public Boolean ta106c = false;            // アラーム時刻1 の土曜
 
-    public String tArarmTime2;           // アラーム時刻2
+    public String tArarmTime2 = "07 : 00";           // アラーム時刻2
     public Boolean ta200c = false;             // アラーム時刻2 の日曜
     public Boolean ta201c = false;            // アラーム時刻2 の月曜
     public Boolean ta202c = false;            // アラーム時刻2 の火曜
@@ -191,6 +200,123 @@ public class MainActivity extends AppCompatActivity {
             myErrorLog(TAG ,  dbMsg + "で" + e);
         }
     }
+
+    /**
+     * 指定されたKeyのStringPreferenceを作成/更新
+     * */
+    public void setStrPref(String key,String wStr) {
+        //テキスト変更後
+        final String TAG = "setStrPref";
+        String dbMsg = "[TargetPlanFragment]";
+        try {
+            dbMsg += "key=" + key;
+            dbMsg += ",wStr=" + wStr;
+            if(sharedPref == null){
+                sharedPref = PreferenceManager.getDefaultSharedPreferences(this);            //	this.getSharedPreferences(this, MODE_PRIVATE);		//
+            }
+            if(myEditor == null){
+                myEditor = sharedPref.edit();
+            }
+            myEditor.putString(key, wStr);
+            boolean ret = myEditor.commit();
+            dbMsg += ",commit=" + ret;
+            myLog(TAG , dbMsg);
+        } catch (Exception er) {
+            myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+        }
+    }
+
+    /**
+     * 指定されたKeyのBooleanPreferenceを作成/更新
+     * */
+    public void setBoolPref(String key,Boolean wBool) {
+        //テキスト変更後
+        final String TAG = "setBoolPref";
+        String dbMsg = "[TargetPlanFragment]";
+        try {
+            dbMsg += "key=" + key;
+            dbMsg += ",wBool=" + wBool;
+            if(sharedPref == null){
+                sharedPref = PreferenceManager.getDefaultSharedPreferences(this);            //	this.getSharedPreferences(this, MODE_PRIVATE);		//
+            }
+            if(myEditor == null){
+                myEditor = sharedPref.edit();
+            }
+            myEditor.putBoolean(key, wBool);
+            boolean ret = myEditor.commit();
+            dbMsg += ",commit=" + ret;
+            myLog(TAG , dbMsg);
+        } catch (Exception er) {
+            myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+        }
+    }
+
+    public String timeSeparator= " : ";
+    public String prefName;
+    public String prefValue;
+    public Button targetButton;
+
+    /**
+     * タイムピッカー表示
+     * */
+    public void showTimePicker(String prefName, String prefValue , Button tButton) {
+        final String TAG = "showTimePicer";
+        String dbMsg = "[MainActivity]";
+        try {
+            this.prefName = prefName;
+            this.prefValue =prefValue;
+            this.targetButton = tButton;
+            Calendar calendar = Calendar.getInstance();
+            int hour = calendar.get(Calendar.HOUR_OF_DAY);
+            int minute = calendar.get(Calendar.MINUTE);
+            dbMsg += "既存値="+prefValue;
+            if(prefValue.contains(timeSeparator)){
+                String[] tStr = prefValue.split(timeSeparator);
+                hour = Integer.parseInt(tStr[0]);
+                minute = Integer.parseInt(tStr[1]);
+            }
+            this.prefValue =prefValue;
+
+            TimePickerDialog dialog = new TimePickerDialog(
+                    this,
+                    new TimePickerDialog.OnTimeSetListener(){
+                        @Override
+                        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                            //                    final String TAG = "onTextChanged";
+                            final String TAG = "onTimeSet";
+                            String dbMsg = "[showTimePicer]";
+                            try {
+                                dbMsg += "アラーム時刻1="+ ","+ hourOfDay + " : " + minute;
+                                MainActivity.this.prefValue = "";
+                                if(hourOfDay < 10){
+                                    MainActivity.this.prefValue= "0" + hourOfDay + MainActivity.this.timeSeparator;
+                                }else{
+                                    MainActivity.this.prefValue= hourOfDay + MainActivity.this.timeSeparator;
+                                }
+                                if(minute < 10){
+                                    MainActivity.this.prefValue += "0" + minute;
+                                }else{
+                                    MainActivity.this.prefValue+= minute + "";
+                                }
+                                dbMsg += " >> "+ MainActivity.this.prefValue;
+                                setStrPref(MainActivity.this.prefName,MainActivity.this.prefValue);
+                                MainActivity.this.targetButton.setText(MainActivity.this.prefValue);
+
+                                myLog(TAG , dbMsg);
+                            } catch (Exception er) {
+                                myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+                            }
+                            //    Log.d(“test”,String.format(“%02d:%02d”, hourOfDay,minute));
+                        }
+                    },
+                    hour,minute,true);
+            dialog.show();
+            myLog(TAG , dbMsg);
+        } catch (Exception er) {
+            myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+        }
+    }
+
 
     //ライフサイクル//////////////////////////////////////////////////////////////
     @Override

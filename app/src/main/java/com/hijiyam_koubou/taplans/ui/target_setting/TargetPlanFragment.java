@@ -46,7 +46,7 @@ public class TargetPlanFragment extends Fragment {
     private CheckBox ta104cBox;               // アラーム時刻1 の木曜
     private CheckBox ta105cBox;               // アラーム時刻1 の金曜
     private CheckBox ta106cBox;               // アラーム時刻1 の土曜
-    private EditText tArarmTime2Et;           // アラーム時刻2
+    private Button tArarmTime2BT;          // アラーム時刻2
 
     private CheckBox ta200cBox;               // アラーム時刻2 の日曜
     private CheckBox ta201cBox;               // アラーム時刻2 の月曜
@@ -128,71 +128,71 @@ public class TargetPlanFragment extends Fragment {
         }
     }
 
-    public String timeSeparator= " : ";
-    public String prefName;
-    public String prefValue;
-
-    /**
-     * タイムピッカー表示
-     * */
-    public void showTimePicker(String prefName, String prefValue) {
-        final String TAG = "showTimePicer";
-        String dbMsg = "[TargetPlanFragment]";
-        try {
-            this.prefName = prefName;
-            this.prefValue =prefValue;
-            Calendar calendar = Calendar.getInstance();
-            int hour = calendar.get(Calendar.HOUR_OF_DAY);
-            int minute = calendar.get(Calendar.MINUTE);
-            dbMsg += "既存値="+prefValue;
-            if(prefValue.contains(timeSeparator)){
-                String[] tStr = prefValue.split(timeSeparator);
-                hour = Integer.parseInt(tStr[0]);
-                minute = Integer.parseInt(tStr[1]);
-            }
-            this.prefValue =prefValue;
-
-            TimePickerDialog dialog = new TimePickerDialog(
-                    getActivity(),
-                    new TimePickerDialog.OnTimeSetListener(){
-                        @Override
-                        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                            //                    final String TAG = "onTextChanged";
-                            final String TAG = "onTimeSet";
-                            String dbMsg = "[showTimePicer]";
-                            try {
-                                dbMsg += "アラーム時刻1="+ ","+ hourOfDay + " : " + minute;
-                                pClass.tArarmTime1 = "";
-                                if(hourOfDay < 10){
-                                    TargetPlanFragment.this.prefValue= "0" + hourOfDay + TargetPlanFragment.this.timeSeparator;
-                                }else{
-                                    TargetPlanFragment.this.prefValue= hourOfDay + TargetPlanFragment.this.timeSeparator;
-                                }
-                                if(minute < 10){
-                                    TargetPlanFragment.this.prefValue += "0" + minute;
-                                }else{
-                                    TargetPlanFragment.this.prefValue+= minute + "";
-                                }
-                                dbMsg += " >> "+ TargetPlanFragment.this.prefValue;
-                                setStrPref(TargetPlanFragment.this.prefName,TargetPlanFragment.this.prefValue);
-                                myLog(TAG , dbMsg);
-                            } catch (Exception er) {
-                                myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
-                            }
-                            //    Log.d(“test”,String.format(“%02d:%02d”, hourOfDay,minute));
-                        }
-                    },
-                    hour,minute,true);
-            dialog.show();
-            myLog(TAG , dbMsg);
-        } catch (Exception er) {
-            myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
-        }
-    }
+//    public String timeSeparator= " : ";
+//    public String prefName;
+//    public String prefValue;
+//
+//    /**
+//     * タイムピッカー表示
+//     * */
+//    public void showTimePicker(String prefName, String prefValue) {
+//        final String TAG = "showTimePicer";
+//        String dbMsg = "[TargetPlanFragment]";
+//        try {
+//            this.prefName = prefName;
+//            this.prefValue =prefValue;
+//            Calendar calendar = Calendar.getInstance();
+//            int hour = calendar.get(Calendar.HOUR_OF_DAY);
+//            int minute = calendar.get(Calendar.MINUTE);
+//            dbMsg += "既存値="+prefValue;
+//            if(prefValue.contains(timeSeparator)){
+//                String[] tStr = prefValue.split(timeSeparator);
+//                hour = Integer.parseInt(tStr[0]);
+//                minute = Integer.parseInt(tStr[1]);
+//            }
+//            this.prefValue =prefValue;
+//
+//            TimePickerDialog dialog = new TimePickerDialog(
+//                    getActivity(),
+//                    new TimePickerDialog.OnTimeSetListener(){
+//                        @Override
+//                        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+//                            //                    final String TAG = "onTextChanged";
+//                            final String TAG = "onTimeSet";
+//                            String dbMsg = "[showTimePicer]";
+//                            try {
+//                                dbMsg += "アラーム時刻1="+ ","+ hourOfDay + " : " + minute;
+//                                pClass.tArarmTime1 = "";
+//                                if(hourOfDay < 10){
+//                                    TargetPlanFragment.this.prefValue= "0" + hourOfDay + TargetPlanFragment.this.timeSeparator;
+//                                }else{
+//                                    TargetPlanFragment.this.prefValue= hourOfDay + TargetPlanFragment.this.timeSeparator;
+//                                }
+//                                if(minute < 10){
+//                                    TargetPlanFragment.this.prefValue += "0" + minute;
+//                                }else{
+//                                    TargetPlanFragment.this.prefValue+= minute + "";
+//                                }
+//                                dbMsg += " >> "+ TargetPlanFragment.this.prefValue;
+//                                setStrPref(TargetPlanFragment.this.prefName,TargetPlanFragment.this.prefValue);
+//                                myLog(TAG , dbMsg);
+//                            } catch (Exception er) {
+//                                myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+//                            }
+//                            //    Log.d(“test”,String.format(“%02d:%02d”, hourOfDay,minute));
+//                        }
+//                    },
+//                    hour,minute,true);
+//            dialog.show();
+//            myLog(TAG , dbMsg);
+//        } catch (Exception er) {
+//            myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+//        }
+//    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        final String TAG = "setStrPref";
+        final String TAG = "onCreateView";
         String dbMsg = "[TargetPlanFragment]";
         View root = null;
         try {
@@ -276,6 +276,7 @@ public class TargetPlanFragment extends Fragment {
             });
             tEventSoundEt.setText(pClass.tEventSound);
 
+            dbMsg += "アラーム時刻1="+ pClass.tArarmTime1;
             tArarmTime1BT = binding.tArarmTime1BT;           // アラーム時刻1
             tArarmTime1BT.setOnClickListener(new View.OnClickListener() {
                  @Override
@@ -284,9 +285,8 @@ public class TargetPlanFragment extends Fragment {
                     String dbMsg = "[tArarmTime1BT]";
                     try {
                         dbMsg += "アラーム時刻1=" +  pClass.tArarmTime1;
-                        showTimePicker("tArarmTime1",pClass.tArarmTime1);
-                        tArarmTime1BT.setText(TargetPlanFragment.this.prefValue);
-                         myLog(TAG , dbMsg);
+                        pClass.showTimePicker("tArarmTime1",pClass.tArarmTime1,tArarmTime1BT);
+//                        tArarmTime1BT.setText(TargetPlanFragment.this.prefValue);
                     } catch (Exception er) {
                         myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
                     }
@@ -586,40 +586,23 @@ public class TargetPlanFragment extends Fragment {
                 }
             });
 
-            tArarmTime2Et = binding.tArarmTime2Et;           // アラーム時刻2
             dbMsg += "アラーム時刻2="+ pClass.tArarmTime2;
-            tArarmTime2Et.addTextChangedListener(new TextWatcher() {
+            tArarmTime2BT = binding.tArarmTime2BT;           // アラーム時刻2
+            tArarmTime2BT.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-                    //テキスト変更後
-                    final String TAG = "afterTextChanged";
-                    String dbMsg = "[tArarmTime2Et]";
+                public void onClick(View v) {
+                    final String TAG = "onClick";
+                    String dbMsg = "[tArarmTime1BT]";
                     try {
-                        dbMsg += "アラーム時刻2=";
-                        if(s.toString() != null){
-                            pClass.tArarmTime2= s.toString();
-                            dbMsg += pClass.tArarmTime2;
-                            setStrPref("tArarmTime2",pClass.tArarmTime2);
-                        }else{
-                            dbMsg += "null";
-                        }
+                        dbMsg += "アラーム時刻2=" +  pClass.tArarmTime2;
+                        pClass.showTimePicker("tArarmTime2",pClass.tArarmTime2,tArarmTime2BT);
                         myLog(TAG , dbMsg);
                     } catch (Exception er) {
                         myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
                     }
                 }
             });
-            tArarmTime2Et.setText(pClass.tArarmTime2);
+            tArarmTime2BT.setText(pClass.tArarmTime2);
 
             ta200cBox = binding.ta200cBox;               // アラーム時刻2 の日曜
             dbMsg += "アラーム時刻2 の日曜=" + pClass.ta200c;
