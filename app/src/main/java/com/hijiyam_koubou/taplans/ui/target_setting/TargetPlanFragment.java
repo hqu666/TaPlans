@@ -292,7 +292,7 @@ public class TargetPlanFragment extends Fragment {
                     }
                  }
              });
-            tArarmTime1BT.setText(pClass.tArarmTime1);
+            pClass.setButtonText(tArarmTime1BT,pClass.tArarmTime1);
 
 //            tArarmTime1Et = binding.tArarmTime1Et;           // アラーム時刻1
 //            dbMsg += "アラーム時刻1="+ pClass.tArarmTime1;
@@ -602,7 +602,7 @@ public class TargetPlanFragment extends Fragment {
                     }
                 }
             });
-            tArarmTime2BT.setText(pClass.tArarmTime2);
+            pClass.setButtonText(tArarmTime2BT,pClass.tArarmTime2);
 
             ta200cBox = binding.ta200cBox;               // アラーム時刻2 の日曜
             dbMsg += "アラーム時刻2 の日曜=" + pClass.ta200c;

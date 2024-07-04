@@ -232,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
     public void setBoolPref(String key,Boolean wBool) {
         //テキスト変更後
         final String TAG = "setBoolPref";
-        String dbMsg = "[TargetPlanFragment]";
+        String dbMsg = "[MainActivity]";
         try {
             dbMsg += "key=" + key;
             dbMsg += ",wBool=" + wBool;
@@ -255,6 +255,22 @@ public class MainActivity extends AppCompatActivity {
     public String prefName;
     public String prefValue;
     public Button targetButton;
+
+    public void setButtonText( Button tButton,String value) {
+        //テキスト変更後
+        final String TAG = "setButtonText";
+        String dbMsg = "[MainActivity]";
+        try {
+            dbMsg += "tButton=" + tButton.getTransitionName();
+            dbMsg += ",value=" + tButton.getText();
+            dbMsg += ",>>" + value;
+            tButton.setText(value);
+            myLog(TAG , dbMsg);
+        } catch (Exception er) {
+            myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+        }
+    }
+
 
     /**
      * タイムピッカー表示
@@ -349,7 +365,9 @@ public class MainActivity extends AppCompatActivity {
             dbMsg += "," + getResources().getString(R.string.sett_event_name) +"=" + tEventName ;
             this.tEventSound = myPref.tEventSound;
             dbMsg += "," + getResources().getString(R.string.set_alarm_sound) +"=" + tEventSound ;
-            this.tArarmTime1 = myPref.tArarmTime1;
+            if(myPref.tArarmTime1.contains(":")){
+                this.tArarmTime1 = myPref.tArarmTime1;
+            }
             dbMsg += "," + getResources().getString(R.string.sett_alarm_time) +"1=" + tArarmTime1 ;
             this.ta100c = myPref.ta100c;
             dbMsg += "," + getResources().getString(R.string.sett_alarm_time) +"1の日曜=" + ta100c ;
@@ -366,7 +384,9 @@ public class MainActivity extends AppCompatActivity {
             this.ta106c = myPref.ta106c;
             dbMsg += "," + getResources().getString(R.string.sett_alarm_time) +"1の土曜=" + ta106c ;
 
-            this.tArarmTime2 = myPref.tArarmTime2;
+            if(myPref.tArarmTime2.contains(":")){
+                this.tArarmTime2 = myPref.tArarmTime2;
+            }
             dbMsg += "," + getResources().getString(R.string.sett_alarm_time) +"2=" + tArarmTime2 ;
             this.ta200c = myPref.ta200c;
             dbMsg += "," + getResources().getString(R.string.sett_alarm_time) +"2の日曜=" + ta200c ;

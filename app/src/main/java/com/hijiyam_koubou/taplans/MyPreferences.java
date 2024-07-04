@@ -130,7 +130,7 @@ public class MyPreferences extends PreferenceActivity {
             dbMsg += ">>" + tEventSound ;
 
             dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"1=" + tArarmTime1 ;
-            tArarmTime1 = sharedPref.getString("tEventSound", "");
+            tArarmTime1 = sharedPref.getString("tArarmTime1", "");
             dbMsg += ">>" + tArarmTime1 ;
 
             dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"1の日曜=" + ta100c ;
