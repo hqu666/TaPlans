@@ -10,10 +10,13 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -36,7 +39,7 @@ public class TargetPlanFragment extends Fragment {
     public SharedPreferences.Editor myEditor;
 
     private EditText tEventNameEt;             //  予定の名称
-    private EditText tEventSoundEt;           // アラーム音
+    private Spinner tEventSoundSP;           // アラーム音
     private Button tArarmTime1BT;
  //   private EditText tArarmTime1Et;           // アラーム時刻1
     private CheckBox ta100cBox;               // アラーム時刻1 の日曜
@@ -241,40 +244,11 @@ public class TargetPlanFragment extends Fragment {
             });
             tEventNameEt.setText(pClass.tEventName);
 
-            tEventSoundEt = binding.tEventSoundEt;           // アラーム音
+            tEventSoundSP = binding.tEventSoundSP;           // アラーム音
+            ArrayAdapter arrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, pClass.soundNameList);
+            tEventSoundSP.setAdapter(arrayAdapter);
             dbMsg += "アラーム音="+ pClass.tEventSound;
-            tEventSoundEt.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-                    //テキスト変更後
-                    final String TAG = "afterTextChanged";
-                    String dbMsg = "[tEventSoundEt]";
-                    try {
-                        dbMsg += "アラーム音=";
-                        if(s.toString() != null){
-                            pClass.tEventSound= s.toString();
-                            dbMsg += pClass.tEventSound;
-                            setStrPref("tEventSound",pClass.tEventSound);
-                        }else{
-                            dbMsg += "null";
-                        }
-                        myLog(TAG , dbMsg);
-                    } catch (Exception er) {
-                        myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
-                    }
-                }
-            });
-            tEventSoundEt.setText(pClass.tEventSound);
 
             dbMsg += "アラーム時刻1="+ pClass.tArarmTime1;
             tArarmTime1BT = binding.tArarmTime1BT;           // アラーム時刻1

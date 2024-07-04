@@ -1,11 +1,15 @@
 package com.hijiyam_koubou.taplans;
 
 import android.app.AlarmManager;
+import android.app.LauncherActivity;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.media.RingtoneManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -333,6 +337,51 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private class soundItem{
+        String uriPrefix;
+        String index;
+        String title;    // 着信音などの名前
+        String uri;
+    }
+
+    public ArrayList<soundItem> soundItemArrayList;
+    public ArrayList<String> soundNameList;
+    private ArrayList<soundItem> loadAlarms() {
+        final String TAG = "loadAlarms";
+        String dbMsg = "[MainActivity]";
+
+        try {
+            soundItemArrayList = new  ArrayList<soundItem>();
+            soundNameList = new  ArrayList<String>();
+            RingtoneManager manager = new RingtoneManager(this); // マネージャを作成
+            manager.setType(RingtoneManager.TYPE_ALARM);              // アラーム音だけ
+// manager.setType(RingtoneManager.TYPE_RINGTONE);      // 着信音だけ
+// manager.setType(RingtoneManager.TYPE_ALARM);         // アラーム音だけ
+// manager.setType(RingtoneManager.TYPE_NOTIFICATION);  // 通知音だけ
+       //     RingtoneManager.TYPE_ALL);              // 着信音・アラーム音・通知音の全部
+
+//カーソルを取得して、moveToNextしていく
+            Cursor cursor = manager.getCursor();
+            dbMsg += cursor.getCount()+"件=" ;
+            while (cursor.moveToNext()) {
+                soundItem item = new soundItem();
+                item.index = cursor.getString(RingtoneManager.ID_COLUMN_INDEX);
+                dbMsg += "\n[" + item.index +"]" ;
+                item.title = cursor.getString(RingtoneManager.TITLE_COLUMN_INDEX);    // 着信音などの名前
+                dbMsg += item.title ;
+                item.uriPrefix = cursor.getString(RingtoneManager.URI_COLUMN_INDEX);
+                item.uri = item.uriPrefix + "/" + item.index;                                   // ※URIはuriPrefixとindexをつなげる必要あり
+                dbMsg += " : " + item.uri ;
+                soundNameList.add(item.title);
+            }
+            dbMsg += "\n"+ soundItemArrayList.size() +"件=" ;
+            myLog(TAG , dbMsg);
+        } catch (Exception er) {
+            myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+        }
+        return soundItemArrayList;
+    }
+
 
     //ライフサイクル//////////////////////////////////////////////////////////////
     @Override
@@ -428,6 +477,8 @@ public class MainActivity extends AppCompatActivity {
             //ドロワーからの遷移動作
             NavigationView navigationView = binding.navView;            //(NavigationView)findViewById(R.id.my_nav_view);
             NavigationUI.setupWithNavController(navigationView, navController);
+
+            loadAlarms();
 
 //            DrawerLayout drawer = binding.drawerLayout;
 //            NavigationView navigationView = binding.navView;

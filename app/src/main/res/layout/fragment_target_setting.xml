@@ -40,11 +40,16 @@
                 android:layout_span="2"
                 android:layout_gravity="right"
                 android:text="@string/set_alarm_sound" />
-            <EditText
-                android:id="@+id/tEventSoundEt"
+<!--            <EditText-->
+<!--                android:id="@+id/tEventSoundEt"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:ems="15"-->
+<!--                />-->
+            <Spinner
+                android:id="@+id/tEventSoundSP"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="15"
                 />
         </TableRow>
         <TableRow
@@ -223,5 +228,6 @@
         android:textAlignment="center"
         android:textSize="20sp"
         />
+
 
 </LinearLayout>
