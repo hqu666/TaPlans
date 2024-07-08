@@ -34,6 +34,7 @@ import com.hijiyam_koubou.taplans.MainActivity;
 import com.hijiyam_koubou.taplans.R;
 import com.hijiyam_koubou.taplans.Util;
 import com.hijiyam_koubou.taplans.databinding.FragmentTargetSettingBinding;
+import com.hijiyam_koubou.taplans.soundItem;
 
 import java.lang.reflect.Field;
 import java.util.Calendar;
@@ -201,12 +202,19 @@ public class TargetPlanFragment extends Fragment {
                             dbMsg += ",名称＝" + pClass.tEventSoundName ;
                             pClass.setStrPref("tEventSoundName",pClass.tEventSoundName);
 
-                            MainActivity.soundItem selItem = pClass.soundItemArrayList.get(position);
-                            pClass.tEventSoundURi = selItem.getClass().getField("uri").toString();
+                            soundItem selItem = pClass.soundItemArrayList.get(position);
+                            dbMsg += "[" + selItem.index+"]" ;
+                            dbMsg += selItem.uri;
+
+                            pClass.tEventSoundURi = selItem.uri;            //selItem.getClass().getField("uri").toString();
                             dbMsg += "," + getResources().getString(R.string.set_alarm_sound) +"URI=" + pClass.tEventSoundURi ;
                             pClass.setStrPref("tEventSoundURi",pClass.tEventSoundURi);
                             tSoundPlayBT.setVisibility(View.VISIBLE);
                         }
+//                        if(ringtone.isPlaying()){
+                            ringtone.stop();
+//                            dbMsg += ">>停止";
+//                        }
                         myLog(TAG , dbMsg);
                     } catch (Exception er) {
                         myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);

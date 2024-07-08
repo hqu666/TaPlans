@@ -77,6 +77,30 @@ public class MyPreferences extends PreferenceActivity {
     public Boolean ta206c = false;              // アラーム時刻2 の土曜
 
 
+    /**
+     * Stringプリファレンスを取得する
+     * */
+    public String readStrPref(Map<String, ?> inPref, String key, String defVal) {
+        final String TAG = "readStrPref";
+        String dbMsg = "[MyPreferences]";
+        String retStr=defVal;
+        try {
+            dbMsg += ",inPref=" + inPref.size() + "件" ;
+            dbMsg += ",key=" + key;
+            dbMsg += "(" + defVal + ")";
+            if(inPref.containsKey(key)){
+                retStr = sharedPref.getString(key, defVal);
+                dbMsg += ",retStr=" + retStr;
+            }else{
+                dbMsg += ",該当なし";
+            }
+            myLog(TAG, dbMsg);
+        } catch (Exception e) {
+            myErrorLog(TAG ,  dbMsg + "で" + e);
+        }
+        return retStr;
+    }
+
     public void readPref(Context con) {
         final String TAG = "readPref";
         String dbMsg = "[MyPreferences]";
@@ -89,11 +113,11 @@ public class MyPreferences extends PreferenceActivity {
             Map<String, ?> inPref = sharedPref.getAll();
             dbMsg += inPref.size() + "件" ;
             dbMsg += "," + con.getResources().getString(R.string.pref_calender_account) +"=" + calenderAccount ;
-            calenderAccount = sharedPref.getString("calendar_account", "your_account@gmail.com");
+            calenderAccount = readStrPref(inPref, "calendar_account", "your_account@gmail.com");
             dbMsg += ">>" + calenderAccount ;
 
             dbMsg += "," + con.getResources().getString(R.string.pref_sunday_background)+"；現在=" + sundayBackground ;
-            sundayBackground = sharedPref.getString("sundayBackground", String.valueOf(con.getResources().getColor(R.color.satuday_background)));
+            sundayBackground = readStrPref(inPref, "sundayBackground", String.valueOf(con.getResources().getColor(R.color.satuday_background)));
             dbMsg += ">>" + sundayBackground ;
 
             dbMsg += "," + con.getResources().getString(R.string.pref_sunday_text_color) +"=" + sundayTextColor ;
@@ -122,20 +146,20 @@ public class MyPreferences extends PreferenceActivity {
             targetDays=targetDays.replaceAll("]","");
             dbMsg += ">>" + targetDays ;
 
-            dbMsg += "," + con.getResources().getString(R.string.sett_event_name) +"=" + tEventName ;
+            dbMsg += "," + con.getResources().getString(R.string.sett_event_name)+"=" + tEventName ;
             tEventName = sharedPref.getString("tEventName", "");
             dbMsg += ">>" + tEventName ;
 
-            dbMsg += "," + getResources().getString(R.string.set_alarm_sound) +"名称=" + tEventSoundName ;
-            tEventSoundName = sharedPref.getString("tEventSoundName", "");
+            dbMsg += "," + con.getResources().getString(R.string.set_alarm_sound) +"名称=" ;  //+ tEventSoundName ;
+            tEventSoundName = readStrPref(inPref, "tEventSoundName", "");
             dbMsg += ">>" + tEventSoundName ;
 
-            dbMsg += "," + getResources().getString(R.string.set_alarm_sound) +"URI=" + tEventSoundURi ;
-            tEventSoundURi = sharedPref.getString("tEventSoundURi", "");
+            dbMsg += "," + con.getResources().getString(R.string.set_alarm_sound) +"URI=";  // + tEventSoundURi ;
+            tEventSoundURi = readStrPref(inPref, "tEventSoundURi", "");
             dbMsg += ">>" + tEventSoundURi ;
 
             dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"1=" + tArarmTime1 ;
-            tArarmTime1 = sharedPref.getString("tArarmTime1", "");
+            tArarmTime1 = readStrPref(inPref,"tArarmTime1", "");
             dbMsg += ">>" + tArarmTime1 ;
 
             dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"1の日曜=" + ta100c ;
@@ -171,7 +195,7 @@ public class MyPreferences extends PreferenceActivity {
             dbMsg += ">>" + ta106c ;
 
             dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"2=" + tArarmTime2 ;
-            tArarmTime2 = sharedPref.getString("tArarmTime2", "");
+            tArarmTime2 = readStrPref(inPref,"tArarmTime2", "");
             dbMsg += ">>" + tArarmTime2 ;
 
             dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"2の日曜=" + ta200c ;
@@ -207,6 +231,7 @@ public class MyPreferences extends PreferenceActivity {
             myErrorLog(TAG ,  dbMsg + "で" + e);
         }
     }
+
 
     /**
      *　全項目のサマリーを書き直す

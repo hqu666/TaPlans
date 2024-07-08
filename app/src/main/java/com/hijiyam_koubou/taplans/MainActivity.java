@@ -339,12 +339,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public static class soundItem{
-        String uriPrefix;
-        String index;
-        String title;    // 着信音などの名前
-        String uri;
-    }
+//    public class soundItem{
+//        String uriPrefix;
+//        String index;
+//        String title;    // 着信音などの名前
+//        String uri;
+//    }
 
     public ArrayList<soundItem> soundItemArrayList;
     public ArrayList<String> soundNameList;
@@ -374,6 +374,7 @@ public class MainActivity extends AppCompatActivity {
                 item.uriPrefix = cursor.getString(RingtoneManager.URI_COLUMN_INDEX);
                 item.uri = item.uriPrefix + "/" + item.index;                                   // ※URIはuriPrefixとindexをつなげる必要あり
                 dbMsg += " : " + item.uri ;
+                soundItemArrayList.add(item);
                 soundNameList.add(item.title);
             }
             dbMsg += "\n"+ soundItemArrayList.size() +"件=" ;
@@ -383,6 +384,25 @@ public class MainActivity extends AppCompatActivity {
         }
         return soundItemArrayList;
     }
+
+    /**
+     * 指定されたポジションに登録されているサウンドるソースの情報を返す
+     * */
+    public soundItem getAlarmsItem(int position) {
+        final String TAG = "getAlarmsItem";
+        String dbMsg = "[MainActivity]";
+        soundItem selItem=null;
+        try {
+            selItem = soundItemArrayList.get(position);
+            dbMsg += "[" + selItem.index+"]" ;
+            dbMsg += selItem.uri;
+            myLog(TAG , dbMsg);
+        } catch (Exception er) {
+            myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+        }
+        return selItem;
+    }
+
 
 
     //ライフサイクル//////////////////////////////////////////////////////////////
