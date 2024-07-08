@@ -56,7 +56,8 @@ public class MyPreferences extends PreferenceActivity {
      * 設定す津予定
      * */
     public String tEventName;             //  予定の名称
-    public String tEventSound;           // アラーム音
+    public String tEventSoundName;           // アラーム名
+    public String tEventSoundURi;           // アラームURI
     public String tArarmTime1;           // アラーム時刻1
     public Boolean ta100c = false;               // アラーム時刻1 の日曜
     public Boolean ta101c = false;          // アラーム時刻1 の月曜
@@ -125,9 +126,13 @@ public class MyPreferences extends PreferenceActivity {
             tEventName = sharedPref.getString("tEventName", "");
             dbMsg += ">>" + tEventName ;
 
-            dbMsg += "," + con.getResources().getString(R.string.set_alarm_sound) +"=" + tEventSound ;
-            tEventSound = sharedPref.getString("tEventSound", "");
-            dbMsg += ">>" + tEventSound ;
+            dbMsg += "," + getResources().getString(R.string.set_alarm_sound) +"名称=" + tEventSoundName ;
+            tEventSoundName = sharedPref.getString("tEventSoundName", "");
+            dbMsg += ">>" + tEventSoundName ;
+
+            dbMsg += "," + getResources().getString(R.string.set_alarm_sound) +"URI=" + tEventSoundURi ;
+            tEventSoundURi = sharedPref.getString("tEventSoundURi", "");
+            dbMsg += ">>" + tEventSoundURi ;
 
             dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"1=" + tArarmTime1 ;
             tArarmTime1 = sharedPref.getString("tArarmTime1", "");

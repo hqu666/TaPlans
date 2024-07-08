@@ -8,8 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.hijiyam_koubou.taplans"
-        minSdk 34
-        targetSdk 34
+        minSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -20,6 +19,10 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            debuggable true
+        }
+        debug {
+            signingConfig signingConfigs.debug
         }
     }
     compileOptions {
@@ -45,6 +48,7 @@ dependencies {
     implementation libs.navigation.ui
 
     implementation libs.preference
+    implementation libs.support.annotations
 
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit

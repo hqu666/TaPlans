@@ -67,7 +67,9 @@ public class MainActivity extends AppCompatActivity {
      * 設定す津予定
      * */
     public String tEventName;             //  予定の名称
-    public String tEventSound;           // アラーム音
+    public String tEventSoundName;           // アラーム名
+    public String tEventSoundURi;           // アラームURI
+
     public String tArarmTime1 = "06 : 00";           // アラーム時刻1
     public Boolean ta100c = false;               // アラーム時刻1 の日曜
     public Boolean ta101c = false;          // アラーム時刻1 の月曜
@@ -337,7 +339,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private class soundItem{
+    public static class soundItem{
         String uriPrefix;
         String index;
         String title;    // 着信音などの名前
@@ -412,8 +414,10 @@ public class MainActivity extends AppCompatActivity {
 
             this.tEventName = myPref.tEventName;
             dbMsg += "," + getResources().getString(R.string.sett_event_name) +"=" + tEventName ;
-            this.tEventSound = myPref.tEventSound;
-            dbMsg += "," + getResources().getString(R.string.set_alarm_sound) +"=" + tEventSound ;
+            this.tEventSoundName = myPref.tEventSoundName;
+            dbMsg += "," + getResources().getString(R.string.set_alarm_sound) +"名称=" + tEventSoundName ;
+            this.tEventSoundURi = myPref.tEventSoundURi;
+            dbMsg += "," + getResources().getString(R.string.set_alarm_sound) +"URI=" + tEventSoundURi ;
             if(myPref.tArarmTime1.contains(":")){
                 this.tArarmTime1 = myPref.tArarmTime1;
             }
