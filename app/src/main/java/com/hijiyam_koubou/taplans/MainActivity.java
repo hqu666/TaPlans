@@ -339,13 +339,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-//    public class soundItem{
-//        String uriPrefix;
-//        String index;
-//        String title;    // 着信音などの名前
-//        String uri;
-//    }
-
     public ArrayList<soundItem> soundItemArrayList;
     public ArrayList<String> soundNameList;
     private ArrayList<soundItem> loadAlarms() {
@@ -403,6 +396,34 @@ public class MainActivity extends AppCompatActivity {
         return selItem;
     }
 
+    /**
+     * Spinnerで選択したアイテムからアラーム音を設定する
+     * */
+    public  soundItem setSoundItem(int position,String prefName,String prefURi) {
+        final String TAG = "setSoundItem";
+        String dbMsg = "[MainActivity]";
+        soundItem selItem=null;
+        try {
+            dbMsg +=  position+"番目のアイテムを" + prefName + "へ";
+            selItem = soundItemArrayList.get(position);
+            dbMsg += ",名称＝" + selItem.title ;
+            setStrPref(prefName,(String) selItem.title);
+            if(prefName.equals("tEventSoundName")){
+                tEventSoundName = (String) selItem.title;
+            }
+            dbMsg += "[" + selItem.index+"]" ;
+            dbMsg += selItem.uri;
+            dbMsg += ">>URI=" + tEventSoundURi ;         //"," + getActivity().getString(R.string.set_alarm_sound) +
+            setStrPref(prefURi,selItem.uri);
+            if(prefURi.equals("tEventSoundURi")){
+                tEventSoundURi = selItem.uri;            //selItem.getClass().getField("uri").toString();
+            }
+            myLog(TAG , dbMsg);
+        } catch (Exception er) {
+            myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+        }
+        return selItem;
+    }
 
 
     //ライフサイクル//////////////////////////////////////////////////////////////

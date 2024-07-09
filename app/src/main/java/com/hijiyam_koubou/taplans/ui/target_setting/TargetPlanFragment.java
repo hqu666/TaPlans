@@ -175,10 +175,17 @@ public class TargetPlanFragment extends Fragment {
             tEventNameEt.setText(pClass.tEventName);
 
             tEventSoundSP = binding.tEventSoundSP;           // アラーム音
+            tSoundPlayBT = binding.tSoundPlayBT;
             ArrayAdapter soundArrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, pClass.soundNameList);
             tEventSoundSP.setAdapter(soundArrayAdapter);
             dbMsg += "," + getResources().getString(R.string.set_alarm_sound) +"名称=" + pClass.tEventSoundName ;
             dbMsg += "," + getResources().getString(R.string.set_alarm_sound) +"URI=" + pClass.tEventSoundURi ;
+          //  spPosision=pClass.soundNameList.indexOf((String)pClass.tEventSoundName );
+
+            int spPosition = (Integer)soundArrayAdapter.getPosition((String)pClass.tEventSoundName );
+            dbMsg += "," + spPosition +"番目";
+            tEventSoundSP.setSelection(spPosition);
+            tEventSoundSP.setFocusable(false);
 
             tEventSoundSP.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
@@ -190,31 +197,22 @@ public class TargetPlanFragment extends Fragment {
                         dbMsg += ",position=" + position;
                         // 初回起動時の動作
                         if (tEventSoundSP.isFocusable() == false) {
-                            // if (mIsFirstBoot) {
                             tEventSoundSP.setFocusable(true);
                             dbMsg += ",初回起動";
-                            // mIsFirstBoot = false;
-                          //  return;
-                        }else{
+                         }else{
                             dbMsg += ",初回以降の動作";
-                            Adapter sAdapter = parent.getAdapter();
-                            pClass.tEventSoundName = (String) sAdapter.getItem(position);
-                            dbMsg += ",名称＝" + pClass.tEventSoundName ;
-                            pClass.setStrPref("tEventSoundName",pClass.tEventSoundName);
-
-                            soundItem selItem = pClass.soundItemArrayList.get(position);
-                            dbMsg += "[" + selItem.index+"]" ;
-                            dbMsg += selItem.uri;
-
-                            pClass.tEventSoundURi = selItem.uri;            //selItem.getClass().getField("uri").toString();
-                            dbMsg += "," + getResources().getString(R.string.set_alarm_sound) +"URI=" + pClass.tEventSoundURi ;
-                            pClass.setStrPref("tEventSoundURi",pClass.tEventSoundURi);
+                            dbMsg += ",名称＝" + pClass.tEventSoundName + ",URI=" + pClass.tEventSoundURi ;
+                            soundItem sItem = pClass.setSoundItem(position,"tEventSoundName","tEventSoundURi");
+                            dbMsg += ">>"+ pClass.tEventSoundName + "," + pClass.tEventSoundURi ;
                             tSoundPlayBT.setVisibility(View.VISIBLE);
+                            if(ringtone!=null && ringtone.isPlaying()){
+                                dbMsg += ringtone.getTitle(getActivity()) + "を" + ringtone.getVolume() + "から";
+                                ringtone.stop();
+                                dbMsg += ">>停止";
+                            }
+                            ringtone = RingtoneManager.getRingtone(getActivity(), Uri.parse(pClass.tEventSoundURi));
+                            dbMsg += ringtone.getTitle(getActivity()) + "を" + ringtone.getVolume() + "で作成";
                         }
-//                        if(ringtone.isPlaying()){
-                            ringtone.stop();
-//                            dbMsg += ">>停止";
-//                        }
                         myLog(TAG , dbMsg);
                     } catch (Exception er) {
                         myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
@@ -227,7 +225,6 @@ public class TargetPlanFragment extends Fragment {
                 }
             });
 
-            tSoundPlayBT = binding.tSoundPlayBT;
             tSoundPlayBT.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -236,16 +233,15 @@ public class TargetPlanFragment extends Fragment {
                     try {
                         dbMsg += "," + getResources().getString(R.string.set_alarm_sound) +"URI=" + pClass.tEventSoundURi ;
                         if(pClass.tEventSoundURi != null){
-                            ringtone = RingtoneManager.getRingtone(getActivity(), Uri.parse(pClass.tEventSoundURi));
+                            dbMsg += ringtone.getTitle(getActivity()) + "を" + ringtone.getVolume() + "で";
                             if(ringtone.isPlaying()){
                                 ringtone.stop();
                                 dbMsg += ">>停止";
-                            }else{
+                             }else{
                                 ringtone.play();
                                 dbMsg += ">>再生";
                             }
                         }
-
                         myLog(TAG , dbMsg);
                     } catch (Exception er) {
                         myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
