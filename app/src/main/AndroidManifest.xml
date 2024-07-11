@@ -12,7 +12,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TaPlans"
         tools:targetApi="34"
-        tools:ignore="ObsoleteSdkInt">
+        tools:ignore="HardcodedDebugMode,ObsoleteSdkInt">
+<!--        android:debuggable="true"-->
 
         <activity
             android:name=".MainActivity"

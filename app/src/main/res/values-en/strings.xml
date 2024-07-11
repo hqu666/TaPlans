@@ -43,5 +43,6 @@
     <string name="comm_monday">Mon</string>
     <string name="comm_tuesday">Tue</string>
     <string name="set_sequential_updates">sequential updates</string>
+    <string name="comm_holiday">holiday</string>
 
 </resources>

@@ -60,8 +60,9 @@ public class TargetPlanFragment extends Fragment {
     private CheckBox ta104cBox;               // アラーム時刻1 の木曜
     private CheckBox ta105cBox;               // アラーム時刻1 の金曜
     private CheckBox ta106cBox;               // アラーム時刻1 の土曜
-    private Button tArarmTime2BT;          // アラーム時刻2
+    private CheckBox ta107cBox;               // アラーム時刻1 の祝日
 
+    private Button tArarmTime2BT;          // アラーム時刻2
     private CheckBox ta200cBox;               // アラーム時刻2 の日曜
     private CheckBox ta201cBox;               // アラーム時刻2 の月曜
     private CheckBox ta202cBox;               // アラーム時刻2 の火曜
@@ -69,6 +70,17 @@ public class TargetPlanFragment extends Fragment {
     private CheckBox ta204cBox;               // アラーム時刻2 の木曜
     private CheckBox ta205cBox;               // アラーム時刻2 の金曜
     private CheckBox ta206cBox;               // アラーム時刻2 の土曜
+    private CheckBox ta207cBox;               // アラーム時刻2 の祝日
+
+    private Button tArarmTime3BT;          // アラーム時刻3
+    private CheckBox ta300cBox;               // アラーム時刻3 の日曜
+    private CheckBox ta301cBox;               // アラーム時刻3 の月曜
+    private CheckBox ta302cBox;               // アラーム時刻3 の火曜
+    private CheckBox ta303cBox;               // アラーム時刻3 の水曜
+    private CheckBox ta304cBox;               // アラーム時刻3 の木曜
+    private CheckBox ta305cBox;               // アラーム時刻3 の金曜
+    private CheckBox ta306cBox;               // アラーム時刻3 の土曜
+    private CheckBox ta307cBox;               // アラーム時刻3 の祝日
 
     private FragmentTargetSettingBinding binding;
     private Ringtone ringtone;
@@ -273,8 +285,6 @@ public class TargetPlanFragment extends Fragment {
             pClass.setButtonText(tArarmTime1BT,pClass.tArarmTime1);
 
             ta100cBox = binding.ta100cBox;               // アラーム時刻1 の日曜
-            dbMsg += "アラーム時刻1 の日曜=" + pClass.ta100c;
-            ta100cBox.setChecked(pClass.ta100c);
             ta100cBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 // チェック状態が変更された時のハンドラ
                 @Override
@@ -283,18 +293,26 @@ public class TargetPlanFragment extends Fragment {
                     String dbMsg = "[ta100cBox]";
                     try {
                         CheckBox chkbox=(CheckBox)buttonView;
-                        pClass.ta100c=chkbox.isChecked();
                         dbMsg += "アラーム時刻1 の日曜=" + pClass.ta100c;
-                        setBoolPref("ta100c",pClass.ta100c);
-                        if(pClass.ta100c) {
-                            if(pClass.ta200c) {
-                                pClass.ta200c =false;
-                                ta200cBox.setChecked(pClass.ta200c);
-                                setBoolPref("ta200c",pClass.ta200c);
-                            }
-                        }else {
-                            dbMsg += "解除";
+                        pClass.setWeekCheck(ta100cBox,isChecked,"ta100c",ta200cBox,"ta200c",ta300cBox,"ta300c" );
+                        if(isChecked){
+                            pClass.ta100c=true;
+                            pClass.ta200c=false;
+                            pClass.ta300c=false;
+                        }else{
+                            pClass.ta100c=false;
                         }
+//                        pClass.ta100c=chkbox.isChecked();
+//                        setBoolPref("ta100c",pClass.ta100c);
+//                        if(pClass.ta100c) {
+//                            if(pClass.ta200c) {
+//                                pClass.ta200c =false;
+//                                ta200cBox.setChecked(pClass.ta200c);
+//                                setBoolPref("ta200c",pClass.ta200c);
+//                            }
+//                        }else {
+//                            dbMsg += "解除";
+//                        }
                         myLog(TAG , dbMsg);
                     } catch (Exception er) {
                         myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
@@ -303,8 +321,6 @@ public class TargetPlanFragment extends Fragment {
             });
 
             ta101cBox = binding.ta101cBox;               // アラーム時刻1 の月曜
-            dbMsg += "アラーム時刻1 の月曜=" + pClass.ta101c;
-            ta101cBox.setChecked(pClass.ta101c);
             ta101cBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 // チェック状態が変更された時のハンドラ
                 @Override
@@ -312,19 +328,26 @@ public class TargetPlanFragment extends Fragment {
                     final String TAG = "onCheckedChanged";
                     String dbMsg = "[ta101cBox]";
                     try {
-                        CheckBox chkbox=(CheckBox)buttonView;
-                        pClass.ta101c=chkbox.isChecked();
-                        dbMsg += "アラーム時刻1 の月曜=" + pClass.ta101c;
-                        setBoolPref("ta101c",pClass.ta101c);
-                        if(pClass.ta101c) {
-                            if(pClass.ta201c) {
-                                pClass.ta201c =false;
-                                ta201cBox.setChecked(pClass.ta201c);
-                                setBoolPref("ta201c",pClass.ta201c);
-                            }
-                        }else {
-                            dbMsg += "解除";
-                        }
+                        CheckBox chkBox=(CheckBox)buttonView;
+                        dbMsg += "アラーム時刻1 の月曜を" + isChecked + "に";
+                        pClass.setWeekCheck(ta101cBox,isChecked,"ta101c",ta201cBox,"ta201c",ta301cBox,"ta301c" );
+                        if(isChecked){
+                            pClass.ta101c=true;
+                            pClass.ta201c=false;
+                            pClass.ta301c=false;
+                        }else{
+                            pClass.ta101c=false;
+                         }
+//                        setBoolPref("ta101c",pClass.ta101c);
+//                        if(pClass.ta101c) {
+//                            if(pClass.ta201c) {
+//                                pClass.ta201c =false;
+//                                ta201cBox.setChecked(pClass.ta201c);
+//                                setBoolPref("ta201c",pClass.ta201c);
+//                            }
+//                        }else {
+//                            dbMsg += "解除";
+//                        }
                         myLog(TAG , dbMsg);
                     } catch (Exception er) {
                         myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
@@ -333,9 +356,7 @@ public class TargetPlanFragment extends Fragment {
             });
 
             ta102cBox = binding.ta102cBox;               // アラーム時刻1 の火曜
-            dbMsg += "アラーム時刻1 の火曜=" + pClass.ta102c;
-            ta102cBox.setChecked(pClass.ta102c);
-            ta102cBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+             ta102cBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 // チェック状態が変更された時のハンドラ
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -343,18 +364,26 @@ public class TargetPlanFragment extends Fragment {
                     String dbMsg = "[ta102cBox]";
                     try {
                         CheckBox chkbox=(CheckBox)buttonView;
-                        pClass.ta102c=chkbox.isChecked();
-                        dbMsg += "アラーム時刻1 の火曜=" + pClass.ta102c;
-                        setBoolPref("ta102c",pClass.ta102c);
-                        if(pClass.ta102c) {
-                            if(pClass.ta202c) {
-                                pClass.ta202c =false;
-                                ta202cBox.setChecked(pClass.ta202c);
-                                setBoolPref("ta202c",pClass.ta202c);
-                            }
-                        }else {
-                            dbMsg += "解除";
+                        pClass.setWeekCheck(chkbox,isChecked,"ta102c",ta202cBox,"ta202c",ta302cBox,"ta302c" );
+                        if(isChecked){
+                            pClass.ta102c=true;
+                            pClass.ta202c=false;
+                            pClass.ta302c=false;
+                        }else{
+                            pClass.ta102c=false;
                         }
+//                        pClass.ta102c=chkbox.isChecked();
+//                        dbMsg += "アラーム時刻1 の火曜=" + pClass.ta102c;
+//                        setBoolPref("ta102c",pClass.ta102c);
+//                        if(pClass.ta102c) {
+//                            if(pClass.ta202c) {
+//                                pClass.ta202c =false;
+//                                ta202cBox.setChecked(pClass.ta202c);
+//                                setBoolPref("ta202c",pClass.ta202c);
+//                            }
+//                        }else {
+//                            dbMsg += "解除";
+//                        }
                         myLog(TAG , dbMsg);
                     } catch (Exception er) {
                         myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
@@ -363,8 +392,6 @@ public class TargetPlanFragment extends Fragment {
             });
 
             ta103cBox = binding.ta103cBox;               // アラーム時刻1 の水曜
-            dbMsg += "アラーム時刻1 の水曜=" + pClass.ta103c;
-            ta103cBox.setChecked(pClass.ta103c);
             ta103cBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 // チェック状態が変更された時のハンドラ
                 @Override
@@ -373,18 +400,27 @@ public class TargetPlanFragment extends Fragment {
                     String dbMsg = "[ta103cBox]";
                     try {
                         CheckBox chkbox=(CheckBox)buttonView;
-                        pClass.ta103c=chkbox.isChecked();
-                        dbMsg += "アラーム時刻1 の水曜=" + pClass.ta103c;
-                        setBoolPref("ta103c",pClass.ta103c);
-                        if(pClass.ta103c) {
-                            if(pClass.ta203c) {
-                                pClass.ta203c =false;
-                                ta203cBox.setChecked(pClass.ta203c);
-                                setBoolPref("ta203c",pClass.ta203c);
-                            }
-                        }else {
-                            dbMsg += "解除";
+                        pClass.setWeekCheck(chkbox,isChecked,"ta103c",ta203cBox,"ta203c",ta303cBox,"ta303c" );
+                        if(isChecked){
+                            pClass.ta103c=true;
+                            pClass.ta203c=false;
+                            pClass.ta303c=false;
+                        }else{
+                            pClass.ta103c=false;
                         }
+
+//                        pClass.ta103c=chkbox.isChecked();
+//                        dbMsg += "アラーム時刻1 の水曜=" + pClass.ta103c;
+//                        setBoolPref("ta103c",pClass.ta103c);
+//                        if(pClass.ta103c) {
+//                            if(pClass.ta203c) {
+//                                pClass.ta203c =false;
+//                                ta203cBox.setChecked(pClass.ta203c);
+//                                setBoolPref("ta203c",pClass.ta203c);
+//                            }
+//                        }else {
+//                            dbMsg += "解除";
+//                        }
                         myLog(TAG , dbMsg);
                     } catch (Exception er) {
                         myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
@@ -393,8 +429,6 @@ public class TargetPlanFragment extends Fragment {
             });
 
             ta104cBox = binding.ta104cBox;               // アラーム時刻1 の木曜
-            dbMsg += "アラーム時刻1 の木曜=" + pClass.ta104c;
-            ta104cBox.setChecked(pClass.ta104c);
             ta104cBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 // チェック状態が変更された時のハンドラ
                 @Override
@@ -403,17 +437,13 @@ public class TargetPlanFragment extends Fragment {
                     String dbMsg = "[ta104cBox]";
                     try {
                         CheckBox chkbox=(CheckBox)buttonView;
-                        pClass.ta104c=chkbox.isChecked();
-                        dbMsg += "アラーム時刻1 の木曜=" + pClass.ta104c;
-                        setBoolPref("ta104c",pClass.ta104c);
-                        if(pClass.ta104c) {
-                            if(pClass.ta204c) {
-                                pClass.ta204c =false;
-                                ta204cBox.setChecked(pClass.ta204c);
-                                setBoolPref("ta204c",pClass.ta204c);
-                            }
-                        }else {
-                            dbMsg += "解除";
+                        pClass.setWeekCheck(chkbox,isChecked,"ta104c",ta204cBox,"ta204c",ta304cBox,"ta304c" );
+                        if(isChecked){
+                            pClass.ta104c=true;
+                            pClass.ta204c=false;
+                            pClass.ta304c=false;
+                        }else{
+                            pClass.ta104c=false;
                         }
                         myLog(TAG , dbMsg);
                     } catch (Exception er) {
@@ -423,8 +453,6 @@ public class TargetPlanFragment extends Fragment {
             });
 
             ta105cBox = binding.ta105cBox;               // アラーム時刻1 の金曜
-            dbMsg += "アラーム時刻1 の金曜=" + pClass.ta105c;
-            ta105cBox.setChecked(pClass.ta105c);
             ta105cBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 // チェック状態が変更された時のハンドラ
                 @Override
@@ -433,17 +461,13 @@ public class TargetPlanFragment extends Fragment {
                     String dbMsg = "[ta105cBox]";
                     try {
                         CheckBox chkbox=(CheckBox)buttonView;
-                        pClass.ta105c=chkbox.isChecked();
-                        dbMsg += "アラーム時刻1 の金曜=" + pClass.ta105c;
-                        setBoolPref("ta105c",pClass.ta105c);
-                        if(pClass.ta105c) {
-                            if(pClass.ta205c) {
-                                pClass.ta205c =false;
-                                ta205cBox.setChecked(pClass.ta205c);
-                                setBoolPref("ta205c",pClass.ta205c);
-                            }
-                        }else {
-                            dbMsg += "解除";
+                        pClass.setWeekCheck(chkbox,isChecked,"ta105c",ta205cBox,"ta205c",ta305cBox,"ta305c" );
+                        if(isChecked){
+                            pClass.ta105c=true;
+                            pClass.ta205c=false;
+                            pClass.ta305c=false;
+                        }else{
+                            pClass.ta105c=false;
                         }
                         myLog(TAG , dbMsg);
                     } catch (Exception er) {
@@ -453,8 +477,6 @@ public class TargetPlanFragment extends Fragment {
             });
 
             ta106cBox = binding.ta106cBox;               // アラーム時刻1 の土曜
-            dbMsg += "アラーム時刻1 の土曜=" + pClass.ta106c;
-            ta106cBox.setChecked(pClass.ta106c);
             ta106cBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 // チェック状態が変更された時のハンドラ
                 @Override
@@ -463,17 +485,37 @@ public class TargetPlanFragment extends Fragment {
                     String dbMsg = "[ta106cBox]";
                     try {
                         CheckBox chkbox=(CheckBox)buttonView;
-                        pClass.ta106c=chkbox.isChecked();
-                        dbMsg += "アラーム時刻1 の土曜=" + pClass.ta106c;
-                        setBoolPref("ta105c",pClass.ta106c);
-                        if(pClass.ta106c) {
-                            if(pClass.ta206c) {
-                                pClass.ta206c =false;
-                                ta206cBox.setChecked(pClass.ta206c);
-                                setBoolPref("ta206c",pClass.ta206c);
-                            }
-                        }else {
-                            dbMsg += "解除";
+                        pClass.setWeekCheck(chkbox,isChecked,"ta106c",ta206cBox,"ta206c",ta306cBox,"ta306c" );
+                        if(isChecked){
+                            pClass.ta106c=true;
+                            pClass.ta206c=false;
+                            pClass.ta306c=false;
+                        }else{
+                            pClass.ta106c=false;
+                        }
+                        myLog(TAG , dbMsg);
+                    } catch (Exception er) {
+                        myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+                    }
+                }
+            });
+
+            ta107cBox = binding.ta107cBox;
+            ta107cBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                // チェック状態が変更された時のハンドラ
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    final String TAG = "onCheckedChanged";
+                    String dbMsg = "[ta106cBox]";
+                    try {
+                        CheckBox chkbox=(CheckBox)buttonView;
+                        pClass.setWeekCheck(chkbox,isChecked,"ta107c",ta207cBox,"ta207c",ta307cBox,"ta307c" );
+                        if(isChecked){
+                            pClass.ta107c=true;
+                            pClass.ta207c=false;
+                            pClass.ta307c=false;
+                        }else{
+                            pClass.ta107c=false;
                         }
                         myLog(TAG , dbMsg);
                     } catch (Exception er) {
@@ -501,8 +543,6 @@ public class TargetPlanFragment extends Fragment {
             pClass.setButtonText(tArarmTime2BT,pClass.tArarmTime2);
 
             ta200cBox = binding.ta200cBox;               // アラーム時刻2 の日曜
-            dbMsg += "アラーム時刻2 の日曜=" + pClass.ta200c;
-            ta200cBox.setChecked(pClass.ta200c);
             ta200cBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 // チェック状態が変更された時のハンドラ
                 @Override
@@ -511,17 +551,13 @@ public class TargetPlanFragment extends Fragment {
                     String dbMsg = "[ta200cBox]";
                     try {
                         CheckBox chkbox=(CheckBox)buttonView;
-                        pClass.ta200c=chkbox.isChecked();
-                        dbMsg += "アラーム時刻2 の日曜=" + pClass.ta200c;
-                        setBoolPref("ta200c",pClass.ta200c);
-                        if(pClass.ta200c) {
-                            if(pClass.ta100c) {
-                                pClass.ta100c =false;
-                                ta100cBox.setChecked(pClass.ta100c);
-                                setBoolPref("ta100c",pClass.ta100c);
-                            }
-                        }else {
-                            dbMsg += "解除";
+                        pClass.setWeekCheck(chkbox,isChecked,"ta200c",ta100cBox,"ta100c",ta300cBox,"ta300c" );
+                        if(isChecked){
+                            pClass.ta200c=true;
+                            pClass.ta100c=false;
+                            pClass.ta300c=false;
+                        }else{
+                            pClass.ta200c=false;
                         }
                         myLog(TAG , dbMsg);
                     } catch (Exception er) {
@@ -531,8 +567,6 @@ public class TargetPlanFragment extends Fragment {
             });
 
             ta201cBox = binding.ta201cBox;               // アラーム時刻2 の月曜
-            dbMsg += "アラーム時刻2 の月曜=" + pClass.ta201c;
-            ta201cBox.setChecked(pClass.ta201c);
             ta201cBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 // チェック状態が変更された時のハンドラ
                 @Override
@@ -540,18 +574,14 @@ public class TargetPlanFragment extends Fragment {
                     final String TAG = "onCheckedChanged";
                     String dbMsg = "[ta201cBox]";
                     try {
-                        CheckBox chkbox=(CheckBox)buttonView;
-                        pClass.ta201c=chkbox.isChecked();
-                        dbMsg += "アラーム時刻2 の月曜=" + pClass.ta201c;
-                        setBoolPref("ta201c",pClass.ta201c);
-                        if(pClass.ta201c) {
-                            if(pClass.ta101c) {
-                                pClass.ta101c =false;
-                                ta101cBox.setChecked(pClass.ta101c);
-                                setBoolPref("ta101c",pClass.ta101c);
-                            }
-                        }else {
-                            dbMsg += "解除";
+                        CheckBox chBox=(CheckBox)buttonView;
+                        pClass.setWeekCheck(chBox,isChecked,"ta201c",ta101cBox,"ta101c",ta301cBox,"ta301c" );
+                        if(isChecked){
+                            pClass.ta201c=true;
+                            pClass.ta101c=false;
+                            pClass.ta301c=false;
+                        }else{
+                            pClass.ta201c=false;
                         }
                         myLog(TAG , dbMsg);
                     } catch (Exception er) {
@@ -561,8 +591,6 @@ public class TargetPlanFragment extends Fragment {
             });
 
             ta202cBox = binding.ta202cBox;               // アラーム時刻2 の火曜
-            dbMsg += "アラーム時刻2 の火曜=" + pClass.ta202c;
-            ta202cBox.setChecked(pClass.ta202c);
             ta202cBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 // チェック状態が変更された時のハンドラ
                 @Override
@@ -570,18 +598,14 @@ public class TargetPlanFragment extends Fragment {
                     final String TAG = "onCheckedChanged";
                     String dbMsg = "[ta202cBox]";
                     try {
-                        CheckBox chkbox=(CheckBox)buttonView;
-                        pClass.ta202c=chkbox.isChecked();
-                        dbMsg += "アラーム時刻2 の火曜=" + pClass.ta202c;
-                        setBoolPref("ta202c",pClass.ta202c);
-                        if(pClass.ta202c) {
-                            if(pClass.ta102c) {
-                                pClass.ta102c =false;
-                                ta102cBox.setChecked(pClass.ta102c);
-                                setBoolPref("ta102c",pClass.ta102c);
-                            }
-                        }else {
-                            dbMsg += "解除";
+                        CheckBox chBox=(CheckBox)buttonView;
+                        pClass.setWeekCheck(chBox,isChecked,"ta202c",ta102cBox,"ta102c",ta302cBox,"ta302c" );
+                        if(isChecked){
+                            pClass.ta202c=true;
+                            pClass.ta102c=false;
+                            pClass.ta302c=false;
+                        }else{
+                            pClass.ta202c=false;
                         }
                         myLog(TAG , dbMsg);
                     } catch (Exception er) {
@@ -591,27 +615,21 @@ public class TargetPlanFragment extends Fragment {
             });
 
             ta203cBox = binding.ta203cBox;               // アラーム時刻2 の水曜
-            dbMsg += "アラーム時刻2 の水曜=" + pClass.ta203c;
-            ta203cBox.setChecked(pClass.ta203c);
-            ta203cBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+             ta203cBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 // チェック状態が変更された時のハンドラ
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     final String TAG = "onCheckedChanged";
                     String dbMsg = "[ta203cBox]";
                     try {
-                        CheckBox chkbox=(CheckBox)buttonView;
-                        pClass.ta203c=chkbox.isChecked();
-                        dbMsg += "アラーム時刻2 の水曜=" + pClass.ta203c;
-                        setBoolPref("ta203c",pClass.ta203c);
-                        if(pClass.ta203c) {
-                            if(pClass.ta103c) {
-                                pClass.ta103c =false;
-                                ta103cBox.setChecked(pClass.ta103c);
-                                setBoolPref("ta103c",pClass.ta103c);
-                            }
-                        }else {
-                            dbMsg += "解除";
+                        CheckBox chBox=(CheckBox)buttonView;
+                        pClass.setWeekCheck(chBox,isChecked,"ta203c",ta103cBox,"ta103c",ta303cBox,"ta303c" );
+                        if(isChecked){
+                            pClass.ta203c=true;
+                            pClass.ta103c=false;
+                            pClass.ta303c=false;
+                        }else{
+                            pClass.ta203c=false;
                         }
                         myLog(TAG , dbMsg);
                     } catch (Exception er) {
@@ -621,8 +639,6 @@ public class TargetPlanFragment extends Fragment {
             });
 
             ta204cBox = binding.ta204cBox;               // アラーム時刻2 の木曜
-            dbMsg += "アラーム時刻2 の木曜=" + pClass.ta204c;
-            ta204cBox.setChecked(pClass.ta204c);
             ta204cBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 // チェック状態が変更された時のハンドラ
                 @Override
@@ -630,18 +646,14 @@ public class TargetPlanFragment extends Fragment {
                     final String TAG = "onCheckedChanged";
                     String dbMsg = "[ta204cBox]";
                     try {
-                        CheckBox chkbox=(CheckBox)buttonView;
-                        pClass.ta204c=chkbox.isChecked();
-                        dbMsg += "アラーム時刻2 の木曜=" + pClass.ta204c;
-                        setBoolPref("ta204c",pClass.ta204c);
-                        if(pClass.ta204c) {
-                            if(pClass.ta104c) {
-                                pClass.ta104c =false;
-                                ta104cBox.setChecked(pClass.ta104c);
-                                setBoolPref("ta104c",pClass.ta104c);
-                            }
-                        }else {
-                            dbMsg += "解除";
+                        CheckBox chBox=(CheckBox)buttonView;
+                        pClass.setWeekCheck(chBox,isChecked,"ta204c",ta104cBox,"ta104c",ta304cBox,"ta304c" );
+                        if(isChecked){
+                            pClass.ta204c=true;
+                            pClass.ta104c=false;
+                            pClass.ta304c=false;
+                        }else{
+                            pClass.ta204c=false;
                         }
                         myLog(TAG , dbMsg);
                     } catch (Exception er) {
@@ -651,8 +663,6 @@ public class TargetPlanFragment extends Fragment {
             });
 
             ta205cBox = binding.ta205cBox;               // アラーム時刻2 の金曜
-            dbMsg += "アラーム時刻2 の金曜=" + pClass.ta205c;
-            ta205cBox.setChecked(pClass.ta205c);
             ta205cBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 // チェック状態が変更された時のハンドラ
                 @Override
@@ -660,18 +670,14 @@ public class TargetPlanFragment extends Fragment {
                     final String TAG = "onCheckedChanged";
                     String dbMsg = "[ta205cBox]";
                     try {
-                        CheckBox chkbox=(CheckBox)buttonView;
-                        pClass.ta205c=chkbox.isChecked();
-                        dbMsg += "アラーム時刻2 の金曜=" + pClass.ta205c;
-                        setBoolPref("ta205c",pClass.ta205c);
-                        if(pClass.ta205c) {
-                            if(pClass.ta105c) {
-                                pClass.ta105c =false;
-                                ta105cBox.setChecked(pClass.ta105c);
-                                setBoolPref("ta105c",pClass.ta105c);
-                            }
-                        }else {
-                            dbMsg += "解除";
+                        CheckBox chBox=(CheckBox)buttonView;
+                        pClass.setWeekCheck(chBox,isChecked,"ta205c",ta105cBox,"ta105c",ta305cBox,"ta305c" );
+                        if(isChecked){
+                            pClass.ta205c=true;
+                            pClass.ta105c=false;
+                            pClass.ta305c=false;
+                        }else{
+                            pClass.ta205c=false;
                         }
                         myLog(TAG , dbMsg);
                     } catch (Exception er) {
@@ -681,8 +687,6 @@ public class TargetPlanFragment extends Fragment {
             });
 
             ta206cBox = binding.ta206cBox;               // アラーム時刻2 の土曜
-            dbMsg += "アラーム時刻2 の土曜=" + pClass.ta206c;
-            ta206cBox.setChecked(pClass.ta206c);
             ta206cBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 // チェック状態が変更された時のハンドラ
                 @Override
@@ -690,18 +694,14 @@ public class TargetPlanFragment extends Fragment {
                     final String TAG = "onCheckedChanged";
                     String dbMsg = "[ta206cBox]";
                     try {
-                        CheckBox chkbox=(CheckBox)buttonView;
-                        pClass.ta206c=chkbox.isChecked();
-                        dbMsg += "アラーム時刻2 の土曜=" + pClass.ta206c;
-                        setBoolPref("ta206c",pClass.ta206c);
-                        if(pClass.ta206c) {
-                            if(pClass.ta106c) {
-                                pClass.ta106c =false;
-                                ta106cBox.setChecked(pClass.ta106c);
-                                setBoolPref("ta106c",pClass.ta106c);
-                            }
-                        }else {
-                            dbMsg += "解除";
+                        CheckBox chBox=(CheckBox)buttonView;
+                        pClass.setWeekCheck(chBox,isChecked,"ta206c",ta106cBox,"ta106c",ta306cBox,"ta306c" );
+                        if(isChecked){
+                            pClass.ta206c=true;
+                            pClass.ta106c=false;
+                            pClass.ta306c=false;
+                        }else{
+                            pClass.ta206c=false;
                         }
                         myLog(TAG , dbMsg);
                     } catch (Exception er) {
@@ -709,6 +709,291 @@ public class TargetPlanFragment extends Fragment {
                     }
                 }
             });
+
+            ta207cBox = binding.ta207cBox;
+            ta207cBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                // チェック状態が変更された時のハンドラ
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    final String TAG = "onCheckedChanged";
+                    String dbMsg = "[ta106cBox]";
+                    try {
+                        CheckBox chBox=(CheckBox)buttonView;
+                        pClass.setWeekCheck(chBox,isChecked,"ta207c",ta107cBox,"ta107c",ta307cBox,"ta307c" );
+                        if(isChecked){
+                            pClass.ta207c=true;
+                            pClass.ta107c=false;
+                            pClass.ta307c=false;
+                        }else{
+                            pClass.ta207c=false;
+                        }
+                        myLog(TAG , dbMsg);
+                    } catch (Exception er) {
+                        myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+                    }
+                }
+            });
+
+            dbMsg += "アラーム時刻3="+ pClass.tArarmTime3;
+            tArarmTime3BT = binding.tArarmTime3BT;           // アラーム時刻2
+            tArarmTime3BT.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final String TAG = "onClick";
+                    String dbMsg = "[tArarmTime3BT]";
+                    try {
+                        dbMsg += "アラーム時刻3=" +  pClass.tArarmTime3;
+                        pClass.showTimePicker("tArarmTime3",pClass.tArarmTime3,tArarmTime3BT);
+                        myLog(TAG , dbMsg);
+                    } catch (Exception er) {
+                        myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+                    }
+                }
+            });
+            pClass.setButtonText(tArarmTime3BT,pClass.tArarmTime3);
+
+            ta300cBox = binding.ta300cBox;               // アラーム時刻2 の日曜
+            ta300cBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                // チェック状態が変更された時のハンドラ
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    final String TAG = "onCheckedChanged";
+                    String dbMsg = "[ta300cBox]";
+                    try {
+                        CheckBox chkbox=(CheckBox)buttonView;
+                        pClass.setWeekCheck(chkbox,isChecked,"ta300c",ta100cBox,"ta100c",ta200cBox,"ta200c" );
+                        if(isChecked){
+                            pClass.ta300c=true;
+                            pClass.ta100c=false;
+                            pClass.ta200c=false;
+                        }else{
+                            pClass.ta300c=false;
+                        }
+                        myLog(TAG , dbMsg);
+                    } catch (Exception er) {
+                        myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+                    }
+                }
+            });
+
+            ta301cBox = binding.ta301cBox;               // アラーム時刻2 の月曜
+            ta301cBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                // チェック状態が変更された時のハンドラ
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    final String TAG = "onCheckedChanged";
+                    String dbMsg = "[ta301cBox]";
+                    try {
+                        CheckBox chBox=(CheckBox)buttonView;
+                        pClass.setWeekCheck(chBox,isChecked,"ta301c",ta101cBox,"ta101c",ta201cBox,"ta201c" );
+                        if(isChecked){
+                            pClass.ta301c=true;
+                            pClass.ta101c=false;
+                            pClass.ta201c=false;
+                        }else{
+                            pClass.ta301c=false;
+                        }
+                        myLog(TAG , dbMsg);
+                    } catch (Exception er) {
+                        myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+                    }
+                }
+            });
+
+            ta302cBox = binding.ta302cBox;               // アラーム時刻2 の火曜
+            ta302cBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                // チェック状態が変更された時のハンドラ
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    final String TAG = "onCheckedChanged";
+                    String dbMsg = "[ta302cBox]";
+                    try {
+                        CheckBox chBox=(CheckBox)buttonView;
+                        pClass.setWeekCheck(chBox,isChecked,"ta302c",ta102cBox,"ta102c",ta202cBox,"ta202c" );
+                        if(isChecked){
+                            pClass.ta302c=true;
+                            pClass.ta102c=false;
+                            pClass.ta202c=false;
+                        }else{
+                            pClass.ta302c=false;
+                        }
+                        myLog(TAG , dbMsg);
+                    } catch (Exception er) {
+                        myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+                    }
+                }
+            });
+
+            ta303cBox = binding.ta303cBox;               // アラーム時刻2 の水曜
+            ta303cBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                // チェック状態が変更された時のハンドラ
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    final String TAG = "onCheckedChanged";
+                    String dbMsg = "[ta303cBox]";
+                    try {
+                        CheckBox chBox=(CheckBox)buttonView;
+                        pClass.setWeekCheck(chBox,isChecked,"ta303c",ta103cBox,"ta103c",ta203cBox,"ta203c" );
+                        if(isChecked){
+                            pClass.ta303c=true;
+                            pClass.ta103c=false;
+                            pClass.ta203c=false;
+                        }else{
+                            pClass.ta303c=false;
+                        }
+                        myLog(TAG , dbMsg);
+                    } catch (Exception er) {
+                        myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+                    }
+                }
+            });
+
+            ta304cBox = binding.ta304cBox;               // アラーム時刻2 の木曜
+            ta304cBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                // チェック状態が変更された時のハンドラ
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    final String TAG = "onCheckedChanged";
+                    String dbMsg = "[ta304cBox]";
+                    try {
+                        CheckBox chBox=(CheckBox)buttonView;
+                        pClass.setWeekCheck(chBox,isChecked,"ta304c",ta104cBox,"ta104c",ta204cBox,"ta204c" );
+                        if(isChecked){
+                            pClass.ta304c=true;
+                            pClass.ta104c=false;
+                            pClass.ta204c=false;
+                        }else{
+                            pClass.ta304c=false;
+                        }
+                        myLog(TAG , dbMsg);
+                    } catch (Exception er) {
+                        myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+                    }
+                }
+            });
+
+            ta305cBox = binding.ta305cBox;               // アラーム時刻2 の金曜
+            ta305cBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                // チェック状態が変更された時のハンドラ
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    final String TAG = "onCheckedChanged";
+                    String dbMsg = "[ta305cBox]";
+                    try {
+                        CheckBox chBox=(CheckBox)buttonView;
+                        pClass.setWeekCheck(chBox,isChecked,"ta305c",ta105cBox,"ta105c",ta205cBox,"ta205c" );
+                        if(isChecked){
+                            pClass.ta305c=true;
+                            pClass.ta105c=false;
+                            pClass.ta205c=false;
+                        }else{
+                            pClass.ta305c=false;
+                        }
+                        myLog(TAG , dbMsg);
+                    } catch (Exception er) {
+                        myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+                    }
+                }
+            });
+
+            ta306cBox = binding.ta306cBox;               // アラーム時刻2 の土曜
+            ta306cBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                // チェック状態が変更された時のハンドラ
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    final String TAG = "onCheckedChanged";
+                    String dbMsg = "[ta306cBox]";
+                    try {
+                        CheckBox chBox=(CheckBox)buttonView;
+                        pClass.setWeekCheck(chBox,isChecked,"ta306c",ta106cBox,"ta106c",ta206cBox,"ta206c" );
+                        if(isChecked){
+                            pClass.ta306c=true;
+                            pClass.ta106c=false;
+                            pClass.ta206c=false;
+                        }else{
+                            pClass.ta306c=false;
+                        }
+                        myLog(TAG , dbMsg);
+                    } catch (Exception er) {
+                        myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+                    }
+                }
+            });
+
+            ta307cBox = binding.ta307cBox;
+            ta307cBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                // チェック状態が変更された時のハンドラ
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    final String TAG = "onCheckedChanged";
+                    String dbMsg = "[ta307cBox]";
+                    try {
+                        CheckBox chBox=(CheckBox)buttonView;
+                        pClass.setWeekCheck(chBox,isChecked,"ta307c",ta107cBox,"ta107c",ta207cBox,"ta207c" );
+                        if(isChecked){
+                            pClass.ta307c=true;
+                            pClass.ta107c=false;
+                            pClass.ta207c=false;
+                        }else{
+                            pClass.ta307c=false;
+                        }
+                        myLog(TAG , dbMsg);
+                    } catch (Exception er) {
+                        myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+                    }
+                }
+            });
+
+            dbMsg += "アラーム時刻1 の日曜=" + pClass.ta100c;
+            ta100cBox.setChecked(pClass.ta100c);
+            dbMsg += "アラーム時刻1 の月曜=" + pClass.ta101c;
+            ta101cBox.setChecked(pClass.ta101c);
+            dbMsg += "アラーム時刻1 の火曜=" + pClass.ta102c;
+            ta102cBox.setChecked(pClass.ta102c);
+            dbMsg += "アラーム時刻1 の水曜=" + pClass.ta103c;
+            ta103cBox.setChecked(pClass.ta103c);
+            dbMsg += "アラーム時刻1 の木曜=" + pClass.ta104c;
+            ta104cBox.setChecked(pClass.ta104c);
+            dbMsg += "アラーム時刻1 の金曜=" + pClass.ta105c;
+            ta105cBox.setChecked(pClass.ta105c);
+            dbMsg += "アラーム時刻1 の土曜=" + pClass.ta106c;
+            ta106cBox.setChecked(pClass.ta106c);
+            dbMsg += "アラーム時刻1 の祝日=" + pClass.ta107c;
+            ta107cBox.setChecked(pClass.ta107c);
+
+            dbMsg += "アラーム時刻2 の日曜=" + pClass.ta200c;
+            ta200cBox.setChecked(pClass.ta200c);
+            dbMsg += "アラーム時刻2 の月曜=" + pClass.ta201c;
+            ta201cBox.setChecked(pClass.ta201c);
+            dbMsg += "アラーム時刻2 の火曜=" + pClass.ta202c;
+            ta202cBox.setChecked(pClass.ta202c);
+            dbMsg += "アラーム時刻2 の水曜=" + pClass.ta203c;
+            ta203cBox.setChecked(pClass.ta203c);
+            dbMsg += "アラーム時刻2 の木曜=" + pClass.ta204c;
+            ta204cBox.setChecked(pClass.ta204c);
+            dbMsg += "アラーム時刻2 の金曜=" + pClass.ta205c;
+            ta205cBox.setChecked(pClass.ta205c);
+            dbMsg += "アラーム時刻2 の土曜=" + pClass.ta206c;
+            ta206cBox.setChecked(pClass.ta206c);
+            dbMsg += "アラーム時刻1 の祝日=" + pClass.ta207c;
+            ta207cBox.setChecked(pClass.ta207c);
+
+            dbMsg += "アラーム時刻3 の日曜=" + pClass.ta300c;
+            ta300cBox.setChecked(pClass.ta300c);
+            dbMsg += "アラーム時刻3 の月曜=" + pClass.ta301c;
+            ta301cBox.setChecked(pClass.ta301c);
+            dbMsg += "アラーム時刻3 の火曜=" + pClass.ta302c;
+            ta302cBox.setChecked(pClass.ta302c);
+            dbMsg += "アラーム時刻3 の水曜=" + pClass.ta303c;
+            ta303cBox.setChecked(pClass.ta303c);
+            dbMsg += "アラーム時刻3 の木曜=" + pClass.ta304c;
+            ta304cBox.setChecked(pClass.ta304c);
+            dbMsg += "アラーム時刻3 の金曜=" + pClass.ta305c;
+            ta305cBox.setChecked(pClass.ta305c);
+            dbMsg += "アラーム時刻3 の土曜=" + pClass.ta306c;
+            ta306cBox.setChecked(pClass.ta306c);
+            dbMsg += "アラーム時刻3 の祝日=" + pClass.ta307c;
+            ta307cBox.setChecked(pClass.ta307c);
 
             tEventNameEt.setFocusable(true);
             targetPlaniewModel.getText().observe(getViewLifecycleOwner(), textView::setText);

@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TimePicker;
 import android.widget.Toolbar;
 
@@ -78,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
     public Boolean ta104c = false;           // アラーム時刻1 の木曜
     public Boolean ta105c = false;            // アラーム時刻1 の金曜
     public Boolean ta106c = false;            // アラーム時刻1 の土曜
+    public Boolean ta107c = false;            // アラーム時刻1 の祝日
 
     public String tArarmTime2 = "07 : 00";           // アラーム時刻2
     public Boolean ta200c = false;             // アラーム時刻2 の日曜
@@ -87,6 +89,17 @@ public class MainActivity extends AppCompatActivity {
     public Boolean ta204c = false;              // アラーム時刻2 の木曜
     public Boolean ta205c = false;          // アラーム時刻2 の金曜
     public Boolean ta206c = false;              // アラーム時刻2 の土曜
+    public Boolean ta207c = false;            // アラーム時刻2 の祝日
+
+    public String tArarmTime3 = "08 : 00";           // アラーム時刻3
+    public Boolean ta300c = false;             // アラーム時刻3 の日曜
+    public Boolean ta301c = false;            // アラーム時刻3 の月曜
+    public Boolean ta302c = false;            // アラーム時刻3 の火曜
+    public Boolean ta303c = false;               // アラーム時刻3の水曜
+    public Boolean ta304c = false;              // アラーム時刻3 の木曜
+    public Boolean ta305c = false;          // アラーム時刻3 の金曜
+    public Boolean ta306c = false;              // アラーム時刻3 の土曜
+    public Boolean ta307c = false;            // アラーム時刻3 の祝日
 
     public long alarmTimeMillis = 0;
     public AlarmManager alarmManager;
@@ -425,6 +438,44 @@ public class MainActivity extends AppCompatActivity {
         return selItem;
     }
 
+    public void setWeekCheck(CheckBox targetCB,Boolean checkState,String prefName ,
+                             CheckBox cBox2, String prefName2,
+                             CheckBox cBox3, String prefName3
+                             ) {
+        final String TAG = "onCheckedChanged";
+        String dbMsg = "[ta100cBox]";
+        try {
+ //           dbMsg += prefName+ "=" + prefVal;
+//            prefVal=targetyCB.isChecked();
+            dbMsg += ">>" + checkState;
+            setBoolPref(prefName,checkState);
+            dbMsg += "," + prefName + "を";
+            if(checkState) {
+                dbMsg += "設定";
+            //    Boolean cBox2SVal = cBox2.isChecked();
+                if(cBox2.isChecked()) {
+                    dbMsg += "," + prefName2;
+                    //              pClass.ta200c =false;
+                    cBox2.setChecked(false);
+                    setBoolPref(prefName2,false);
+                    dbMsg += "を解除";
+                }
+                if(cBox3.isChecked()) {
+                    dbMsg += "と" + prefName2;
+                    //              pClass.ta200c =false;
+                    cBox3.setChecked(false);
+                    setBoolPref(prefName3,false);
+                    dbMsg += "を解除";
+                }
+                //      myPref.readPref(this);
+            }else {
+                dbMsg += "解除";
+            }
+            myLog(TAG , dbMsg);
+        } catch (Exception er) {
+            myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+        }
+    }
 
     //ライフサイクル//////////////////////////////////////////////////////////////
     @Override
@@ -477,6 +528,8 @@ public class MainActivity extends AppCompatActivity {
             dbMsg += "," + getResources().getString(R.string.sett_alarm_time) +"1の金曜=" + ta105c;
             this.ta106c = myPref.ta106c;
             dbMsg += "," + getResources().getString(R.string.sett_alarm_time) +"1の土曜=" + ta106c ;
+            this.ta107c = myPref.ta107c;
+            dbMsg += "," + getResources().getString(R.string.sett_alarm_time) +"1の祝日=" + ta107c ;
 
             if(myPref.tArarmTime2.contains(":")){
                 this.tArarmTime2 = myPref.tArarmTime2;
@@ -496,6 +549,8 @@ public class MainActivity extends AppCompatActivity {
             dbMsg += "," + getResources().getString(R.string.sett_alarm_time)  +"2の金曜=" + ta205c ;
             this.ta206c = myPref.ta206c;
             dbMsg += "," + getResources().getString(R.string.sett_alarm_time) +"2の土曜=" + ta206c ;
+            this.ta207c = myPref.ta207c;
+            dbMsg += "," + getResources().getString(R.string.sett_alarm_time) +"2の祝日=" + ta207c ;
 
             binding = ActivityMainBinding.inflate(getLayoutInflater());
             setContentView(binding.getRoot());

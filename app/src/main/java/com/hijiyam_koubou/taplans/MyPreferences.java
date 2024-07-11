@@ -66,6 +66,7 @@ public class MyPreferences extends PreferenceActivity {
     public Boolean ta104c = false;           // アラーム時刻1 の木曜
     public Boolean ta105c = false;            // アラーム時刻1 の金曜
     public Boolean ta106c = false;            // アラーム時刻1 の土曜
+    public Boolean ta107c = false;            // アラーム時刻1 の祝日
 
     public String tArarmTime2;           // アラーム時刻2
     public Boolean ta200c = false;             // アラーム時刻2 の日曜
@@ -75,6 +76,18 @@ public class MyPreferences extends PreferenceActivity {
     public Boolean ta204c = false;              // アラーム時刻2 の木曜
     public Boolean ta205c = false;          // アラーム時刻2 の金曜
     public Boolean ta206c = false;              // アラーム時刻2 の土曜
+    public Boolean ta207c = false;            // アラーム時刻2 の祝日
+
+
+    public String tArarmTime3;           // アラーム時刻3
+    public Boolean ta300c = false;             // アラーム時刻3 の日曜
+    public Boolean ta301c = false;            // アラーム時刻3 の月曜
+    public Boolean ta302c = false;            // アラーム時刻3 の火曜
+    public Boolean ta303c = false;               // アラーム時刻3の水曜
+    public Boolean ta304c = false;              // アラーム時刻3 の木曜
+    public Boolean ta305c = false;          // アラーム時刻3 の金曜
+    public Boolean ta306c = false;              // アラーム時刻3 の土曜
+    public Boolean ta307c = false;            // アラーム時刻3 の祝日
 
 
     /**
@@ -194,6 +207,10 @@ public class MyPreferences extends PreferenceActivity {
             ta106c = sharedPref.getBoolean("ta106c", ta106c);
             dbMsg += ">>" + ta106c ;
 
+            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"1の祝日=" + ta107c ;
+            ta107c = sharedPref.getBoolean("ta107c", ta107c);
+            dbMsg += ">>" + ta107c ;
+
             dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"2=" + tArarmTime2 ;
             tArarmTime2 = readStrPref(inPref,"tArarmTime2", "");
             dbMsg += ">>" + tArarmTime2 ;
@@ -225,6 +242,46 @@ public class MyPreferences extends PreferenceActivity {
             dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"2の土曜=" + ta206c ;
             ta206c = sharedPref.getBoolean("ta206c", ta206c);
             dbMsg += ">>" + ta206c ;
+
+            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"2の祝日=" + ta207c ;
+            ta207c = sharedPref.getBoolean("ta207c", ta207c);
+            dbMsg += ">>" + ta207c ;
+
+            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"3=" + tArarmTime3 ;
+            tArarmTime3 = readStrPref(inPref,"tArarmTime3", "");
+            dbMsg += ">>" + tArarmTime3 ;
+
+            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"3の日曜=" + ta300c ;
+            ta300c = sharedPref.getBoolean("ta300c", ta300c);
+            dbMsg += ">>" + ta300c ;
+
+            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"3の月曜=" + ta301c ;
+            ta301c = sharedPref.getBoolean("ta301c", ta301c);
+            dbMsg += ">>" + ta301c ;
+
+            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"3の火曜=" + ta302c ;
+            ta302c = sharedPref.getBoolean("ta302c", ta302c);
+            dbMsg += ">>" + ta302c ;
+
+            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"3の水曜=" + ta303c ;
+            ta303c = sharedPref.getBoolean("ta303c", ta303c);
+            dbMsg += ">>" + ta303c ;
+
+            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"3の木曜=" + ta304c ;
+            ta304c = sharedPref.getBoolean("ta304c", ta304c);
+            dbMsg += ">>" + ta304c ;
+
+            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"3の金曜=" + ta305c ;
+            ta305c = sharedPref.getBoolean("ta305c", ta305c);
+            dbMsg += ">>" + ta305c ;
+
+            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"3の土曜=" + ta306c ;
+            ta306c = sharedPref.getBoolean("ta306c", ta306c);
+            dbMsg += ">>" + ta306c ;
+
+            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"3の祝日=" + ta307c ;
+            ta307c = sharedPref.getBoolean("ta307c", ta307c);
+            dbMsg += ">>" + ta307c ;
 
             myLog(TAG, dbMsg);
         } catch (Exception e) {

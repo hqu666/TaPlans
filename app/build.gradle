@@ -23,6 +23,9 @@ android {
         }
         debug {
             signingConfig signingConfigs.debug
+            debuggable true
+            jniDebuggable true
+            renderscriptDebuggable true
         }
     }
     compileOptions {
