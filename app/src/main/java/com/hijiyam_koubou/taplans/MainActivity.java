@@ -552,6 +552,27 @@ public class MainActivity extends AppCompatActivity {
             this.ta207c = myPref.ta207c;
             dbMsg += "," + getResources().getString(R.string.sett_alarm_time) +"2の祝日=" + ta207c ;
 
+            if(myPref.tArarmTime3.contains(":")){
+                this.tArarmTime3 = myPref.tArarmTime3;
+            }
+            dbMsg += "," + getResources().getString(R.string.sett_alarm_time) +"3=" + tArarmTime3 ;
+            this.ta300c = myPref.ta300c;
+            dbMsg += "," + getResources().getString(R.string.sett_alarm_time) +"3の日曜=" + ta300c ;
+            this.ta301c = myPref.ta301c;
+            dbMsg += "," + getResources().getString(R.string.sett_alarm_time) +"3の月曜=" + ta301c ;
+            this.ta302c = myPref.ta302c;
+            dbMsg += "," + getResources().getString(R.string.sett_alarm_time) +"3の火曜=" + ta302c ;
+            this.ta303c = myPref.ta303c;
+            dbMsg += "," + getResources().getString(R.string.sett_alarm_time) +"3の水曜=" + ta303c ;
+            this.ta304c = myPref.ta304c;
+            dbMsg += "," + getResources().getString(R.string.sett_alarm_time) +"3の木曜=" + ta304c ;
+            this.ta305c = myPref.ta305c;
+            dbMsg += "," + getResources().getString(R.string.sett_alarm_time)  +"3の金曜=" + ta305c ;
+            this.ta306c = myPref.ta306c;
+            dbMsg += "," + getResources().getString(R.string.sett_alarm_time) +"3の土曜=" + ta306c ;
+            this.ta307c = myPref.ta307c;
+            dbMsg += "," + getResources().getString(R.string.sett_alarm_time) +"3の祝日=" + ta307c ;
+
             binding = ActivityMainBinding.inflate(getLayoutInflater());
             setContentView(binding.getRoot());
 

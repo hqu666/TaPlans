@@ -78,7 +78,6 @@ public class MyPreferences extends PreferenceActivity {
     public Boolean ta206c = false;              // アラーム時刻2 の土曜
     public Boolean ta207c = false;            // アラーム時刻2 の祝日
 
-
     public String tArarmTime3;           // アラーム時刻3
     public Boolean ta300c = false;             // アラーム時刻3 の日曜
     public Boolean ta301c = false;            // アラーム時刻3 の月曜
