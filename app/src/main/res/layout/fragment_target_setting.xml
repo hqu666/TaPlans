@@ -174,14 +174,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Button" />
-
-            <!--            <EditText-->
-            <!--                android:id="@+id/tArarmTime2Et"-->
-            <!--                android:layout_width="match_parent"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:inputType="time"-->
-            <!--                android:hint="07:00"-->
-            <!--                />-->
         </TableRow>
 
         <TableRow
@@ -326,6 +318,151 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/comm_holiday"/>
+            </LinearLayout>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#FFCC80">
+
+            <Switch
+                android:id="@+id/google_cal_alignmentSW"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_span="3"
+                android:text="Googleカレンダー連携" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_span="2"
+                android:text="予定の名前" />
+
+            <EditText
+                android:id="@+id/gca_subjectET"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="予定の名称と同じ"
+                />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_span="2"
+                android:text="時刻" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <Button
+                    android:id="@+id/gca_starttimeBT"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="08；00" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="～" />
+                <Button
+                    android:id="@+id/gca_endtimeBT"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="17；00" />
+                <Switch
+                    android:id="@+id/gca_enddateSW"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_gravity="center"
+                    android:text="終日" />
+
+            </LinearLayout>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_span="2"
+                android:text="説明・メモ" />
+
+            <EditText
+                android:id="@+id/gca_descriptionET"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="持参品など"
+                />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_span="2"
+                android:text="予定の場所" />
+
+            <EditText
+                android:id="@+id/gca_locationET"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="住所表記"
+                />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_span="2"
+                android:text="予定の色" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+
+                <Spinner
+                    android:id="@+id/gca_colorIdSP"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginRight="5dp"
+                    />
+
+
+                <CheckBox
+                    android:id="@+id/gca_isPrivateCB"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="予定を限定公開にする"/>
             </LinearLayout>
         </TableRow>
 

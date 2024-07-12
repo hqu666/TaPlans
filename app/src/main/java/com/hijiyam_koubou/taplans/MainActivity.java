@@ -101,6 +101,9 @@ public class MainActivity extends AppCompatActivity {
     public Boolean ta306c = false;              // アラーム時刻3 の土曜
     public Boolean ta307c = false;            // アラーム時刻3 の祝日
 
+    //Googleカレンダー連携
+    public Boolean google_cal_alignmentSW;      //Googleカレンダー連携
+
     public long alarmTimeMillis = 0;
     public AlarmManager alarmManager;
     /**

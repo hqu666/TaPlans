@@ -1,6 +1,5 @@
 package com.hijiyam_koubou.taplans.ui.target_setting;
 
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.media.Ringtone;
@@ -13,7 +12,6 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -22,9 +20,8 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
+import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -35,11 +32,6 @@ import com.hijiyam_koubou.taplans.R;
 import com.hijiyam_koubou.taplans.Util;
 import com.hijiyam_koubou.taplans.databinding.FragmentTargetSettingBinding;
 import com.hijiyam_koubou.taplans.soundItem;
-
-import java.lang.reflect.Field;
-import java.util.Calendar;
-
-import kotlin.text.UStringsKt;
 
 public class TargetPlanFragment extends Fragment {
     private MainActivity pClass;
@@ -81,6 +73,17 @@ public class TargetPlanFragment extends Fragment {
     private CheckBox ta305cBox;               // アラーム時刻3 の金曜
     private CheckBox ta306cBox;               // アラーム時刻3 の土曜
     private CheckBox ta307cBox;               // アラーム時刻3 の祝日
+
+    //Googleカレンダー連携
+    public Switch google_cal_alignmentSW;      //Googleカレンダー連携
+    public EditText gca_subjectET;         //予定の名称と同じ"
+    public Button gca_starttimeBT;          //開始時刻
+    public Button gca_endtimeBT;          //終了時刻
+    public Switch gca_enddateSW;            //終日
+    public EditText gca_descriptionET;             //説明・メモ
+    public EditText gca_locationET;            //予定の場所
+    public Spinner gca_colorIdSP;         //予定の色
+    public CheckBox gca_isPrivateCB;            //予定を限定公開にする"/>
 
     private FragmentTargetSettingBinding binding;
     private Ringtone ringtone;
