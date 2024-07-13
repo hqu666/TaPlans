@@ -16,4 +16,17 @@
     <color name="default_text_color">#FF000000</color>
     <color name="colorPrimary">#FF3700B3</color>
 
+    <color name="gcc_base">#ffffff</color>
+    <color name="gcc_lavender">#33B679</color>   <!-- 1	●ラベンダー	#7986CB	rgb(121, 134, 203)-->
+    <color name="gcc_sage">#33B679</color>           <!-- 2	●セージ	#33B679	rgb(51, 182, 121)-->
+    <color name="gcc_grapes">#8E24AA</color>           <!-- 3	●ブドウ	#8E24AA	rgb(142, 36, 170)-->
+    <color name="gcc_flamingo">#E67C73</color>     <!-- 4	●フラミンゴ	#E67C73	rgb(230, 124, 115)-->
+    <color name="gcc_banana">#F6BF26</color>     <!-- 5	●バナナ	#F6BF26	rgb(246, 191, 38)-->
+    <color name="gcc_orange">#F4511E</color>     <!-- 6	●ミカン	#F4511E	rgb(244, 81, 30)-->
+    <color name="gcc_peacock">#039BE5</color>     <!-- 7	●ピーコック	#039BE5	rgb(3, 155, 229)-->
+    <color name="gcc_graphite">#616161</color>     <!-- 8	●グラファイト	#616161	rgb(97, 97, 97)-->
+    <color name="gcc_blueberry">#3F51B5</color>     <!-- 9	●ブルーベリー	#3F51B5	rgb(63, 81, 181)-->
+    <color name="gcc_basil">#0B8043</color>     <!-- 10	●バジル	#0B8043	rgb(11, 128, 67)-->
+    <color name="gcc_tomato">#D50000</color>     <!-- 11	●トマト	#D50000	rgb(213, 0, 0)-->
+
 </resources>

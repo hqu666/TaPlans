@@ -53,7 +53,7 @@ public class MyPreferences extends PreferenceActivity {
     public String targetDays;
 
     /**
-     * 設定す津予定
+     * 設定する予定
      * */
     public String tEventName;             //  予定の名称
     public String tEventSoundName;           // アラーム名
@@ -88,6 +88,17 @@ public class MyPreferences extends PreferenceActivity {
     public Boolean ta306c = false;              // アラーム時刻3 の土曜
     public Boolean ta307c = false;            // アラーム時刻3 の祝日
 
+    //Googleカレンダー連携
+    public Boolean googleCalAlignment;      //Googleカレンダー連携
+    public String gcaSubject;         //登録する名称"
+    public String gcaStarttime;          //開始時刻
+    public String gcaEndtime;          //終了時刻
+    public Boolean gcaEnddate;            //終日
+    public String gcaDescription;             //説明・メモ
+    public String gcaLocation;            //予定の場所
+    public String tCColorName;           // 予定の色名称
+    public int tCColorRss;           // 予定の色リソースID
+    public Boolean gcaIsPrivate;            //予定を限定公開にする
 
     /**
      * Stringプリファレンスを取得する
@@ -281,6 +292,49 @@ public class MyPreferences extends PreferenceActivity {
             dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"3の祝日=" + ta307c ;
             ta307c = sharedPref.getBoolean("ta307c", ta307c);
             dbMsg += ">>" + ta307c ;
+            //Googleカレンダー連携
+            dbMsg += "\nGoogleカレンダー連携=" + googleCalAlignment ;
+            googleCalAlignment = sharedPref.getBoolean("googleCalAlignment", googleCalAlignment);
+            dbMsg += ">>" + googleCalAlignment;
+
+            dbMsg += ",登録する名称=" + gcaSubject ;
+            gcaSubject = readStrPref(inPref,"gcaSubject", tEventName);
+            dbMsg += ">>" + gcaSubject ;
+
+            dbMsg += ",開始時刻=" + gcaStarttime ;
+            gcaStarttime = readStrPref(inPref,"gcaStarttime", gcaStarttime);
+            dbMsg += ">>" + gcaStarttime ;
+
+            dbMsg += ",終了時刻=" + gcaEndtime ;
+            gcaEndtime = readStrPref(inPref,"gcaEndtime", gcaEndtime);
+            dbMsg += ">>" + gcaEndtime ;
+
+            dbMsg += ",終日=" + gcaEnddate ;
+            gcaEnddate = sharedPref.getBoolean("gcaEnddate", gcaEnddate);
+            dbMsg += ">>" + gcaEnddate;
+
+            dbMsg += ",説明・メモ=" + gcaDescription ;
+            gcaDescription = readStrPref(inPref,"gcaDescription", gcaDescription);
+            if(gcaDescription.equals("") || gcaDescription==null){
+                gcaDescription=tEventName;
+            }
+            dbMsg += ">>" + gcaDescription ;
+
+            dbMsg += ",予定の場所=" + gcaLocation ;
+            gcaLocation = readStrPref(inPref,"gcaLocation", gcaLocation);
+            dbMsg += ">>" + gcaLocation ;
+
+            dbMsg += ",予定の色名称=" + tCColorName ;
+            tCColorName = readStrPref(inPref,"tCColorName", tCColorName);
+            dbMsg += ">>" + tCColorName ;
+
+            dbMsg += ",予定の色リソースID=" + tCColorRss ;
+            tCColorRss = sharedPref.getInt("tCColorRss", tCColorRss);
+            dbMsg += ">>" + tCColorRss ;
+
+            dbMsg += ",予定を限定公開にする=" + gcaIsPrivate ;
+            gcaIsPrivate = sharedPref.getBoolean("gcaIsPrivate", gcaIsPrivate);
+            dbMsg += ">>" + gcaIsPrivate;
 
             myLog(TAG, dbMsg);
         } catch (Exception e) {

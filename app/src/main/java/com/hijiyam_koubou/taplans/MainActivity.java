@@ -1,5 +1,7 @@
 package com.hijiyam_koubou.taplans;
 
+import static com.hijiyam_koubou.taplans.R.color.*;
+
 import android.app.AlarmManager;
 import android.app.LauncherActivity;
 import android.app.PendingIntent;
@@ -18,6 +20,9 @@ import android.view.View;
 import android.view.Menu;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TimePicker;
 import android.widget.Toolbar;
 
@@ -102,7 +107,25 @@ public class MainActivity extends AppCompatActivity {
     public Boolean ta307c = false;            // アラーム時刻3 の祝日
 
     //Googleカレンダー連携
-    public Boolean google_cal_alignmentSW;      //Googleカレンダー連携
+    public Boolean googleCalAlignment;      //Googleカレンダー連携
+    public String gcaSubject;         //登録する名称"
+    public String gcaStarttime = "09 : 00";           //開始時刻
+    public String gcaEndtime = "18 : 00";          //終了時刻
+    public Boolean gcaEnddate;            //終日
+    public String gcaDescription;             //説明・メモ
+    public String gcaLocation;            //予定の場所
+    public String tCColorName;           // 予定の色名称
+    public int tCColorRss;           // 予定の色リソースID
+    public Boolean gcaIsPrivate;            //予定を限定公開にする
+
+    public ArrayList<GoogleCalendarColors> googleCalendarColorList;
+    public ArrayList<String> colorNameList;
+
+    /*
+    * Android から"Google Calendar API"を使って、Googleカレンダーに新規カレンダーを追加する      https://qiita.com/couzie/items/ce8f7780f9a722b2a87d
+    * https://developers.google.com/calendar/api/v3/reference/acl?hl=ja
+    * */
+
 
     public long alarmTimeMillis = 0;
     public AlarmManager alarmManager;
@@ -247,6 +270,32 @@ public class MainActivity extends AppCompatActivity {
             myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
         }
     }
+
+    /**
+     * 指定されたKeyのIntPreferenceを作成/更新
+     * */
+    public void setIntPref(String key,int wInt) {
+        //テキスト変更後
+        final String TAG = "setIntPref";
+        String dbMsg = "[TargetPlanFragment]";
+        try {
+            dbMsg += "key=" + key;
+            dbMsg += ",wStr=" + wInt;
+            if(sharedPref == null){
+                sharedPref = PreferenceManager.getDefaultSharedPreferences(this);            //	this.getSharedPreferences(this, MODE_PRIVATE);		//
+            }
+            if(myEditor == null){
+                myEditor = sharedPref.edit();
+            }
+            myEditor.putInt(key, wInt);
+            boolean ret = myEditor.commit();
+            dbMsg += ",commit=" + ret;
+            myLog(TAG , dbMsg);
+        } catch (Exception er) {
+            myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+        }
+    }
+
 
     /**
      * 指定されたKeyのBooleanPreferenceを作成/更新
@@ -480,6 +529,147 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Googleカレンダーの色設定リストを作成する
+     * */
+    public int setGoogleCalendarColors() {
+        //テキスト変更後
+        final String TAG = "setGoogleCalendarColors";
+        String dbMsg = "[MainActivity]";
+        int lastIndex=0;
+        try {
+            googleCalendarColorList = new  ArrayList<GoogleCalendarColors>();
+            colorNameList = new  ArrayList<String>();
+
+            GoogleCalendarColors GoogleCalendarColor = new GoogleCalendarColors();
+            GoogleCalendarColor.colorId = 0;
+            GoogleCalendarColor.colorName = getResources().getString(R.string.gcc_base);
+            GoogleCalendarColor.colorResId = getColor(R.color.gcc_base);
+            GoogleCalendarColor.HEXStr = "#FFFFFF";
+            GoogleCalendarColor.RGBStr = "255,255,255";
+            GoogleCalendarColor.FontColorStr = "#000000";
+            googleCalendarColorList.add(GoogleCalendarColor);
+            colorNameList.add(GoogleCalendarColor.colorName);
+
+            GoogleCalendarColor = new GoogleCalendarColors();
+            GoogleCalendarColor.colorId = 1;
+            GoogleCalendarColor.colorName = getResources().getString(R.string.gcc_lavender);
+            GoogleCalendarColor.colorResId = getColor(R.color.gcc_lavender);
+            GoogleCalendarColor.HEXStr = "#7986CB";
+            GoogleCalendarColor.RGBStr = "121, 134, 203";
+            GoogleCalendarColor.FontColorStr = "#000000";
+            googleCalendarColorList.add(GoogleCalendarColor);
+            colorNameList.add(GoogleCalendarColor.colorName);
+
+            GoogleCalendarColor = new GoogleCalendarColors();
+            GoogleCalendarColor.colorId = 2;
+            GoogleCalendarColor.colorName = getResources().getString(R.string.gcc_sage);
+            GoogleCalendarColor.colorResId = getColor(R.color.gcc_sage);
+            GoogleCalendarColor.HEXStr = "#33B679";
+            GoogleCalendarColor.RGBStr = "51, 182, 121";
+            GoogleCalendarColor.FontColorStr = "#FFFFFF";
+            googleCalendarColorList.add(GoogleCalendarColor);
+            colorNameList.add(GoogleCalendarColor.colorName);
+
+            GoogleCalendarColor = new GoogleCalendarColors();
+            GoogleCalendarColor.colorId = 3;
+            GoogleCalendarColor.colorName = getResources().getString(R.string.gcc_grapes);
+            GoogleCalendarColor.colorResId = getColor(R.color.gcc_grapes);
+            GoogleCalendarColor.HEXStr = "#8E24AA";
+            GoogleCalendarColor.RGBStr = "142, 36, 170";
+            GoogleCalendarColor.FontColorStr = "#000000";
+            googleCalendarColorList.add(GoogleCalendarColor);
+            colorNameList.add(GoogleCalendarColor.colorName);
+
+            GoogleCalendarColor = new GoogleCalendarColors();
+            GoogleCalendarColor.colorId = 4;
+            GoogleCalendarColor.colorName = getResources().getString(R.string.gcc_flamingo);
+            GoogleCalendarColor.colorResId = getColor(R.color.gcc_flamingo);
+            GoogleCalendarColor.HEXStr = "#E67C73";
+            GoogleCalendarColor.RGBStr = "230, 124, 115";
+            GoogleCalendarColor.FontColorStr = "#000000";
+            googleCalendarColorList.add(GoogleCalendarColor);
+            colorNameList.add(GoogleCalendarColor.colorName);
+
+            GoogleCalendarColor = new GoogleCalendarColors();
+            GoogleCalendarColor.colorId = 5;
+            GoogleCalendarColor.colorName = getResources().getString(R.string.gcc_banana);
+            GoogleCalendarColor.colorResId = getColor(R.color.gcc_banana);
+            GoogleCalendarColor.HEXStr = "#F6BF26";
+            GoogleCalendarColor.RGBStr = "246, 191, 38";
+            GoogleCalendarColor.FontColorStr = "#000000";
+            googleCalendarColorList.add(GoogleCalendarColor);
+            colorNameList.add(GoogleCalendarColor.colorName);
+
+            GoogleCalendarColor = new GoogleCalendarColors();
+            GoogleCalendarColor.colorId = 6;
+            GoogleCalendarColor.colorName = getResources().getString(R.string.gcc_orange);
+            GoogleCalendarColor.colorResId = getColor(R.color.gcc_orange);
+            GoogleCalendarColor.HEXStr = "#F4511E";
+            GoogleCalendarColor.RGBStr = "244, 81, 30";
+            GoogleCalendarColor.FontColorStr = "#000000";
+            googleCalendarColorList.add(GoogleCalendarColor);
+            colorNameList.add(GoogleCalendarColor.colorName);
+
+            GoogleCalendarColor = new GoogleCalendarColors();
+            GoogleCalendarColor.colorId = 7;
+            GoogleCalendarColor.colorName = getResources().getString(R.string.gcc_peacock);
+            GoogleCalendarColor.colorResId = getColor(R.color.gcc_peacock);
+            GoogleCalendarColor.HEXStr = "#039BE5";
+            GoogleCalendarColor.RGBStr = "3, 155, 229";
+            GoogleCalendarColor.FontColorStr = "#000000";
+            googleCalendarColorList.add(GoogleCalendarColor);
+            colorNameList.add(GoogleCalendarColor.colorName);
+
+            GoogleCalendarColor = new GoogleCalendarColors();
+            GoogleCalendarColor.colorId = 8;
+            GoogleCalendarColor.colorName = getResources().getString(R.string.gcc_graphite);
+            GoogleCalendarColor.colorResId = getColor(R.color.gcc_graphite);
+            GoogleCalendarColor.HEXStr = "#616161";
+            GoogleCalendarColor.RGBStr = "97, 97, 97";
+            GoogleCalendarColor.FontColorStr = "#000000";
+            googleCalendarColorList.add(GoogleCalendarColor);
+            colorNameList.add(GoogleCalendarColor.colorName);
+
+            GoogleCalendarColor = new GoogleCalendarColors();
+            GoogleCalendarColor.colorId = 9;
+            GoogleCalendarColor.colorName = getResources().getString(R.string.gcc_blueberry);
+            GoogleCalendarColor.colorResId = getColor(R.color.gcc_blueberry);
+            GoogleCalendarColor.HEXStr = "#3F51B5";
+            GoogleCalendarColor.RGBStr = "63, 81, 181";
+            GoogleCalendarColor.FontColorStr = "#000000";
+            googleCalendarColorList.add(GoogleCalendarColor);
+            colorNameList.add(GoogleCalendarColor.colorName);
+
+            GoogleCalendarColor = new GoogleCalendarColors();
+            GoogleCalendarColor.colorId = 10;
+            GoogleCalendarColor.colorName = getResources().getString(R.string.gcc_basil);
+            GoogleCalendarColor.colorResId = getColor(R.color.gcc_basil);
+            GoogleCalendarColor.HEXStr = "#0B8043";
+            GoogleCalendarColor.RGBStr = "11, 128, 67";
+            GoogleCalendarColor.FontColorStr = "#000000";
+            googleCalendarColorList.add(GoogleCalendarColor);
+            colorNameList.add(GoogleCalendarColor.colorName);
+
+            GoogleCalendarColor = new GoogleCalendarColors();
+            GoogleCalendarColor.colorId = 11;
+            GoogleCalendarColor.colorName = getResources().getString(R.string.gcc_tomato);
+            GoogleCalendarColor.colorResId = getColor(R.color.gcc_tomato);
+            GoogleCalendarColor.HEXStr = "#D50000";
+            GoogleCalendarColor.RGBStr = "213, 0, 0";
+            GoogleCalendarColor.FontColorStr = "#000000";
+            googleCalendarColorList.add(GoogleCalendarColor);
+            colorNameList.add(GoogleCalendarColor.colorName);
+            lastIndex=googleCalendarColorList.size();
+            dbMsg += "googleCalendarColorList=" + lastIndex + "件";
+            myLog(TAG , dbMsg);
+        } catch (Exception er) {
+            myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+        }
+        return lastIndex;
+    }
+
+
     //ライフサイクル//////////////////////////////////////////////////////////////
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -488,6 +678,7 @@ public class MainActivity extends AppCompatActivity {
         String dbMsg = "[MainActivity]";
         try {
 
+            setGoogleCalendarColors();
             myPref = new MyPreferences();
             myPref.readPref(this);
             this.calenderAccount=myPref.calenderAccount;
@@ -575,6 +766,28 @@ public class MainActivity extends AppCompatActivity {
             dbMsg += "," + getResources().getString(R.string.sett_alarm_time) +"3の土曜=" + ta306c ;
             this.ta307c = myPref.ta307c;
             dbMsg += "," + getResources().getString(R.string.sett_alarm_time) +"3の祝日=" + ta307c ;
+
+            //Googleカレンダー連携
+            this.googleCalAlignment = myPref.googleCalAlignment;
+            dbMsg += ",Googleカレンダー連携=" + googleCalAlignment ;
+            this.gcaSubject = myPref.gcaSubject;
+            dbMsg += ",登録する名称=" + gcaSubject ;
+            this.gcaStarttime = myPref.gcaStarttime;
+            dbMsg += ",開始時刻=" + gcaStarttime ;
+            this.gcaEndtime = myPref.gcaEndtime;
+            dbMsg += ",終了時刻=" + gcaEndtime ;
+            this.gcaEnddate = myPref.gcaEnddate;
+            dbMsg += ",終日=" + gcaEnddate ;
+            this.gcaDescription = myPref.gcaDescription;
+            dbMsg += ",説明・メモ=" + gcaDescription ;
+            this.gcaLocation = myPref.gcaLocation;
+            dbMsg += ",予定の場所=" + gcaLocation ;
+            this.tCColorName = myPref.tCColorName;
+            dbMsg += ",予定の色名称=" + tCColorName ;
+            this.tCColorRss = myPref.tCColorRss;
+            dbMsg += ",予定の色リソースID=" + tCColorRss ;
+            this.gcaIsPrivate = myPref.gcaIsPrivate;
+            dbMsg += ",予定を限定公開にする=" + gcaIsPrivate ;
 
             binding = ActivityMainBinding.inflate(getLayoutInflater());
             setContentView(binding.getRoot());

@@ -5,6 +5,17 @@
     <string name="nav_header_title">Android Studio</string>
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
+
+    <string name="comm_time">時刻</string>
+    <string name="comm_sunday">日</string>
+    <string name="comm_monday">月</string>
+    <string name="comm_tuesday">火</string>
+    <string name="comm_wednesday">水</string>
+    <string name="comm_thursday">木</string>
+    <string name="comm_friday">金</string>
+    <string name="comm_saturday">土</string>
+    <string name="comm_holiday">祝日</string>
+
     <string name="action_settings">設定</string>
     <string name="action_quit">終了</string>
 
@@ -34,15 +45,31 @@
 
     <string name="sett_alarm_time">アラーム時刻</string>
     <string name="sett_event_name">予定の名称</string>
-    <string name="comm_sunday">日</string>
-    <string name="comm_monday">月</string>
-    <string name="comm_tuesday">火</string>
-    <string name="comm_wednesday">水</string>
-    <string name="comm_thursday">木</string>
-    <string name="comm_friday">金</string>
-    <string name="comm_saturday">土</string>
-    <string name="comm_holiday">祝日</string>
-    <string name="set_alarm_sound">アラーム音</string>
+     <string name="set_alarm_sound">アラーム音</string>
     <string name="set_sequential_updates">逐次更新</string>
+
+    <string name="gcc_base">カレンダーの色</string>
+    <string name="gcc_lavender">ラベンダー</string>   <!-- 1	●ラベンダー	#7986CB	rgb(121, 134, 203)-->
+    <string name="gcc_sage">セージ</string>           <!-- 2	●セージ	#33B679	rgb(51, 182, 121)-->
+    <string name="gcc_grapes">ブドウ</string>           <!-- 3	●ブドウ	#8E24AA	rgb(142, 36, 170)-->
+    <string name="gcc_flamingo">フラミンゴ</string>     <!-- 4	●フラミンゴ	#E67C73	rgb(230, 124, 115)-->
+    <string name="gcc_banana">バナナ</string>     <!-- 5	●バナナ	#F6BF26	rgb(246, 191, 38)-->
+    <string name="gcc_orange">ミカン</string>     <!-- 6	●ミカン	#F4511E	rgb(244, 81, 30)-->
+    <string name="gcc_peacock">ピーコック</string>     <!-- 7	●ピーコック	#039BE5	rgb(3, 155, 229)-->
+    <string name="gcc_graphite">グラファイト</string>     <!-- 8	●グラファイト	#616161	rgb(97, 97, 97)-->
+    <string name="gcc_blueberry">ブルーベリー</string>     <!-- 9	●ブルーベリー	#3F51B5	rgb(63, 81, 181)-->
+    <string name="gcc_basil">バジル</string>     <!-- 10	●バジル	#0B8043	rgb(11, 128, 67)-->
+    <string name="gcc_tomato">トマト</string>
+
+    <string name="google_calendar_integration">Googleカレンダー連携</string>
+    <string name="gc_subject">予定の名前</string>
+    <string name="gca_subject_hint">未設定なら予定の名称と同じ</string>
+    <string name="gc_enddate">終日</string>
+    <string name="gc_description">説明・メモ</string>
+    <string name="gc_description_hint">持参品など</string>
+    <string name="gc_location">予定の場所</string>
+    <string name="gc_location_hint">住所表記</string>
+    <string name="gc_color">予定の色</string>
+    <string name="gc_isPrivate">予定を限定公開にする</string>     <!-- 11	●トマト	#D50000	rgb(213, 0, 0)-->
 
 </resources>

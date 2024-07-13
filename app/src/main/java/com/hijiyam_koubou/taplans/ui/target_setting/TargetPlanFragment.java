@@ -27,11 +27,14 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.hijiyam_koubou.taplans.GoogleCalendarColors;
 import com.hijiyam_koubou.taplans.MainActivity;
 import com.hijiyam_koubou.taplans.R;
 import com.hijiyam_koubou.taplans.Util;
 import com.hijiyam_koubou.taplans.databinding.FragmentTargetSettingBinding;
 import com.hijiyam_koubou.taplans.soundItem;
+
+import java.util.List;
 
 public class TargetPlanFragment extends Fragment {
     private MainActivity pClass;
@@ -75,15 +78,15 @@ public class TargetPlanFragment extends Fragment {
     private CheckBox ta307cBox;               // アラーム時刻3 の祝日
 
     //Googleカレンダー連携
-    public Switch google_cal_alignmentSW;      //Googleカレンダー連携
-    public EditText gca_subjectET;         //予定の名称と同じ"
-    public Button gca_starttimeBT;          //開始時刻
-    public Button gca_endtimeBT;          //終了時刻
-    public Switch gca_enddateSW;            //終日
-    public EditText gca_descriptionET;             //説明・メモ
-    public EditText gca_locationET;            //予定の場所
-    public Spinner gca_colorIdSP;         //予定の色
-    public CheckBox gca_isPrivateCB;            //予定を限定公開にする"/>
+    public Switch googleCalAlignmentSW;      //Googleカレンダー連携
+    public EditText gcaSubjectET;         //予定の名称と同じ"
+    public Button gcaStarttimeBT;          //開始時刻
+    public Button gcaEndtimeBT;          //終了時刻
+    public Switch gcaEnddateSW;            //終日
+    public EditText gcaDescriptionET;             //説明・メモ
+    public EditText gcaLocationET;            //予定の場所
+    public Spinner gcaColorIdSP;         //予定の色
+    public CheckBox gcaIsPrivateCB;            //予定を限定公開にする"/>
 
     private FragmentTargetSettingBinding binding;
     private Ringtone ringtone;
@@ -114,24 +117,33 @@ public class TargetPlanFragment extends Fragment {
     }
 
     /**
-     * 指定されたKeyのBooleanPreferenceを作成/更新
+     * Googleカレンダー関連項目の有効化制御
      * */
-    public void setBoolPref(String key,Boolean wBool) {
+    public void setGoogleCalItems(Boolean isEnabled) {
         //テキスト変更後
-        final String TAG = "setBoolPref";
+        final String TAG = "googleCalAlignmentSW";
         String dbMsg = "[TargetPlanFragment]";
         try {
-            dbMsg += "key=" + key;
-            dbMsg += ",wBool=" + wBool;
-            if(sharedPref == null){
-                sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());            //	this.getSharedPreferences(this, MODE_PRIVATE);		//
+            dbMsg += "isEnabled=" + isEnabled;
+            if(isEnabled){
+                gcaSubjectET.setEnabled(true);         //予定の名称と同じ"
+                gcaStarttimeBT.setEnabled(true);          //開始時刻
+                gcaEndtimeBT.setEnabled(true);         //終了時刻
+                gcaEnddateSW.setEnabled(true);            //終日
+                gcaDescriptionET.setEnabled(true);             //説明・メモ
+                gcaLocationET.setEnabled(true);             //予定の場所
+                gcaColorIdSP.setEnabled(true);         //予定の色
+                gcaIsPrivateCB.setEnabled(true);            //予定を限定公開にする"/>
+            }else{
+                gcaSubjectET.setEnabled(false);         //予定の名称と同じ"
+                gcaStarttimeBT.setEnabled(false);          //開始時刻
+                gcaEndtimeBT.setEnabled(false);         //終了時刻
+                gcaEnddateSW.setEnabled(false);            //終日
+                gcaDescriptionET.setEnabled(false);             //説明・メモ
+                gcaLocationET.setEnabled(false);             //予定の場所
+                gcaColorIdSP.setEnabled(false);         //予定の色
+                gcaIsPrivateCB.setEnabled(false);            //予定を限定公開にする"/>
             }
-            if(myEditor == null){
-                myEditor = sharedPref.edit();
-            }
-            myEditor.putBoolean(key, wBool);
-            boolean ret = myEditor.commit();
-            dbMsg += ",commit=" + ret;
             myLog(TAG , dbMsg);
         } catch (Exception er) {
             myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
@@ -201,7 +213,6 @@ public class TargetPlanFragment extends Fragment {
             dbMsg += "," + spPosition +"番目";
             tEventSoundSP.setSelection(spPosition);
             tEventSoundSP.setFocusable(false);
-
             tEventSoundSP.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -284,7 +295,7 @@ public class TargetPlanFragment extends Fragment {
                         myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
                     }
                  }
-             });
+            });
             pClass.setButtonText(tArarmTime1BT,pClass.tArarmTime1);
 
             ta100cBox = binding.ta100cBox;               // アラーム時刻1 の日曜
@@ -295,9 +306,9 @@ public class TargetPlanFragment extends Fragment {
                     final String TAG = "onCheckedChanged";
                     String dbMsg = "[ta100cBox]";
                     try {
-                        CheckBox chkbox=(CheckBox)buttonView;
+                        CheckBox chBox=(CheckBox)buttonView;
                         dbMsg += "アラーム時刻1 の日曜=" + pClass.ta100c;
-                        pClass.setWeekCheck(ta100cBox,isChecked,"ta100c",ta200cBox,"ta200c",ta300cBox,"ta300c" );
+                        pClass.setWeekCheck(chBox,isChecked,"ta100c",ta200cBox,"ta200c",ta300cBox,"ta300c" );
                         if(isChecked){
                             pClass.ta100c=true;
                             pClass.ta200c=false;
@@ -305,17 +316,6 @@ public class TargetPlanFragment extends Fragment {
                         }else{
                             pClass.ta100c=false;
                         }
-//                        pClass.ta100c=chkbox.isChecked();
-//                        setBoolPref("ta100c",pClass.ta100c);
-//                        if(pClass.ta100c) {
-//                            if(pClass.ta200c) {
-//                                pClass.ta200c =false;
-//                                ta200cBox.setChecked(pClass.ta200c);
-//                                setBoolPref("ta200c",pClass.ta200c);
-//                            }
-//                        }else {
-//                            dbMsg += "解除";
-//                        }
                         myLog(TAG , dbMsg);
                     } catch (Exception er) {
                         myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
@@ -331,9 +331,9 @@ public class TargetPlanFragment extends Fragment {
                     final String TAG = "onCheckedChanged";
                     String dbMsg = "[ta101cBox]";
                     try {
-                        CheckBox chkBox=(CheckBox)buttonView;
+                        CheckBox chBox=(CheckBox)buttonView;
                         dbMsg += "アラーム時刻1 の月曜を" + isChecked + "に";
-                        pClass.setWeekCheck(ta101cBox,isChecked,"ta101c",ta201cBox,"ta201c",ta301cBox,"ta301c" );
+                        pClass.setWeekCheck(chBox,isChecked,"ta101c",ta201cBox,"ta201c",ta301cBox,"ta301c" );
                         if(isChecked){
                             pClass.ta101c=true;
                             pClass.ta201c=false;
@@ -341,16 +341,6 @@ public class TargetPlanFragment extends Fragment {
                         }else{
                             pClass.ta101c=false;
                          }
-//                        setBoolPref("ta101c",pClass.ta101c);
-//                        if(pClass.ta101c) {
-//                            if(pClass.ta201c) {
-//                                pClass.ta201c =false;
-//                                ta201cBox.setChecked(pClass.ta201c);
-//                                setBoolPref("ta201c",pClass.ta201c);
-//                            }
-//                        }else {
-//                            dbMsg += "解除";
-//                        }
                         myLog(TAG , dbMsg);
                     } catch (Exception er) {
                         myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
@@ -359,15 +349,15 @@ public class TargetPlanFragment extends Fragment {
             });
 
             ta102cBox = binding.ta102cBox;               // アラーム時刻1 の火曜
-             ta102cBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            ta102cBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 // チェック状態が変更された時のハンドラ
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     final String TAG = "onCheckedChanged";
                     String dbMsg = "[ta102cBox]";
                     try {
-                        CheckBox chkbox=(CheckBox)buttonView;
-                        pClass.setWeekCheck(chkbox,isChecked,"ta102c",ta202cBox,"ta202c",ta302cBox,"ta302c" );
+                        CheckBox chBox=(CheckBox)buttonView;
+                        pClass.setWeekCheck(chBox,isChecked,"ta102c",ta202cBox,"ta202c",ta302cBox,"ta302c" );
                         if(isChecked){
                             pClass.ta102c=true;
                             pClass.ta202c=false;
@@ -375,18 +365,6 @@ public class TargetPlanFragment extends Fragment {
                         }else{
                             pClass.ta102c=false;
                         }
-//                        pClass.ta102c=chkbox.isChecked();
-//                        dbMsg += "アラーム時刻1 の火曜=" + pClass.ta102c;
-//                        setBoolPref("ta102c",pClass.ta102c);
-//                        if(pClass.ta102c) {
-//                            if(pClass.ta202c) {
-//                                pClass.ta202c =false;
-//                                ta202cBox.setChecked(pClass.ta202c);
-//                                setBoolPref("ta202c",pClass.ta202c);
-//                            }
-//                        }else {
-//                            dbMsg += "解除";
-//                        }
                         myLog(TAG , dbMsg);
                     } catch (Exception er) {
                         myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
@@ -402,8 +380,8 @@ public class TargetPlanFragment extends Fragment {
                     final String TAG = "onCheckedChanged";
                     String dbMsg = "[ta103cBox]";
                     try {
-                        CheckBox chkbox=(CheckBox)buttonView;
-                        pClass.setWeekCheck(chkbox,isChecked,"ta103c",ta203cBox,"ta203c",ta303cBox,"ta303c" );
+                        CheckBox chBox=(CheckBox)buttonView;
+                        pClass.setWeekCheck(chBox,isChecked,"ta103c",ta203cBox,"ta203c",ta303cBox,"ta303c" );
                         if(isChecked){
                             pClass.ta103c=true;
                             pClass.ta203c=false;
@@ -411,19 +389,6 @@ public class TargetPlanFragment extends Fragment {
                         }else{
                             pClass.ta103c=false;
                         }
-
-//                        pClass.ta103c=chkbox.isChecked();
-//                        dbMsg += "アラーム時刻1 の水曜=" + pClass.ta103c;
-//                        setBoolPref("ta103c",pClass.ta103c);
-//                        if(pClass.ta103c) {
-//                            if(pClass.ta203c) {
-//                                pClass.ta203c =false;
-//                                ta203cBox.setChecked(pClass.ta203c);
-//                                setBoolPref("ta203c",pClass.ta203c);
-//                            }
-//                        }else {
-//                            dbMsg += "解除";
-//                        }
                         myLog(TAG , dbMsg);
                     } catch (Exception er) {
                         myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
@@ -439,8 +404,8 @@ public class TargetPlanFragment extends Fragment {
                     final String TAG = "onCheckedChanged";
                     String dbMsg = "[ta104cBox]";
                     try {
-                        CheckBox chkbox=(CheckBox)buttonView;
-                        pClass.setWeekCheck(chkbox,isChecked,"ta104c",ta204cBox,"ta204c",ta304cBox,"ta304c" );
+                        CheckBox chBox=(CheckBox)buttonView;
+                        pClass.setWeekCheck(chBox,isChecked,"ta104c",ta204cBox,"ta204c",ta304cBox,"ta304c" );
                         if(isChecked){
                             pClass.ta104c=true;
                             pClass.ta204c=false;
@@ -618,7 +583,7 @@ public class TargetPlanFragment extends Fragment {
             });
 
             ta203cBox = binding.ta203cBox;               // アラーム時刻2 の水曜
-             ta203cBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            ta203cBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 // チェック状態が変更された時のハンドラ
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -940,6 +905,256 @@ public class TargetPlanFragment extends Fragment {
                         }else{
                             pClass.ta307c=false;
                         }
+                        myLog(TAG , dbMsg);
+                    } catch (Exception er) {
+                        myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+                    }
+                }
+            });
+
+            googleCalAlignmentSW=binding.googleCalAlignmentSW;      //Googleカレンダー連携
+            googleCalAlignmentSW.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                // チェック状態が変更された時のハンドラ
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    final String TAG = "onCheckedChanged";
+                    String dbMsg = "[googleCalAlignmentSW]";
+                    try {
+                        Switch chBox=(Switch)buttonView;
+                        dbMsg += ",Googleカレンダー連携=" + pClass.googleCalAlignment;
+                        dbMsg += ">>" + isChecked;
+                        pClass.googleCalAlignment=isChecked;
+                        pClass.setBoolPref("googleCalAlignment",isChecked);
+                        setGoogleCalItems(isChecked);
+                        myLog(TAG , dbMsg);
+                    } catch (Exception er) {
+                        myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+                    }
+                }
+            });
+            googleCalAlignmentSW.setChecked(pClass.googleCalAlignment);
+            setGoogleCalItems(pClass.googleCalAlignment);
+
+            gcaSubjectET = binding.gcaSubjectET;
+            dbMsg += ",登録する名称="+pClass.gcaSubject;
+            gcaSubjectET.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    //テキスト変更前
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    //テキスト変更中
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    //テキスト変更後
+                    final String TAG = "afterTextChanged";
+                    String dbMsg = "[gcaSubjectET]";
+                    try {
+                        dbMsg += "登録する名称=";
+                        if(s.toString() != null){
+                            pClass.gcaSubject= s.toString();
+                            dbMsg += pClass.gcaSubject;
+                            setStrPref("gcaSubject",pClass.gcaSubject);
+                        }else{
+                            dbMsg += "null";
+                        }
+                        myLog(TAG , dbMsg);
+                    } catch (Exception er) {
+                        myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+                    }
+                }
+            });
+            gcaSubjectET.setText(pClass.gcaSubject);
+
+            gcaStarttimeBT = binding.gcaStarttimeBT;         //開始時刻
+            gcaStarttimeBT.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final String TAG = "onClick";
+                    String dbMsg = "[gcaStarttimeBT]";
+                    try {
+                        dbMsg += "開始時刻=" +  pClass.gcaStarttime;
+                        pClass.showTimePicker("gcaStarttime",pClass.gcaStarttime,gcaStarttimeBT);
+                        myLog(TAG , dbMsg);
+                    } catch (Exception er) {
+                        myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+                    }
+                }
+            });
+
+            gcaEndtimeBT = binding.gcaEndtimeBT;          //終了時刻
+            gcaEndtimeBT.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final String TAG = "onClick";
+                    String dbMsg = "[gcaEndtimeBT]";
+                    try {
+                        dbMsg += "終了時刻=" +  pClass.gcaEndtime;
+                        pClass.showTimePicker("gcaEndtime",pClass.gcaEndtime,gcaEndtimeBT);
+                        myLog(TAG , dbMsg);
+                    } catch (Exception er) {
+                        myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+                    }
+                }
+            });
+            gcaEnddateSW = binding.gcaEnddateSW;            //終日
+            gcaEnddateSW.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                // チェック状態が変更された時のハンドラ
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    final String TAG = "onCheckedChanged";
+                    String dbMsg = "[gcaEnddateSW]";
+                    try {
+                        Switch chBox=(Switch)buttonView;
+                        dbMsg += ",終日=" + pClass.gcaEnddate;
+                        dbMsg += ">>" + isChecked;
+                        pClass.setBoolPref("gcaEnddate",isChecked);
+                        pClass.gcaEnddate=isChecked;
+                        if(isChecked){
+                            gcaStarttimeBT.setEnabled(false);          //開始時刻
+                            gcaEndtimeBT.setEnabled(false);         //終了時刻
+                         }else{
+                            gcaStarttimeBT.setEnabled(true);          //開始時刻
+                            gcaEndtimeBT.setEnabled(true);         //終了時刻
+                         }
+                        myLog(TAG , dbMsg);
+                    } catch (Exception er) {
+                        myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+                    }
+                }
+            });
+
+            gcaDescriptionET = binding.gcaDescriptionET;
+            dbMsg += ",説明・メモ="+pClass.gcaDescription;
+            gcaDescriptionET.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    //テキスト変更前
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    //テキスト変更中
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    //テキスト変更後
+                    final String TAG = "afterTextChanged";
+                    String dbMsg = "[gcaDescriptionET]";
+                    try {
+                        dbMsg += "説明・メモ=";
+                        if(s.toString() != null){
+                            pClass.gcaDescription= s.toString();
+                            dbMsg += pClass.gcaDescription;
+                            setStrPref("gcaDescription",pClass.gcaDescription);
+                        }else{
+                            dbMsg += "null";
+                        }
+                        myLog(TAG , dbMsg);
+                    } catch (Exception er) {
+                        myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+                    }
+                }
+            });
+            gcaDescriptionET.setText(pClass.gcaDescription);
+
+            gcaLocationET = binding.gcaLocationET;            //予定の場所
+            dbMsg += "予定の場所="+pClass.gcaLocation;
+            gcaLocationET.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    //テキスト変更前
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    //テキスト変更中
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    //テキスト変更後
+                    final String TAG = "afterTextChanged";
+                    String dbMsg = "[gcaLocationET]";
+                    try {
+                        dbMsg += "予定の場所=";
+                        if(s.toString() != null){
+                            pClass.gcaLocation= s.toString();
+                            dbMsg += pClass.gcaLocation;
+                            pClass.setStrPref("gcaLocation",pClass.gcaLocation);
+                        }else{
+                            dbMsg += "null";
+                        }
+                        myLog(TAG , dbMsg);
+                    } catch (Exception er) {
+                        myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+                    }
+                }
+            });
+            gcaLocationET.setText(pClass.gcaLocation);
+
+            gcaColorIdSP = binding.gcaColorIdSP;         //予定の色
+            ArrayAdapter colorArrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, (List) pClass.colorNameList);
+            gcaColorIdSP.setAdapter(soundArrayAdapter);
+            dbMsg += "," + getResources().getString(R.string.gc_color) +"名称=" + pClass.tCColorName;           // 予定の色名称
+            dbMsg += "," + getResources().getString(R.string.gc_color) +"URI=" + pClass.tCColorRss;           // 予定の色リソースID
+
+            int cspPosition = (Integer)colorArrayAdapter.getPosition((String)pClass.tCColorName );
+            dbMsg += "," + cspPosition +"番目";
+            gcaColorIdSP.setSelection(cspPosition);
+            gcaColorIdSP.setFocusable(false);
+            gcaColorIdSP.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    final String TAG = "onItemSelected";
+                    String dbMsg = "[gcaColorIdSP]";
+                    try {
+                        dbMsg += "id=" + id;
+                        dbMsg += ",position=" + position;
+                        // 初回起動時の動作
+                        if (gcaColorIdSP.isFocusable() == false) {
+                            gcaColorIdSP.setFocusable(true);
+                            dbMsg += ",初回起動";
+                        }else{
+                            dbMsg += ",初回以降の動作";
+                            dbMsg += ",名称＝" + pClass.tCColorName + ",resID=" + pClass.tCColorRss ;
+                            GoogleCalendarColors sCololr = pClass.googleCalendarColorList.get(position);
+                            pClass.tCColorName = sCololr.colorName;
+                            pClass.setStrPref("tCColorName",pClass.tCColorName);
+                            pClass.tCColorRss = sCololr.colorResId;
+                            pClass.setIntPref("tCColorRss",pClass.tCColorRss);
+                            dbMsg += ">>" + pClass.tCColorName + ",resID=" + pClass.tCColorRss ;
+                         }
+                        myLog(TAG , dbMsg);
+                    } catch (Exception er) {
+                        myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+                    }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+
+            gcaIsPrivateCB = binding.gcaIsPrivateCB;            //予定を限定公開にする
+            gcaIsPrivateCB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                // チェック状態が変更された時のハンドラ
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    final String TAG = "onCheckedChanged";
+                    String dbMsg = "[gcaIsPrivateCB]";
+                    try {
+                        CheckBox chBox=(CheckBox)buttonView;
+                        dbMsg += ",gcaIsPrivate=" + pClass.gcaIsPrivate;
+                        dbMsg += ">>" + isChecked;
+                        pClass.gcaIsPrivate=isChecked;
+                        pClass.setBoolPref("pClass",isChecked);
                         myLog(TAG , dbMsg);
                     } catch (Exception er) {
                         myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
