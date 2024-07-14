@@ -106,6 +106,11 @@ public class MainActivity extends AppCompatActivity {
     public Boolean ta306c = false;              // アラーム時刻3 の土曜
     public Boolean ta307c = false;            // アラーム時刻3 の祝日
 
+    public String timeSeparator= " : ";
+    public String prefName;
+    public String prefValue;
+    public Button targetButton;
+
     //Googleカレンダー連携
     public Boolean googleCalAlignment;      //Googleカレンダー連携
     public String gcaSubject;         //登録する名称"
@@ -120,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
 
     public ArrayList<GoogleCalendarColors> googleCalendarColorList;
     public ArrayList<String> colorNameList;
+    public String[] colorNameArry;
 
     /*
     * Android から"Google Calendar API"を使って、Googleカレンダーに新規カレンダーを追加する      https://qiita.com/couzie/items/ce8f7780f9a722b2a87d
@@ -321,11 +327,6 @@ public class MainActivity extends AppCompatActivity {
             myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
         }
     }
-
-    public String timeSeparator= " : ";
-    public String prefName;
-    public String prefValue;
-    public Button targetButton;
 
     public void setButtonText( Button tButton,String value) {
         //テキスト変更後
@@ -557,7 +558,7 @@ public class MainActivity extends AppCompatActivity {
             GoogleCalendarColor.colorResId = getColor(R.color.gcc_lavender);
             GoogleCalendarColor.HEXStr = "#7986CB";
             GoogleCalendarColor.RGBStr = "121, 134, 203";
-            GoogleCalendarColor.FontColorStr = "#000000";
+            GoogleCalendarColor.FontColorStr = "#FFFFFFFF";
             googleCalendarColorList.add(GoogleCalendarColor);
             colorNameList.add(GoogleCalendarColor.colorName);
 
@@ -567,7 +568,7 @@ public class MainActivity extends AppCompatActivity {
             GoogleCalendarColor.colorResId = getColor(R.color.gcc_sage);
             GoogleCalendarColor.HEXStr = "#33B679";
             GoogleCalendarColor.RGBStr = "51, 182, 121";
-            GoogleCalendarColor.FontColorStr = "#FFFFFF";
+            GoogleCalendarColor.FontColorStr = "#FF000000";
             googleCalendarColorList.add(GoogleCalendarColor);
             colorNameList.add(GoogleCalendarColor.colorName);
 
@@ -577,7 +578,7 @@ public class MainActivity extends AppCompatActivity {
             GoogleCalendarColor.colorResId = getColor(R.color.gcc_grapes);
             GoogleCalendarColor.HEXStr = "#8E24AA";
             GoogleCalendarColor.RGBStr = "142, 36, 170";
-            GoogleCalendarColor.FontColorStr = "#000000";
+            GoogleCalendarColor.FontColorStr = "#FFFFFFFF";
             googleCalendarColorList.add(GoogleCalendarColor);
             colorNameList.add(GoogleCalendarColor.colorName);
 
@@ -587,7 +588,7 @@ public class MainActivity extends AppCompatActivity {
             GoogleCalendarColor.colorResId = getColor(R.color.gcc_flamingo);
             GoogleCalendarColor.HEXStr = "#E67C73";
             GoogleCalendarColor.RGBStr = "230, 124, 115";
-            GoogleCalendarColor.FontColorStr = "#000000";
+            GoogleCalendarColor.FontColorStr = "#FF000000";
             googleCalendarColorList.add(GoogleCalendarColor);
             colorNameList.add(GoogleCalendarColor.colorName);
 
@@ -597,7 +598,7 @@ public class MainActivity extends AppCompatActivity {
             GoogleCalendarColor.colorResId = getColor(R.color.gcc_banana);
             GoogleCalendarColor.HEXStr = "#F6BF26";
             GoogleCalendarColor.RGBStr = "246, 191, 38";
-            GoogleCalendarColor.FontColorStr = "#000000";
+            GoogleCalendarColor.FontColorStr = "#FF000000";
             googleCalendarColorList.add(GoogleCalendarColor);
             colorNameList.add(GoogleCalendarColor.colorName);
 
@@ -607,7 +608,7 @@ public class MainActivity extends AppCompatActivity {
             GoogleCalendarColor.colorResId = getColor(R.color.gcc_orange);
             GoogleCalendarColor.HEXStr = "#F4511E";
             GoogleCalendarColor.RGBStr = "244, 81, 30";
-            GoogleCalendarColor.FontColorStr = "#000000";
+            GoogleCalendarColor.FontColorStr = "#FF000000";
             googleCalendarColorList.add(GoogleCalendarColor);
             colorNameList.add(GoogleCalendarColor.colorName);
 
@@ -617,7 +618,7 @@ public class MainActivity extends AppCompatActivity {
             GoogleCalendarColor.colorResId = getColor(R.color.gcc_peacock);
             GoogleCalendarColor.HEXStr = "#039BE5";
             GoogleCalendarColor.RGBStr = "3, 155, 229";
-            GoogleCalendarColor.FontColorStr = "#000000";
+            GoogleCalendarColor.FontColorStr = "#FFFFFFFF";
             googleCalendarColorList.add(GoogleCalendarColor);
             colorNameList.add(GoogleCalendarColor.colorName);
 
@@ -627,7 +628,7 @@ public class MainActivity extends AppCompatActivity {
             GoogleCalendarColor.colorResId = getColor(R.color.gcc_graphite);
             GoogleCalendarColor.HEXStr = "#616161";
             GoogleCalendarColor.RGBStr = "97, 97, 97";
-            GoogleCalendarColor.FontColorStr = "#000000";
+            GoogleCalendarColor.FontColorStr = "#FFFFFFFF";
             googleCalendarColorList.add(GoogleCalendarColor);
             colorNameList.add(GoogleCalendarColor.colorName);
 
@@ -637,7 +638,7 @@ public class MainActivity extends AppCompatActivity {
             GoogleCalendarColor.colorResId = getColor(R.color.gcc_blueberry);
             GoogleCalendarColor.HEXStr = "#3F51B5";
             GoogleCalendarColor.RGBStr = "63, 81, 181";
-            GoogleCalendarColor.FontColorStr = "#000000";
+            GoogleCalendarColor.FontColorStr = "#FFFFFFFF";
             googleCalendarColorList.add(GoogleCalendarColor);
             colorNameList.add(GoogleCalendarColor.colorName);
 
@@ -647,7 +648,7 @@ public class MainActivity extends AppCompatActivity {
             GoogleCalendarColor.colorResId = getColor(R.color.gcc_basil);
             GoogleCalendarColor.HEXStr = "#0B8043";
             GoogleCalendarColor.RGBStr = "11, 128, 67";
-            GoogleCalendarColor.FontColorStr = "#000000";
+            GoogleCalendarColor.FontColorStr = "#FFFFFFFF";
             googleCalendarColorList.add(GoogleCalendarColor);
             colorNameList.add(GoogleCalendarColor.colorName);
 
@@ -657,7 +658,7 @@ public class MainActivity extends AppCompatActivity {
             GoogleCalendarColor.colorResId = getColor(R.color.gcc_tomato);
             GoogleCalendarColor.HEXStr = "#D50000";
             GoogleCalendarColor.RGBStr = "213, 0, 0";
-            GoogleCalendarColor.FontColorStr = "#000000";
+            GoogleCalendarColor.FontColorStr = "#FFFFFFFF";
             googleCalendarColorList.add(GoogleCalendarColor);
             colorNameList.add(GoogleCalendarColor.colorName);
             lastIndex=googleCalendarColorList.size();

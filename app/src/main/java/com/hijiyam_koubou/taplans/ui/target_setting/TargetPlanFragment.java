@@ -2,6 +2,8 @@ package com.hijiyam_koubou.taplans.ui.target_setting;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -33,6 +35,7 @@ import com.hijiyam_koubou.taplans.R;
 import com.hijiyam_koubou.taplans.Util;
 import com.hijiyam_koubou.taplans.databinding.FragmentTargetSettingBinding;
 import com.hijiyam_koubou.taplans.soundItem;
+import com.hijiyam_koubou.taplans.CustomAdapter;
 
 import java.util.List;
 
@@ -166,6 +169,27 @@ public class TargetPlanFragment extends Fragment {
                 gcaStarttimeBT.setEnabled(true);          //開始時刻
                 gcaEndtimeBT.setEnabled(true);         //終了時刻
             }
+            myLog(TAG , dbMsg);
+        } catch (Exception er) {
+            myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+        }
+    }
+
+
+    /**
+     * Googleカレンダーの色を反映させる部分
+     * */
+    public void setGoogleColorMoniter(int selPosition) {
+        //テキスト変更後
+        final String TAG = "setGoogleColorMoniter";
+        String dbMsg = "[TargetPlanFragment]";
+        try {
+            dbMsg += "selPosition=" + selPosition;
+            GoogleCalendarColors selColor =  pClass.googleCalendarColorList.get(selPosition);
+            dbMsg += "[" + selColor.colorId+ "]" + selColor.colorName;
+            dbMsg += "," + selColor.colorResId+"," + selColor.HEXStr+"," + selColor.FontColorStr;;
+            gcaSubjectET.setBackgroundColor(Color.parseColor(selColor.HEXStr));
+            gcaSubjectET.setTextColor(Color.parseColor(selColor.FontColorStr));
             myLog(TAG , dbMsg);
         } catch (Exception er) {
             myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
@@ -1117,11 +1141,15 @@ public class TargetPlanFragment extends Fragment {
 
             gcaColorIdSP = binding.gcaColorIdSP;         //予定の色
             ArrayAdapter colorArrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, (List) pClass.colorNameList);
-            gcaColorIdSP.setAdapter(colorArrayAdapter);
+//            gcaColorIdSP.setAdapter(colorArrayAdapter);
+            String[] colorNameArray =pClass.colorNameList.toArray(new String[pClass.colorNameList.size()]);
+            CustomAdapter customAdapter = new CustomAdapter( getActivity(), android.R.layout.simple_spinner_dropdown_item, colorNameArray, pClass.googleCalendarColorList );
+            gcaColorIdSP.setAdapter(customAdapter);
+
             dbMsg += "," + getResources().getString(R.string.gc_color) +"名称=" + pClass.tCColorName;           // 予定の色名称
             dbMsg += "," + getResources().getString(R.string.gc_color) +"rID=" + pClass.tCColorRss;           // 予定の色リソースID
-
-            int cspPosition = (Integer)colorArrayAdapter.getPosition((String)pClass.tCColorName );
+            int cspPosition = pClass.colorNameList.indexOf((String)pClass.tCColorName);
+          //  int cspPosition = (Integer)colorArrayAdapter.getPosition((String)pClass.tCColorName );
             dbMsg += "," + cspPosition +"番目を選択";
             gcaColorIdSP.setSelection(cspPosition);
             gcaColorIdSP.setFocusable(false);
@@ -1146,6 +1174,7 @@ public class TargetPlanFragment extends Fragment {
                             pClass.tCColorRss = sCololr.colorResId;
                             pClass.setIntPref("tCColorRss",pClass.tCColorRss);
                             dbMsg += ">>" + pClass.tCColorName + ",resID=" + pClass.tCColorRss ;
+                            setGoogleColorMoniter(position);
                          }
                         myLog(TAG , dbMsg);
                     } catch (Exception er) {
@@ -1158,6 +1187,7 @@ public class TargetPlanFragment extends Fragment {
 
                 }
             });
+            setGoogleColorMoniter(cspPosition);
 
             gcaIsPrivateCB = binding.gcaIsPrivateCB;            //予定を限定公開にする
             gcaIsPrivateCB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
