@@ -150,6 +150,28 @@ public class TargetPlanFragment extends Fragment {
         }
     }
 
+    /**
+     * Googleカレンダー開始・終了の有効化制御
+     * */
+    public void setGoogleCalSETimes(Boolean isEnabled) {
+        //テキスト変更後
+        final String TAG = "setGoogleCalSETimes";
+        String dbMsg = "[TargetPlanFragment]";
+        try {
+            dbMsg += "isEnabled=" + isEnabled;
+            if(isEnabled){
+                gcaStarttimeBT.setEnabled(false);          //開始時刻
+                gcaEndtimeBT.setEnabled(false);         //終了時刻
+            }else{
+                gcaStarttimeBT.setEnabled(true);          //開始時刻
+                gcaEndtimeBT.setEnabled(true);         //終了時刻
+            }
+            myLog(TAG , dbMsg);
+        } catch (Exception er) {
+            myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+        }
+    }
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         final String TAG = "onCreateView";
@@ -932,8 +954,6 @@ public class TargetPlanFragment extends Fragment {
                     }
                 }
             });
-            googleCalAlignmentSW.setChecked(pClass.googleCalAlignment);
-            setGoogleCalItems(pClass.googleCalAlignment);
 
             gcaSubjectET = binding.gcaSubjectET;
             dbMsg += ",登録する名称="+pClass.gcaSubject;
@@ -985,6 +1005,7 @@ public class TargetPlanFragment extends Fragment {
                     }
                 }
             });
+            pClass.setButtonText(gcaStarttimeBT,pClass.gcaStarttime);
 
             gcaEndtimeBT = binding.gcaEndtimeBT;          //終了時刻
             gcaEndtimeBT.setOnClickListener(new View.OnClickListener() {
@@ -1001,6 +1022,8 @@ public class TargetPlanFragment extends Fragment {
                     }
                 }
             });
+            pClass.setButtonText(gcaEndtimeBT,pClass.gcaEndtime);
+
             gcaEnddateSW = binding.gcaEnddateSW;            //終日
             gcaEnddateSW.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 // チェック状態が変更された時のハンドラ
@@ -1014,13 +1037,7 @@ public class TargetPlanFragment extends Fragment {
                         dbMsg += ">>" + isChecked;
                         pClass.setBoolPref("gcaEnddate",isChecked);
                         pClass.gcaEnddate=isChecked;
-                        if(isChecked){
-                            gcaStarttimeBT.setEnabled(false);          //開始時刻
-                            gcaEndtimeBT.setEnabled(false);         //終了時刻
-                         }else{
-                            gcaStarttimeBT.setEnabled(true);          //開始時刻
-                            gcaEndtimeBT.setEnabled(true);         //終了時刻
-                         }
+                        setGoogleCalSETimes(isChecked);
                         myLog(TAG , dbMsg);
                     } catch (Exception er) {
                         myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
@@ -1100,12 +1117,12 @@ public class TargetPlanFragment extends Fragment {
 
             gcaColorIdSP = binding.gcaColorIdSP;         //予定の色
             ArrayAdapter colorArrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, (List) pClass.colorNameList);
-            gcaColorIdSP.setAdapter(soundArrayAdapter);
+            gcaColorIdSP.setAdapter(colorArrayAdapter);
             dbMsg += "," + getResources().getString(R.string.gc_color) +"名称=" + pClass.tCColorName;           // 予定の色名称
-            dbMsg += "," + getResources().getString(R.string.gc_color) +"URI=" + pClass.tCColorRss;           // 予定の色リソースID
+            dbMsg += "," + getResources().getString(R.string.gc_color) +"rID=" + pClass.tCColorRss;           // 予定の色リソースID
 
             int cspPosition = (Integer)colorArrayAdapter.getPosition((String)pClass.tCColorName );
-            dbMsg += "," + cspPosition +"番目";
+            dbMsg += "," + cspPosition +"番目を選択";
             gcaColorIdSP.setSelection(cspPosition);
             gcaColorIdSP.setFocusable(false);
             gcaColorIdSP.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -1117,7 +1134,7 @@ public class TargetPlanFragment extends Fragment {
                         dbMsg += "id=" + id;
                         dbMsg += ",position=" + position;
                         // 初回起動時の動作
-                        if (gcaColorIdSP.isFocusable() == false) {
+                        if (!gcaColorIdSP.isFocusable()) {
                             gcaColorIdSP.setFocusable(true);
                             dbMsg += ",初回起動";
                         }else{
@@ -1161,6 +1178,7 @@ public class TargetPlanFragment extends Fragment {
                     }
                 }
             });
+            gcaIsPrivateCB.setChecked(pClass.gcaIsPrivate);
 
             dbMsg += "アラーム時刻1 の日曜=" + pClass.ta100c;
             ta100cBox.setChecked(pClass.ta100c);
@@ -1212,6 +1230,11 @@ public class TargetPlanFragment extends Fragment {
             ta306cBox.setChecked(pClass.ta306c);
             dbMsg += "アラーム時刻3 の祝日=" + pClass.ta307c;
             ta307cBox.setChecked(pClass.ta307c);
+
+            gcaEnddateSW.setChecked(pClass.gcaEnddate);
+            setGoogleCalSETimes(pClass.gcaEnddate);
+            googleCalAlignmentSW.setChecked(pClass.googleCalAlignment);
+            setGoogleCalItems(pClass.googleCalAlignment);
 
             tEventNameEt.setFocusable(true);
             targetPlaniewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
