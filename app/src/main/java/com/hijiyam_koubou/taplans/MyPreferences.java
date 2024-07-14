@@ -98,7 +98,7 @@ public class MyPreferences extends PreferenceActivity {
     public String gcaLocation;            //予定の場所
     public String tCColorName;           // 予定の色名称
     public int tCColorRss;           // 予定の色リソースID
-    public Boolean gcaIsPrivate;            //予定を限定公開にする
+//    public Boolean gcaIsPrivate;            //予定を限定公開にする
 
     /**
      * Stringプリファレンスを取得する
@@ -332,9 +332,9 @@ public class MyPreferences extends PreferenceActivity {
             tCColorRss = sharedPref.getInt("tCColorRss", con.getColor(R.color.gcc_lavender));
             dbMsg += ">>" + tCColorRss ;
 
-            dbMsg += ",予定を限定公開にする=" + gcaIsPrivate ;
-            gcaIsPrivate = sharedPref.getBoolean("gcaIsPrivate", false);
-            dbMsg += ">>" + gcaIsPrivate;
+//            dbMsg += ",予定を限定公開にする=" + gcaIsPrivate ;
+//            gcaIsPrivate = sharedPref.getBoolean("gcaIsPrivate", false);
+//            dbMsg += ">>" + gcaIsPrivate;
 
             myLog(TAG, dbMsg);
         } catch (Exception e) {

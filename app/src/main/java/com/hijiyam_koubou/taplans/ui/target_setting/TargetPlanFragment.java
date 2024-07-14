@@ -1189,26 +1189,26 @@ public class TargetPlanFragment extends Fragment {
             });
             setGoogleColorMoniter(cspPosition);
 
-            gcaIsPrivateCB = binding.gcaIsPrivateCB;            //予定を限定公開にする
-            gcaIsPrivateCB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                // チェック状態が変更された時のハンドラ
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    final String TAG = "onCheckedChanged";
-                    String dbMsg = "[gcaIsPrivateCB]";
-                    try {
-                        CheckBox chBox=(CheckBox)buttonView;
-                        dbMsg += ",gcaIsPrivate=" + pClass.gcaIsPrivate;
-                        dbMsg += ">>" + isChecked;
-                        pClass.gcaIsPrivate=isChecked;
-                        pClass.setBoolPref("pClass",isChecked);
-                        myLog(TAG , dbMsg);
-                    } catch (Exception er) {
-                        myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
-                    }
-                }
-            });
-            gcaIsPrivateCB.setChecked(pClass.gcaIsPrivate);
+//            gcaIsPrivateCB = binding.gcaIsPrivateCB;            //予定を限定公開にする
+//            gcaIsPrivateCB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//                // チェック状態が変更された時のハンドラ
+//                @Override
+//                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                    final String TAG = "onCheckedChanged";
+//                    String dbMsg = "[gcaIsPrivateCB]";
+//                    try {
+//                        CheckBox chBox=(CheckBox)buttonView;
+//                        dbMsg += ",gcaIsPrivate=" + pClass.gcaIsPrivate;
+//                        dbMsg += ">>" + isChecked;
+//                        pClass.gcaIsPrivate=isChecked;
+//                        pClass.setBoolPref("pClass",isChecked);
+//                        myLog(TAG , dbMsg);
+//                    } catch (Exception er) {
+//                        myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+//                    }
+//                }
+//            });
+//            gcaIsPrivateCB.setChecked(pClass.gcaIsPrivate);
 
             dbMsg += "アラーム時刻1 の日曜=" + pClass.ta100c;
             ta100cBox.setChecked(pClass.ta100c);

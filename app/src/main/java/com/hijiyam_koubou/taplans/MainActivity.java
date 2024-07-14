@@ -121,11 +121,10 @@ public class MainActivity extends AppCompatActivity {
     public String gcaLocation;            //予定の場所
     public String tCColorName;           // 予定の色名称
     public int tCColorRss;           // 予定の色リソースID
-    public Boolean gcaIsPrivate;            //予定を限定公開にする
+//    public Boolean gcaIsPrivate;            //予定を限定公開にする
 
     public ArrayList<GoogleCalendarColors> googleCalendarColorList;
     public ArrayList<String> colorNameList;
-    public String[] colorNameArry;
 
     /*
     * Android から"Google Calendar API"を使って、Googleカレンダーに新規カレンダーを追加する      https://qiita.com/couzie/items/ce8f7780f9a722b2a87d
@@ -787,8 +786,8 @@ public class MainActivity extends AppCompatActivity {
             dbMsg += ",予定の色名称=" + tCColorName ;
             this.tCColorRss = myPref.tCColorRss;
             dbMsg += ",予定の色リソースID=" + tCColorRss ;
-            this.gcaIsPrivate = myPref.gcaIsPrivate;
-            dbMsg += ",予定を限定公開にする=" + gcaIsPrivate ;
+//            this.gcaIsPrivate = myPref.gcaIsPrivate;
+//            dbMsg += ",予定を限定公開にする=" + gcaIsPrivate ;
 
             binding = ActivityMainBinding.inflate(getLayoutInflater());
             setContentView(binding.getRoot());

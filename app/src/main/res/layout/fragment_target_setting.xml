@@ -85,7 +85,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
+                android:layout_weight="1"
                 android:text="Button" />
+
+            <CheckBox
+                android:id="@+id/ta107cBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="@string/comm_holiday" />
 
         </TableRow>
 
@@ -98,6 +106,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
+                android:layout_gravity="end"
                 android:layout_span="3"
                 android:orientation="horizontal">
 
@@ -143,11 +152,6 @@
                     android:layout_height="wrap_content"
                     android:text="@string/comm_saturday" />
 
-                <CheckBox
-                    android:id="@+id/ta107cBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/comm_holiday"/>
             </LinearLayout>
         </TableRow>
 
@@ -169,8 +173,16 @@
                 android:id="@+id/tArarmTime2BT"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:layout_margin="5dp"
                 android:text="Button" />
+
+            <CheckBox
+                android:id="@+id/ta207cBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="@string/comm_holiday" />
         </TableRow>
 
         <TableRow
@@ -181,6 +193,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_span="3"
+                android:layout_gravity="end"
                 android:orientation="horizontal">
 
                 <CheckBox
@@ -225,11 +238,6 @@
                     android:layout_height="wrap_content"
                     android:text="@string/comm_saturday" />
 
-                <CheckBox
-                    android:id="@+id/ta207cBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/comm_holiday"/>
             </LinearLayout>
         </TableRow>
 
@@ -251,8 +259,16 @@
                 android:id="@+id/tArarmTime3BT"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:layout_margin="5dp"
                 android:text="Button" />
+
+            <CheckBox
+                android:id="@+id/ta307cBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="@string/comm_holiday" />
         </TableRow>
 
         <TableRow
@@ -262,6 +278,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_gravity="end"
                 android:layout_span="3"
                 android:orientation="horizontal">
 
@@ -307,11 +324,6 @@
                     android:layout_height="wrap_content"
                     android:text="@string/comm_saturday" />
 
-                <CheckBox
-                    android:id="@+id/ta307cBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/comm_holiday"/>
             </LinearLayout>
         </TableRow>
 
@@ -348,6 +360,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
+                android:padding="5dp"
                 android:hint="@string/gca_subject_hint"
                 tools:ignore="TouchTargetSizeCheck" />
         </TableRow>
@@ -449,18 +462,18 @@
                 tools:ignore="TouchTargetSizeCheck" />
         </TableRow>
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+<!--        <TableRow-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent">-->
 
-            <CheckBox
-                android:id="@+id/gca_isPrivateCB"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_span="4"
-                android:text="@string/gc_isPrivate"
-                tools:ignore="TouchTargetSizeCheck" />
-        </TableRow>
+<!--            <CheckBox-->
+<!--                android:id="@+id/gca_isPrivateCB"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_span="4"-->
+<!--                android:text="@string/gc_isPrivate"-->
+<!--                tools:ignore="TouchTargetSizeCheck" />-->
+<!--        </TableRow>-->
     </TableLayout>
     <!--    </ScrollView>-->
 
