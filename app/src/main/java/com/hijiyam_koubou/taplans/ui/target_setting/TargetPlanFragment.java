@@ -89,7 +89,7 @@ public class TargetPlanFragment extends Fragment {
     public EditText gcaDescriptionET;             //説明・メモ
     public EditText gcaLocationET;            //予定の場所
     public Spinner gcaColorIdSP;         //予定の色
-    public CheckBox gcaIsPrivateCB;            //予定を限定公開にする"/>
+ //   public CheckBox gcaIsPrivateCB;            //予定を限定公開にする"/>
 
     private FragmentTargetSettingBinding binding;
     private Ringtone ringtone;
@@ -136,7 +136,7 @@ public class TargetPlanFragment extends Fragment {
                 gcaDescriptionET.setEnabled(true);             //説明・メモ
                 gcaLocationET.setEnabled(true);             //予定の場所
                 gcaColorIdSP.setEnabled(true);         //予定の色
-                gcaIsPrivateCB.setEnabled(true);            //予定を限定公開にする"/>
+            //    gcaIsPrivateCB.setEnabled(true);            //予定を限定公開にする"/>
             }else{
                 gcaSubjectET.setEnabled(false);         //予定の名称と同じ"
                 gcaStarttimeBT.setEnabled(false);          //開始時刻
@@ -145,7 +145,7 @@ public class TargetPlanFragment extends Fragment {
                 gcaDescriptionET.setEnabled(false);             //説明・メモ
                 gcaLocationET.setEnabled(false);             //予定の場所
                 gcaColorIdSP.setEnabled(false);         //予定の色
-                gcaIsPrivateCB.setEnabled(false);            //予定を限定公開にする"/>
+             //   gcaIsPrivateCB.setEnabled(false);            //予定を限定公開にする"/>
             }
             myLog(TAG , dbMsg);
         } catch (Exception er) {

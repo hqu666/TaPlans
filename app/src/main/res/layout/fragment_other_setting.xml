@@ -13,6 +13,7 @@
         android:background="#E9DEDE"
         android:textSize="18sp"
         android:text="タップしていない日"/>
+
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -22,13 +23,11 @@
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            >
+            android:layout_height="match_parent">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
                 android:layout_span="2"
                 android:text="@string/sett_event_name" />
 
@@ -36,7 +35,9 @@
                 android:id="@+id/tEventNameEt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="15" />
+                android:layout_margin="5dp"
+                android:autofillHints="出勤、登校、バイトなど"
+                tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
         </TableRow>
 
         <TableRow
@@ -47,7 +48,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
                 android:layout_span="2"
                 android:text="@string/set_alarm_sound" />
 
@@ -55,15 +55,18 @@
                 android:id="@+id/tEventSoundSP"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="5dp"
-                android:layout_weight="4" />
+                android:layout_gravity="center_vertical"
+                android:layout_margin="5dp"
+                android:layout_weight="4"
+                tools:ignore="TouchTargetSizeCheck" />
 
             <ImageButton
                 android:id="@+id/tSoundPlayBT"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:src="@android:drawable/ic_lock_silent_mode_off" />
+                android:src="@android:drawable/ic_lock_silent_mode_off"
+                tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
         </TableRow>
 
         <TableRow
@@ -73,28 +76,27 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
                 android:text="@string/sett_alarm_time" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
                 android:text="1;" />
 
             <Button
                 android:id="@+id/tArarmTime1BT"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
                 android:text="Button" />
 
-            <!--            <EditText-->
-            <!--                android:id="@+id/tArarmTime1Et"-->
-            <!--                android:layout_width="match_parent"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:inputType="time"-->
-            <!--                android:hint="06:00"-->
-            <!--                />-->
+            <CheckBox
+                android:id="@+id/ta107cBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="@string/comm_holiday" />
 
         </TableRow>
 
@@ -107,6 +109,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
+                android:layout_gravity="end"
                 android:layout_span="3"
                 android:orientation="horizontal">
 
@@ -152,11 +155,6 @@
                     android:layout_height="wrap_content"
                     android:text="@string/comm_saturday" />
 
-                <CheckBox
-                    android:id="@+id/ta107cBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/comm_holiday"/>
             </LinearLayout>
         </TableRow>
 
@@ -167,22 +165,27 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
                 android:text="@string/sett_alarm_time" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
                 android:text="2;" />
 
             <Button
                 android:id="@+id/tArarmTime2BT"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:layout_margin="5dp"
                 android:text="Button" />
+
+            <CheckBox
+                android:id="@+id/ta207cBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="@string/comm_holiday" />
         </TableRow>
 
         <TableRow
@@ -193,6 +196,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_span="3"
+                android:layout_gravity="end"
                 android:orientation="horizontal">
 
                 <CheckBox
@@ -237,11 +241,6 @@
                     android:layout_height="wrap_content"
                     android:text="@string/comm_saturday" />
 
-                <CheckBox
-                    android:id="@+id/ta207cBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/comm_holiday"/>
             </LinearLayout>
         </TableRow>
 
@@ -252,22 +251,27 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
                 android:text="@string/sett_alarm_time" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
                 android:text="3;" />
 
             <Button
                 android:id="@+id/tArarmTime3BT"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:layout_margin="5dp"
                 android:text="Button" />
+
+            <CheckBox
+                android:id="@+id/ta307cBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="@string/comm_holiday" />
         </TableRow>
 
         <TableRow
@@ -277,6 +281,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_gravity="end"
                 android:layout_span="3"
                 android:orientation="horizontal">
 
@@ -322,11 +327,6 @@
                     android:layout_height="wrap_content"
                     android:text="@string/comm_saturday" />
 
-                <CheckBox
-                    android:id="@+id/ta307cBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/comm_holiday"/>
             </LinearLayout>
         </TableRow>
 
@@ -343,7 +343,8 @@
                 android:layout_gravity="center"
                 android:layout_span="3"
                 android:text="@string/google_calendar_integration"
-                tools:ignore="UseSwitchCompatOrMaterialXml" />
+                android:textColor="#000000"
+                tools:ignore="UseSwitchCompatOrMaterialXml,TouchTargetSizeCheck" />
 
         </TableRow>
 
@@ -354,7 +355,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
                 android:layout_span="2"
                 android:text="@string/gc_subject" />
 
@@ -362,9 +362,10 @@
                 android:id="@+id/gca_subjectET"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/gcc_lavender"
-                android:textColor="#FFFFFFFF"
-                android:hint="@string/gca_subject_hint" />
+                android:layout_margin="5dp"
+                android:padding="5dp"
+                android:hint="@string/gca_subject_hint"
+                tools:ignore="TouchTargetSizeCheck" />
         </TableRow>
 
         <TableRow
@@ -373,7 +374,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
                 android:layout_span="2"
                 android:text="@string/comm_time" />
 
@@ -385,8 +385,7 @@
                     android:id="@+id/gca_starttimeBT"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
+                    android:layout_margin="5dp"
                     android:text="08；00" />
                 <TextView
                     android:layout_width="wrap_content"
@@ -396,17 +395,17 @@
                     android:id="@+id/gca_endtimeBT"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
+                    android:layout_margin="5dp"
                     android:text="17；00" />
+
                 <Switch
                     android:id="@+id/gca_enddateSW"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
                     android:layout_gravity="center"
+                    android:layout_marginStart="10dp"
                     android:text="@string/gc_enddate"
-                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+                    tools:ignore="UseSwitchCompatOrMaterialXml,TouchTargetSizeCheck" />
 
             </LinearLayout>
         </TableRow>
@@ -418,7 +417,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
                 android:layout_span="2"
                 android:text="@string/gc_description" />
 
@@ -426,18 +424,18 @@
                 android:id="@+id/gca_descriptionET"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="5dp"
                 android:hint="@string/gc_description_hint"
-                />
+                tools:ignore="TouchTargetSizeCheck" />
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
                 android:layout_span="2"
                 android:text="@string/gc_location" />
 
@@ -445,8 +443,9 @@
                 android:id="@+id/gca_locationET"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="5dp"
                 android:hint="@string/gc_location_hint"
-                />
+                tools:ignore="TouchTargetSizeCheck" />
         </TableRow>
 
         <TableRow
@@ -456,35 +455,29 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
                 android:layout_span="2"
                 android:text="@string/gc_color" />
 
-            <LinearLayout
+            <Spinner
+                android:id="@+id/gca_colorIdSP"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-
-                <Spinner
-                    android:id="@+id/gca_colorIdSP"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginRight="5dp"
-                    />
-
-
-                <CheckBox
-                    android:id="@+id/gca_isPrivateCB"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/gc_isPrivate"/>
-            </LinearLayout>
+                tools:ignore="TouchTargetSizeCheck" />
         </TableRow>
 
+        <!--        <TableRow-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="match_parent">-->
+
+        <!--            <CheckBox-->
+        <!--                android:id="@+id/gca_isPrivateCB"-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:layout_span="4"-->
+        <!--                android:text="@string/gc_isPrivate"-->
+        <!--                tools:ignore="TouchTargetSizeCheck" />-->
+        <!--        </TableRow>-->
     </TableLayout>
-    <!--    </ScrollView>-->
 
     <TextView
         android:id="@+id/text_slideshow"

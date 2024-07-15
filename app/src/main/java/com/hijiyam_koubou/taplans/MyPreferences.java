@@ -99,6 +99,54 @@ public class MyPreferences extends PreferenceActivity {
     public String tCColorName;           // 予定の色名称
     public int tCColorRss;           // 予定の色リソースID
 //    public Boolean gcaIsPrivate;            //予定を限定公開にする
+    /**
+     * 設定予定以外の日
+     * */
+    public String ohEventName;             //  予定の名称
+    public String ohEventSoundName;           // アラーム名
+    public String ohEventSoundURi;           // アラームURI
+
+    public String ohArarmTime1 = "06 : 00";           // アラーム時刻1
+    public Boolean oh100c = false;               // アラーム時刻1 の日曜
+    public Boolean oh101c = false;          // アラーム時刻1 の月曜
+    public Boolean oh102c = false;        // アラーム時刻1 の火曜
+    public Boolean oh103c = false;         // アラーム時刻1 の水曜
+    public Boolean oh104c = false;           // アラーム時刻1 の木曜
+    public Boolean oh105c = false;            // アラーム時刻1 の金曜
+    public Boolean oh106c = false;            // アラーム時刻1 の土曜
+    public Boolean oh107c = false;            // アラーム時刻1 の祝日
+
+    public String ohArarmTime2 = "07 : 00";           // アラーム時刻2
+    public Boolean oh200c = false;             // アラーム時刻2 の日曜
+    public Boolean oh201c = false;            // アラーム時刻2 の月曜
+    public Boolean oh202c = false;            // アラーム時刻2 の火曜
+    public Boolean oh203c = false;               // アラーム時刻2 の水曜
+    public Boolean oh204c = false;              // アラーム時刻2 の木曜
+    public Boolean oh205c = false;          // アラーム時刻2 の金曜
+    public Boolean oh206c = false;              // アラーム時刻2 の土曜
+    public Boolean oh207c = false;            // アラーム時刻2 の祝日
+
+    public String ohArarmTime3 = "08 : 00";           // アラーム時刻3
+    public Boolean oh300c = false;             // アラーム時刻3 の日曜
+    public Boolean oh301c = false;            // アラーム時刻3 の月曜
+    public Boolean oh302c = false;            // アラーム時刻3 の火曜
+    public Boolean oh303c = false;               // アラーム時刻3の水曜
+    public Boolean oh304c = false;              // アラーム時刻3 の木曜
+    public Boolean oh305c = false;          // アラーム時刻3 の金曜
+    public Boolean oh306c = false;              // アラーム時刻3 の土曜
+    public Boolean oh307c = false;            // アラーム時刻3 の祝日
+
+    //Googleカレンダー連携
+    public Boolean ohGCAlignment;      //Googleカレンダー連携
+    public String ohGCSubject;         //登録する名称"
+    public String ohGCStarttime = "09 : 00";           //開始時刻
+    public String ohGCEndtime = "18 : 00";          //終了時刻
+    public Boolean ohGCEnddate;            //終日
+    public String ohGCDescription;             //説明・メモ
+    public String ohGCLocation;            //予定の場所
+    public String ohGCColorName;           // 予定の色名称
+    public int ohGCColorRss;           // 予定の色リソースID
+
 
     /**
      * Stringプリファレンスを取得する
