@@ -183,6 +183,12 @@ public class MyPreferences extends PreferenceActivity {
             }
             Map<String, ?> inPref = sharedPref.getAll();
             dbMsg += inPref.size() + "件" ;
+            for(Map.Entry<String, ?> entry : inPref.entrySet()){
+                String keyName = entry.getKey();
+                String settingStr = entry.getValue().toString();
+                dbMsg += "," + keyName + " = " + settingStr;
+            }
+
             dbMsg += "," + con.getResources().getString(R.string.pref_calender_account) +"=" + calenderAccount ;
             calenderAccount = readStrPref(inPref, "calendar_account", "your_account@gmail.com");
             dbMsg += ">>" + calenderAccount ;
@@ -363,9 +369,6 @@ public class MyPreferences extends PreferenceActivity {
 
             dbMsg += ",説明・メモ=" + gcaDescription ;
             gcaDescription = readStrPref(inPref,"gcaDescription", gcaDescription);
-//            if(gcaDescription.equals("") || gcaDescription==null){
-//                gcaDescription=gcaDescription;
-//            }
             dbMsg += ">>" + gcaDescription ;
 
             dbMsg += ",予定の場所=" + gcaLocation ;
@@ -383,6 +386,164 @@ public class MyPreferences extends PreferenceActivity {
 //            dbMsg += ",予定を限定公開にする=" + gcaIsPrivate ;
 //            gcaIsPrivate = sharedPref.getBoolean("gcaIsPrivate", false);
 //            dbMsg += ">>" + gcaIsPrivate;
+
+            dbMsg += ",予設定予定以外の" + con.getResources().getString(R.string.gc_subject) +"=" + ohEventName ;
+            ohEventName = readStrPref(inPref, "ohEventName", "休日");
+            dbMsg += ">>" + ohEventName ;
+
+            dbMsg += ",予設定予定以外の" + con.getResources().getString(R.string.set_alarm_sound) +"名称=" + ohEventSoundName ;
+            ohEventSoundName = readStrPref(inPref, "ohEventSoundName", "");
+            dbMsg += ">>" + ohEventSoundName ;
+
+            dbMsg += ",予設定予定以外の" + con.getResources().getString(R.string.set_alarm_sound) +"URI=" + ohEventSoundURi ;
+            ohEventSoundURi = readStrPref(inPref, "ohEventSoundURi", "");
+            dbMsg += ">>" + ohEventSoundURi ;
+
+
+            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"1=" + ohArarmTime1 ;
+            ohArarmTime1 = readStrPref(inPref, "ohArarmTime1", "9: 00");
+            dbMsg += ">>" + ohArarmTime1 ;
+
+            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"の日曜" + oh100c ;
+            oh100c = sharedPref.getBoolean("oh100c", oh100c);
+            dbMsg += ">>" + oh100c ;
+
+            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"の月曜" + oh101c ;
+            oh101c = sharedPref.getBoolean("oh101c", oh101c);
+            dbMsg += ">>" + oh101c ;
+
+            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"の火曜" + oh102c ;
+            oh102c = sharedPref.getBoolean("oh102c", oh102c);
+            dbMsg += ">>" + oh102c ;
+
+            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"の水曜" + oh103c ;
+            oh103c = sharedPref.getBoolean("oh103c", oh103c);
+            dbMsg += ">>" + oh103c ;
+
+            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"の木曜" + oh104c ;
+            oh104c = sharedPref.getBoolean("oh104c", oh104c);
+            dbMsg += ">>" + oh104c ;
+
+            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"の金曜" + oh105c ;
+            oh105c = sharedPref.getBoolean("oh105c", oh105c);
+            dbMsg += ">>" + oh105c ;
+
+            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"の土曜" + oh106c ;
+            oh106c = sharedPref.getBoolean("oh106c", oh106c);
+            dbMsg += ">>" + oh106c ;
+
+            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"の祝日" + oh107c ;
+            oh107c = sharedPref.getBoolean("oh107c", oh107c);
+            dbMsg += ">>" + oh107c ;
+
+            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"2=" + ohArarmTime2 ;
+            ohArarmTime2 = readStrPref(inPref, "ohArarmTime2", "10 : 00");
+            dbMsg += ">>" + ohArarmTime2 ;
+
+            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"の日曜" + oh200c ;
+            oh200c = sharedPref.getBoolean("oh200c", oh200c);
+            dbMsg += ">>" + oh200c ;
+
+            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"の月曜" + oh201c ;
+            oh201c = sharedPref.getBoolean("oh201c", oh201c);
+            dbMsg += ">>" + oh201c ;
+
+            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"の火曜" + oh202c ;
+            oh202c = sharedPref.getBoolean("oh202c", oh202c);
+            dbMsg += ">>" + oh202c ;
+
+            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"の水曜" + oh203c ;
+            oh203c = sharedPref.getBoolean("oh203c", oh203c);
+            dbMsg += ">>" + oh203c ;
+
+            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"の木曜" + oh204c ;
+            oh204c = sharedPref.getBoolean("oh204c", oh204c);
+            dbMsg += ">>" + oh204c ;
+
+            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"の金曜" + oh205c ;
+            oh205c = sharedPref.getBoolean("oh205c", oh205c);
+            dbMsg += ">>" + oh205c ;
+
+            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"の土曜" + oh206c ;
+            oh206c = sharedPref.getBoolean("oh206c", oh206c);
+            dbMsg += ">>" + oh206c ;
+
+            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"の祝日" + oh207c ;
+            oh207c = sharedPref.getBoolean("oh207c", oh207c);
+            dbMsg += ">>" + oh207c ;
+
+            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"3=" + ohArarmTime3 ;
+            ohArarmTime3 = readStrPref(inPref, "ohArarmTime3", "8 : 00");
+            dbMsg += ">>" + ohArarmTime3 ;
+
+            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"の日曜" + oh300c ;
+            oh300c = sharedPref.getBoolean("oh300c", oh300c);
+            dbMsg += ">>" + oh300c ;
+
+            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"の月曜" + oh301c ;
+            oh301c = sharedPref.getBoolean("oh301c", oh301c);
+            dbMsg += ">>" + oh301c ;
+
+            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"の火曜" + oh302c ;
+            oh302c = sharedPref.getBoolean("oh302c", oh302c);
+            dbMsg += ">>" + oh302c ;
+
+            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"の水曜" + oh303c ;
+            oh303c = sharedPref.getBoolean("oh303c", oh303c);
+            dbMsg += ">>" + oh303c ;
+
+            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"の木曜" + oh304c ;
+            oh304c = sharedPref.getBoolean("oh304c", oh304c);
+            dbMsg += ">>" + oh304c ;
+
+            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"の金曜" + oh305c ;
+            oh305c = sharedPref.getBoolean("oh305c", oh305c);
+            dbMsg += ">>" + oh305c ;
+
+            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"の土曜" + oh306c ;
+            oh306c = sharedPref.getBoolean("oh306c", oh306c);
+            dbMsg += ">>" + oh306c ;
+
+            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"の祝日" + oh307c ;
+            oh307c = sharedPref.getBoolean("oh307c", oh307c);
+            dbMsg += ">>" + oh307c ;
+
+//            //Googleカレンダー連携
+            dbMsg += "," + con.getResources().getString(R.string.google_calendar_integration) +"=" + ohGCAlignment ;
+            ohGCAlignment = sharedPref.getBoolean("ohGCAlignment", ohGCAlignment);
+            dbMsg += ">>" + ohGCAlignment ;
+
+            dbMsg += ",登録する名称=" + ohGCSubject ;
+            ohGCSubject = readStrPref(inPref, "ohGCSubject", ohEventName);
+            dbMsg += ">>" + ohGCSubject ;
+
+            dbMsg += ",開始時刻=" + ohGCStarttime ;
+            ohGCStarttime = readStrPref(inPref, "ohGCStarttime",  "09 : 00");
+            dbMsg += ">>" + ohGCStarttime ;
+
+            dbMsg += ",終了時刻=" + ohGCEndtime ;
+            ohGCEndtime = readStrPref(inPref, "ohGCEndtime",  "18 : 00");
+            dbMsg += ">>" + ohGCEndtime ;
+
+            dbMsg += "," + con.getResources().getString(R.string.gc_enddate) +"=" + ohGCEnddate ;
+            ohGCEnddate = sharedPref.getBoolean("ohGCEnddate", ohGCEnddate);
+            dbMsg += ">>" + ohGCEnddate ;
+
+            dbMsg += "," + con.getResources().getString(R.string.gc_description) +"=" + ohGCDescription ;
+            ohGCDescription = readStrPref(inPref, "ohGCDescription",  "");
+            dbMsg += ">>" + ohGCDescription ;
+
+            dbMsg += "," + con.getResources().getString(R.string.gc_location) +"=" + ohGCLocation ;
+            ohGCLocation = readStrPref(inPref, "ohGCLocation",  "");
+            dbMsg += ">>" + ohGCLocation ;
+
+            dbMsg += ",予定の色名称=" + ohGCColorName ;
+            ohGCColorName = readStrPref(inPref,"ohGCColorName", con.getResources().getString(R.string.gcc_lavender));
+            dbMsg += ">>" + ohGCColorName ;
+
+            dbMsg += ",予定の色リソースID=" + ohGCColorRss ;
+            ohGCColorRss = sharedPref.getInt("tCColorRss", con.getColor(R.color.gcc_lavender));
+            dbMsg += ">>" + ohGCColorRss ;
 
             myLog(TAG, dbMsg);
         } catch (Exception e) {

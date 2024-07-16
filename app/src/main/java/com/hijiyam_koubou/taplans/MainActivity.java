@@ -105,9 +105,7 @@ public class MainActivity extends AppCompatActivity {
     public Boolean ta305c = false;          // アラーム時刻3 の金曜
     public Boolean ta306c = false;              // アラーム時刻3 の土曜
     public Boolean ta307c = false;            // アラーム時刻3 の祝日
-    /**
-     * 設定予定以外の日
-     * */
+    // 設定予定以外の日
     public String ohEventName;             //  予定の名称
     public String ohEventSoundName;           // アラーム名
     public String ohEventSoundURi;           // アラームURI
@@ -836,6 +834,89 @@ public class MainActivity extends AppCompatActivity {
             dbMsg += ",予定の色リソースID=" + tCColorRss ;
 //            this.gcaIsPrivate = myPref.gcaIsPrivate;
 //            dbMsg += ",予定を限定公開にする=" + gcaIsPrivate ;
+            // 設定予定以外の日
+            this.ohEventName = myPref.ohEventName;
+            dbMsg += ",設定予定以外の名称=" + ohEventName ;
+            this.ohEventSoundName = myPref.ohEventSoundName;
+            dbMsg += ",アラーム名=" + ohEventSoundName ;
+            this.ohEventSoundURi = myPref.ohEventSoundURi;
+            dbMsg += ",アラームURI=" + ohEventSoundURi ;
+            this.ohArarmTime1 = myPref.ohArarmTime1;
+            dbMsg += ",アラーム時刻1=" + ohArarmTime1 ;
+            this.oh100c = myPref.oh100c;
+            dbMsg += ",の日曜=" + oh100c ;
+            this.oh101c = myPref.oh101c;
+            dbMsg += ",の月曜=" + oh101c ;
+            this.oh102c = myPref.oh102c;
+            dbMsg += ",の火曜=" + oh102c ;
+            this.oh103c = myPref.oh103c;
+            dbMsg += ",の水曜=" + oh103c ;
+            this.oh104c = myPref.oh104c;
+            dbMsg += ",の木曜=" + oh104c ;
+            this.oh105c = myPref.oh105c;
+            dbMsg += ",の金曜=" + oh105c ;
+            this.oh106c = myPref.oh106c;
+            dbMsg += ",の土曜=" + oh106c ;
+            this.oh107c = myPref.oh107c;
+            dbMsg += ",の祝日=" + oh107c ;
+
+            this.ohArarmTime2 = myPref.ohArarmTime2;
+            dbMsg += ",アラーム時刻2=" + ohArarmTime2 ;
+            this.oh200c = myPref.oh200c;
+            dbMsg += ",の日曜=" + oh200c ;
+            this.oh201c = myPref.oh201c;
+            dbMsg += ",の月曜=" + oh201c ;
+            this.oh202c = myPref.oh202c;
+            dbMsg += ",の火曜=" + oh202c ;
+            this.oh203c = myPref.oh203c;
+            dbMsg += ",の水曜=" + oh203c ;
+            this.oh204c = myPref.oh204c;
+            dbMsg += ",の木曜=" + oh204c ;
+            this.oh205c = myPref.oh205c;
+            dbMsg += ",の金曜=" + oh205c ;
+            this.oh206c = myPref.oh206c;
+            dbMsg += ",の土曜=" + oh206c ;
+            this.oh207c = myPref.oh207c;
+            dbMsg += ",の祝日=" + oh207c ;
+
+            this.ohArarmTime3 = myPref.ohArarmTime3;
+            dbMsg += ",アラーム時刻3=" + ohArarmTime3 ;
+            this.oh300c = myPref.oh300c;
+            dbMsg += ",の日曜=" + oh300c ;
+            this.oh301c = myPref.oh301c;
+            dbMsg += ",の月曜=" + oh301c ;
+            this.oh302c = myPref.oh302c;
+            dbMsg += ",の火曜=" + oh302c ;
+            this.oh303c = myPref.oh303c;
+            dbMsg += ",の水曜=" + oh303c ;
+            this.oh304c = myPref.oh304c;
+            dbMsg += ",の木曜=" + oh304c ;
+            this.oh305c = myPref.oh305c;
+            dbMsg += ",の金曜=" + oh305c ;
+            this.oh306c = myPref.oh306c;
+            dbMsg += ",の土曜=" + oh306c ;
+            this.oh307c = myPref.oh307c;
+            dbMsg += ",の祝日=" + oh307c ;
+//            //Googleカレンダー連携
+            this.ohGCAlignment = myPref.ohGCAlignment;
+            dbMsg += ",Googleカレンダー連携=" + ohGCAlignment ;
+            this.ohGCSubject = myPref.ohGCSubject;
+            dbMsg += ",登録する名称=" + ohGCSubject ;
+            this.ohGCStarttime = myPref.ohGCStarttime;
+            dbMsg += ",開始時刻=" + ohGCStarttime ;
+            this.ohGCEndtime = myPref.ohGCEndtime;
+            dbMsg += ",終了時刻=" + ohGCEndtime ;
+            this.ohGCEnddate = myPref.ohGCEnddate;
+            dbMsg += ",終日=" + ohGCEnddate ;
+            this.ohGCDescription = myPref.ohGCDescription;
+            dbMsg += ",説明・メモ=" + ohGCDescription ;
+            this.ohGCLocation = myPref.ohGCLocation;
+            dbMsg += ",予定の場所=" + ohGCLocation ;
+            this.ohGCColorName = myPref.ohGCColorName;
+            dbMsg += ",予定の色名称=" + ohGCColorName ;
+            this.ohGCColorRss = myPref.ohGCColorRss;
+            dbMsg += ",予定の色リソースID=" + ohGCColorRss ;
+//            public int ohGCColorRss;           //
 
             binding = ActivityMainBinding.inflate(getLayoutInflater());
             setContentView(binding.getRoot());
