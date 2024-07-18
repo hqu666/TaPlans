@@ -89,6 +89,8 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:layout_weight="1"
+                android:backgroundTint="#FFE9DEDE"
+                android:textColor="@color/black"
                 android:text="Button" />
 
             <CheckBox
@@ -178,6 +180,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_margin="5dp"
+                android:backgroundTint="#FFE9DEDE"
+                android:textColor="@color/black"
                 android:text="Button" />
 
             <CheckBox
@@ -264,6 +268,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_margin="5dp"
+                android:backgroundTint="#FFE9DEDE"
+                android:textColor="@color/black"
                 android:text="Button" />
 
             <CheckBox
@@ -386,6 +392,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
+                    android:backgroundTint="#FFE9DEDE"
+                    android:textColor="@color/black"
                     android:text="08；00" />
                 <TextView
                     android:layout_width="wrap_content"
@@ -396,6 +404,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
+                    android:backgroundTint="#FFE9DEDE"
+                    android:textColor="@color/black"
                     android:text="17；00" />
 
                 <Switch

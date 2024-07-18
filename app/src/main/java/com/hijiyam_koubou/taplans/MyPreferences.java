@@ -89,11 +89,11 @@ public class MyPreferences extends PreferenceActivity {
     public Boolean ta307c = false;            // アラーム時刻3 の祝日
 
     //Googleカレンダー連携
-    public Boolean googleCalAlignment;      //Googleカレンダー連携
+    public Boolean googleCalAlignment= true;       //Googleカレンダー連携
     public String gcaSubject;         //登録する名称"
     public String gcaStarttime = "09 : 00";          //開始時刻
     public String gcaEndtime = "18 : 00";           //終了時刻
-    public Boolean gcaEnddate;            //終日
+    public Boolean gcaEnddate = false;            //終日
     public String gcaDescription;             //説明・メモ
     public String gcaLocation;            //予定の場所
     public String tCColorName;           // 予定の色名称
@@ -137,11 +137,11 @@ public class MyPreferences extends PreferenceActivity {
     public Boolean oh307c = false;            // アラーム時刻3 の祝日
 
     //Googleカレンダー連携
-    public Boolean ohGCAlignment;      //Googleカレンダー連携
+    public Boolean ohGCAlignment= false;     //Googleカレンダー連携
     public String ohGCSubject;         //登録する名称"
     public String ohGCStarttime = "09 : 00";           //開始時刻
     public String ohGCEndtime = "18 : 00";          //終了時刻
-    public Boolean ohGCEnddate;            //終日
+    public Boolean ohGCEnddate = true;            //終日
     public String ohGCDescription;             //説明・メモ
     public String ohGCLocation;            //予定の場所
     public String ohGCColorName;           // 予定の色名称
@@ -161,10 +161,16 @@ public class MyPreferences extends PreferenceActivity {
             dbMsg += "(" + defVal + ")";
             if(inPref.containsKey(key)){
                 retStr = sharedPref.getString(key, defVal);
-                dbMsg += ",retStr=" + retStr;
+                if(retStr.equals("")){
+                    retStr=defVal;
+                }
             }else{
                 dbMsg += ",該当なし";
+                if(retStr == null){
+                    retStr="";
+                }
             }
+            dbMsg += ",retStr=" + retStr;
             myLog(TAG, dbMsg);
         } catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -227,15 +233,15 @@ public class MyPreferences extends PreferenceActivity {
             tEventName = sharedPref.getString("tEventName", "");
             dbMsg += ">>" + tEventName ;
 
-            dbMsg += "," + con.getResources().getString(R.string.set_alarm_sound) +"名称=" ;  //+ tEventSoundName ;
+            dbMsg += "," + con.getResources().getString(R.string.set_alarm_sound) +"名称=" + tEventSoundName ;
             tEventSoundName = readStrPref(inPref, "tEventSoundName", "");
             dbMsg += ">>" + tEventSoundName ;
 
-            dbMsg += "," + con.getResources().getString(R.string.set_alarm_sound) +"URI=";  // + tEventSoundURi ;
+            dbMsg += "," + con.getResources().getString(R.string.set_alarm_sound) +"URI=" + tEventSoundURi ;
             tEventSoundURi = readStrPref(inPref, "tEventSoundURi", "");
             dbMsg += ">>" + tEventSoundURi ;
 
-            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"1=" + tArarmTime1 ;
+            dbMsg += "\n" + con.getResources().getString(R.string.sett_alarm_time) +"1=" + tArarmTime1 ;
             tArarmTime1 = readStrPref(inPref,"tArarmTime1", "");
             dbMsg += ">>" + tArarmTime1 ;
 
@@ -275,7 +281,7 @@ public class MyPreferences extends PreferenceActivity {
             ta107c = sharedPref.getBoolean("ta107c", ta107c);
             dbMsg += ">>" + ta107c ;
 
-            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"2=" + tArarmTime2 ;
+            dbMsg += "\n" + con.getResources().getString(R.string.sett_alarm_time) +"2=" + tArarmTime2 ;
             tArarmTime2 = readStrPref(inPref,"tArarmTime2", "");
             dbMsg += ">>" + tArarmTime2 ;
 
@@ -311,9 +317,9 @@ public class MyPreferences extends PreferenceActivity {
             ta207c = sharedPref.getBoolean("ta207c", ta207c);
             dbMsg += ">>" + ta207c ;
 
-            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"3=" + tArarmTime3 ;
-            tArarmTime3 = readStrPref(inPref,"tArarmTime3", "");
-            dbMsg += ">>" + tArarmTime3 ;
+            dbMsg += "\n" + con.getResources().getString(R.string.sett_alarm_time) +"3=" + tArarmTime3 ;
+            tArarmTime3 = readStrPref(inPref,"tArarmTime3", tArarmTime3);
+            dbMsg += ">3>" + tArarmTime3 ;
 
             dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"3の日曜=" + ta300c ;
             ta300c = sharedPref.getBoolean("ta300c", ta300c);
@@ -348,7 +354,7 @@ public class MyPreferences extends PreferenceActivity {
             dbMsg += ">>" + ta307c ;
             //Googleカレンダー連携
             dbMsg += "\nGoogleカレンダー連携=" + googleCalAlignment ;
-            googleCalAlignment = sharedPref.getBoolean("googleCalAlignment", false);
+            googleCalAlignment = sharedPref.getBoolean("googleCalAlignment", googleCalAlignment);
             dbMsg += ">>" + googleCalAlignment;
 
             dbMsg += ",登録する名称=" + gcaSubject ;
@@ -364,7 +370,7 @@ public class MyPreferences extends PreferenceActivity {
             dbMsg += ">>" + gcaEndtime ;
 
             dbMsg += ",終日=" + gcaEnddate ;
-            gcaEnddate = sharedPref.getBoolean("gcaEnddate", false);
+            gcaEnddate = sharedPref.getBoolean("gcaEnddate", gcaEnddate);
             dbMsg += ">>" + gcaEnddate;
 
             dbMsg += ",説明・メモ=" + gcaDescription ;
@@ -387,7 +393,7 @@ public class MyPreferences extends PreferenceActivity {
 //            gcaIsPrivate = sharedPref.getBoolean("gcaIsPrivate", false);
 //            dbMsg += ">>" + gcaIsPrivate;
 
-            dbMsg += ",予設定予定以外の" + con.getResources().getString(R.string.gc_subject) +"=" + ohEventName ;
+            dbMsg += "\n予設定予定以外の" + con.getResources().getString(R.string.gc_subject) +"=" + ohEventName ;
             ohEventName = readStrPref(inPref, "ohEventName", "休日");
             dbMsg += ">>" + ohEventName ;
 
@@ -401,7 +407,7 @@ public class MyPreferences extends PreferenceActivity {
 
 
             dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"1=" + ohArarmTime1 ;
-            ohArarmTime1 = readStrPref(inPref, "ohArarmTime1", "9: 00");
+            ohArarmTime1 = readStrPref(inPref, "ohArarmTime1", ohArarmTime1);
             dbMsg += ">>" + ohArarmTime1 ;
 
             dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"の日曜" + oh100c ;
@@ -436,8 +442,8 @@ public class MyPreferences extends PreferenceActivity {
             oh107c = sharedPref.getBoolean("oh107c", oh107c);
             dbMsg += ">>" + oh107c ;
 
-            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"2=" + ohArarmTime2 ;
-            ohArarmTime2 = readStrPref(inPref, "ohArarmTime2", "10 : 00");
+            dbMsg += "\n" + con.getResources().getString(R.string.sett_alarm_time) +"2=" + ohArarmTime2 ;
+            ohArarmTime2 = readStrPref(inPref, "ohArarmTime2", ohArarmTime2);
             dbMsg += ">>" + ohArarmTime2 ;
 
             dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"の日曜" + oh200c ;
@@ -472,8 +478,8 @@ public class MyPreferences extends PreferenceActivity {
             oh207c = sharedPref.getBoolean("oh207c", oh207c);
             dbMsg += ">>" + oh207c ;
 
-            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"3=" + ohArarmTime3 ;
-            ohArarmTime3 = readStrPref(inPref, "ohArarmTime3", "8 : 00");
+            dbMsg += "\n" + con.getResources().getString(R.string.sett_alarm_time) +"3=" + ohArarmTime3 ;
+            ohArarmTime3 = readStrPref(inPref, "ohArarmTime3", ohArarmTime3);
             dbMsg += ">>" + ohArarmTime3 ;
 
             dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"の日曜" + oh300c ;
@@ -509,7 +515,7 @@ public class MyPreferences extends PreferenceActivity {
             dbMsg += ">>" + oh307c ;
 
 //            //Googleカレンダー連携
-            dbMsg += "," + con.getResources().getString(R.string.google_calendar_integration) +"=" + ohGCAlignment ;
+            dbMsg += "\n" + con.getResources().getString(R.string.google_calendar_integration) +"=" + ohGCAlignment ;
             ohGCAlignment = sharedPref.getBoolean("ohGCAlignment", ohGCAlignment);
             dbMsg += ">>" + ohGCAlignment ;
 
@@ -518,11 +524,11 @@ public class MyPreferences extends PreferenceActivity {
             dbMsg += ">>" + ohGCSubject ;
 
             dbMsg += ",開始時刻=" + ohGCStarttime ;
-            ohGCStarttime = readStrPref(inPref, "ohGCStarttime",  "09 : 00");
+            ohGCStarttime = readStrPref(inPref, "ohGCStarttime",  ohGCStarttime);
             dbMsg += ">>" + ohGCStarttime ;
 
             dbMsg += ",終了時刻=" + ohGCEndtime ;
-            ohGCEndtime = readStrPref(inPref, "ohGCEndtime",  "18 : 00");
+            ohGCEndtime = readStrPref(inPref, "ohGCEndtime",  ohGCEndtime);
             dbMsg += ">>" + ohGCEndtime ;
 
             dbMsg += "," + con.getResources().getString(R.string.gc_enddate) +"=" + ohGCEnddate ;

@@ -105,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
     public Boolean ta305c = false;          // アラーム時刻3 の金曜
     public Boolean ta306c = false;              // アラーム時刻3 の土曜
     public Boolean ta307c = false;            // アラーム時刻3 の祝日
+
     // 設定予定以外の日
     public String ohEventName;             //  予定の名称
     public String ohEventSoundName;           // アラーム名
@@ -520,7 +521,11 @@ public class MainActivity extends AppCompatActivity {
             dbMsg += ",名称＝" + selItem.title ;
             setStrPref(prefName,(String) selItem.title);
             if(prefName.equals("tEventSoundName")){
+                dbMsg += ",設定側";
                 tEventSoundName = (String) selItem.title;
+            }else if(prefName.equals("ohEventSoundName")){
+                dbMsg += ",未設定側";
+                ohEventSoundName = (String) selItem.title;
             }
             dbMsg += "[" + selItem.index+"]" ;
             dbMsg += selItem.uri;
@@ -528,6 +533,8 @@ public class MainActivity extends AppCompatActivity {
             setStrPref(prefURi,selItem.uri);
             if(prefURi.equals("tEventSoundURi")){
                 tEventSoundURi = selItem.uri;            //selItem.getClass().getField("uri").toString();
+            }else if(prefURi.equals("ohEventSoundURi")){
+                ohEventSoundURi = selItem.uri;
             }
             myLog(TAG , dbMsg);
         } catch (Exception er) {

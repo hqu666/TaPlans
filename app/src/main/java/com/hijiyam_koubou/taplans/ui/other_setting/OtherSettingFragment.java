@@ -251,7 +251,7 @@ public class OtherSettingFragment extends Fragment {
                     }
                 }
             });
-            tEventNameEt.setText(pClass.tEventName);
+            tEventNameEt.setText(pClass.ohEventName);
 
             tEventSoundSP = binding.tEventSoundSP;           // アラーム音
             tSoundPlayBT = binding.tSoundPlayBT;
