@@ -356,6 +356,7 @@ public class TargetPlanFragment extends Fragment {
                         dbMsg += "アラーム時刻1 の日曜=" + pClass.ta100c;
                         pClass.setWeekCheck(chBox,isChecked,"ta100c",ta200cBox,"ta200c",ta300cBox,"ta300c" );
                         if(isChecked){
+                            pClass.setWeakUpTIme(pClass.tArarmTime1,pClass.tBDQTWeek,"sunday");
                             pClass.ta100c=true;
                             pClass.ta200c=false;
                             pClass.ta300c=false;
@@ -381,6 +382,7 @@ public class TargetPlanFragment extends Fragment {
                         dbMsg += "アラーム時刻1 の月曜を" + isChecked + "に";
                         pClass.setWeekCheck(chBox,isChecked,"ta101c",ta201cBox,"ta201c",ta301cBox,"ta301c" );
                         if(isChecked){
+                            pClass.setWeakUpTIme(pClass.tArarmTime1,pClass.tBDQTWeek,"monday");
                             pClass.ta101c=true;
                             pClass.ta201c=false;
                             pClass.ta301c=false;
@@ -405,6 +407,7 @@ public class TargetPlanFragment extends Fragment {
                         CheckBox chBox=(CheckBox)buttonView;
                         pClass.setWeekCheck(chBox,isChecked,"ta102c",ta202cBox,"ta202c",ta302cBox,"ta302c" );
                         if(isChecked){
+                            pClass.setWeakUpTIme(pClass.tArarmTime1,pClass.tBDQTWeek,"tuesday");
                             pClass.ta102c=true;
                             pClass.ta202c=false;
                             pClass.ta302c=false;
@@ -429,6 +432,7 @@ public class TargetPlanFragment extends Fragment {
                         CheckBox chBox=(CheckBox)buttonView;
                         pClass.setWeekCheck(chBox,isChecked,"ta103c",ta203cBox,"ta203c",ta303cBox,"ta303c" );
                         if(isChecked){
+                            pClass.setWeakUpTIme(pClass.tArarmTime1,pClass.tBDQTWeek,"wednesday");
                             pClass.ta103c=true;
                             pClass.ta203c=false;
                             pClass.ta303c=false;
@@ -453,6 +457,7 @@ public class TargetPlanFragment extends Fragment {
                         CheckBox chBox=(CheckBox)buttonView;
                         pClass.setWeekCheck(chBox,isChecked,"ta104c",ta204cBox,"ta204c",ta304cBox,"ta304c" );
                         if(isChecked){
+                            pClass.setWeakUpTIme(pClass.tArarmTime1,pClass.tBDQTWeek,"thursday");
                             pClass.ta104c=true;
                             pClass.ta204c=false;
                             pClass.ta304c=false;
@@ -477,6 +482,7 @@ public class TargetPlanFragment extends Fragment {
                         CheckBox chkbox=(CheckBox)buttonView;
                         pClass.setWeekCheck(chkbox,isChecked,"ta105c",ta205cBox,"ta205c",ta305cBox,"ta305c" );
                         if(isChecked){
+                            pClass.setWeakUpTIme(pClass.tArarmTime1,pClass.tBDQTWeek,"friday");
                             pClass.ta105c=true;
                             pClass.ta205c=false;
                             pClass.ta305c=false;
@@ -501,6 +507,7 @@ public class TargetPlanFragment extends Fragment {
                         CheckBox chkbox=(CheckBox)buttonView;
                         pClass.setWeekCheck(chkbox,isChecked,"ta106c",ta206cBox,"ta206c",ta306cBox,"ta306c" );
                         if(isChecked){
+                            pClass.setWeakUpTIme(pClass.tArarmTime1,pClass.tBDQTWeek,"saturday");
                             pClass.ta106c=true;
                             pClass.ta206c=false;
                             pClass.ta306c=false;
@@ -525,6 +532,7 @@ public class TargetPlanFragment extends Fragment {
                         CheckBox chkbox=(CheckBox)buttonView;
                         pClass.setWeekCheck(chkbox,isChecked,"ta107c",ta207cBox,"ta207c",ta307cBox,"ta307c" );
                         if(isChecked){
+                            pClass.setWeakUpTIme(pClass.tArarmTime1,pClass.tBDQTWeek,"holiday");
                             pClass.ta107c=true;
                             pClass.ta207c=false;
                             pClass.ta307c=false;
@@ -567,6 +575,7 @@ public class TargetPlanFragment extends Fragment {
                         CheckBox chkbox=(CheckBox)buttonView;
                         pClass.setWeekCheck(chkbox,isChecked,"ta200c",ta100cBox,"ta100c",ta300cBox,"ta300c" );
                         if(isChecked){
+                            pClass.setWeakUpTIme(pClass.tArarmTime2,pClass.tBDQTWeek,"sunday");
                             pClass.ta200c=true;
                             pClass.ta100c=false;
                             pClass.ta300c=false;
@@ -591,6 +600,7 @@ public class TargetPlanFragment extends Fragment {
                         CheckBox chBox=(CheckBox)buttonView;
                         pClass.setWeekCheck(chBox,isChecked,"ta201c",ta101cBox,"ta101c",ta301cBox,"ta301c" );
                         if(isChecked){
+                            pClass.setWeakUpTIme(pClass.tArarmTime2,pClass.tBDQTWeek,"monday");
                             pClass.ta201c=true;
                             pClass.ta101c=false;
                             pClass.ta301c=false;
@@ -615,6 +625,7 @@ public class TargetPlanFragment extends Fragment {
                         CheckBox chBox=(CheckBox)buttonView;
                         pClass.setWeekCheck(chBox,isChecked,"ta202c",ta102cBox,"ta102c",ta302cBox,"ta302c" );
                         if(isChecked){
+                            pClass.setWeakUpTIme(pClass.tArarmTime2,pClass.tBDQTWeek,"tuesday");
                             pClass.ta202c=true;
                             pClass.ta102c=false;
                             pClass.ta302c=false;
@@ -639,6 +650,7 @@ public class TargetPlanFragment extends Fragment {
                         CheckBox chBox=(CheckBox)buttonView;
                         pClass.setWeekCheck(chBox,isChecked,"ta203c",ta103cBox,"ta103c",ta303cBox,"ta303c" );
                         if(isChecked){
+                            pClass.setWeakUpTIme(pClass.tArarmTime2,pClass.tBDQTWeek,"wednesday");
                             pClass.ta203c=true;
                             pClass.ta103c=false;
                             pClass.ta303c=false;
@@ -663,6 +675,7 @@ public class TargetPlanFragment extends Fragment {
                         CheckBox chBox=(CheckBox)buttonView;
                         pClass.setWeekCheck(chBox,isChecked,"ta204c",ta104cBox,"ta104c",ta304cBox,"ta304c" );
                         if(isChecked){
+                            pClass.setWeakUpTIme(pClass.tArarmTime2,pClass.tBDQTWeek,"thursday");
                             pClass.ta204c=true;
                             pClass.ta104c=false;
                             pClass.ta304c=false;
@@ -687,6 +700,7 @@ public class TargetPlanFragment extends Fragment {
                         CheckBox chBox=(CheckBox)buttonView;
                         pClass.setWeekCheck(chBox,isChecked,"ta205c",ta105cBox,"ta105c",ta305cBox,"ta305c" );
                         if(isChecked){
+                            pClass.setWeakUpTIme(pClass.tArarmTime2,pClass.tBDQTWeek,"friday");
                             pClass.ta205c=true;
                             pClass.ta105c=false;
                             pClass.ta305c=false;
@@ -711,6 +725,7 @@ public class TargetPlanFragment extends Fragment {
                         CheckBox chBox=(CheckBox)buttonView;
                         pClass.setWeekCheck(chBox,isChecked,"ta206c",ta106cBox,"ta106c",ta306cBox,"ta306c" );
                         if(isChecked){
+                            pClass.setWeakUpTIme(pClass.tArarmTime2,pClass.tBDQTWeek,"saturday");
                             pClass.ta206c=true;
                             pClass.ta106c=false;
                             pClass.ta306c=false;
@@ -735,6 +750,7 @@ public class TargetPlanFragment extends Fragment {
                         CheckBox chBox=(CheckBox)buttonView;
                         pClass.setWeekCheck(chBox,isChecked,"ta207c",ta107cBox,"ta107c",ta307cBox,"ta307c" );
                         if(isChecked){
+                            pClass.setWeakUpTIme(pClass.tArarmTime2,pClass.tBDQTWeek,"holiday");
                             pClass.ta207c=true;
                             pClass.ta107c=false;
                             pClass.ta307c=false;
@@ -777,6 +793,7 @@ public class TargetPlanFragment extends Fragment {
                         CheckBox chkbox=(CheckBox)buttonView;
                         pClass.setWeekCheck(chkbox,isChecked,"ta300c",ta100cBox,"ta100c",ta200cBox,"ta200c" );
                         if(isChecked){
+                            pClass.setWeakUpTIme(pClass.tArarmTime3,pClass.tBDQTWeek,"sunday");
                             pClass.ta300c=true;
                             pClass.ta100c=false;
                             pClass.ta200c=false;
@@ -801,6 +818,7 @@ public class TargetPlanFragment extends Fragment {
                         CheckBox chBox=(CheckBox)buttonView;
                         pClass.setWeekCheck(chBox,isChecked,"ta301c",ta101cBox,"ta101c",ta201cBox,"ta201c" );
                         if(isChecked){
+                            pClass.setWeakUpTIme(pClass.tArarmTime3,pClass.tBDQTWeek,"monday");
                             pClass.ta301c=true;
                             pClass.ta101c=false;
                             pClass.ta201c=false;
@@ -825,6 +843,7 @@ public class TargetPlanFragment extends Fragment {
                         CheckBox chBox=(CheckBox)buttonView;
                         pClass.setWeekCheck(chBox,isChecked,"ta302c",ta102cBox,"ta102c",ta202cBox,"ta202c" );
                         if(isChecked){
+                            pClass.setWeakUpTIme(pClass.tArarmTime3,pClass.tBDQTWeek,"tuesday");
                             pClass.ta302c=true;
                             pClass.ta102c=false;
                             pClass.ta202c=false;
@@ -849,6 +868,7 @@ public class TargetPlanFragment extends Fragment {
                         CheckBox chBox=(CheckBox)buttonView;
                         pClass.setWeekCheck(chBox,isChecked,"ta303c",ta103cBox,"ta103c",ta203cBox,"ta203c" );
                         if(isChecked){
+                            pClass.setWeakUpTIme(pClass.tArarmTime3,pClass.tBDQTWeek,"wednesday");
                             pClass.ta303c=true;
                             pClass.ta103c=false;
                             pClass.ta203c=false;
@@ -873,6 +893,7 @@ public class TargetPlanFragment extends Fragment {
                         CheckBox chBox=(CheckBox)buttonView;
                         pClass.setWeekCheck(chBox,isChecked,"ta304c",ta104cBox,"ta104c",ta204cBox,"ta204c" );
                         if(isChecked){
+                            pClass.setWeakUpTIme(pClass.tArarmTime3,pClass.tBDQTWeek,"thursday");
                             pClass.ta304c=true;
                             pClass.ta104c=false;
                             pClass.ta204c=false;
@@ -897,6 +918,7 @@ public class TargetPlanFragment extends Fragment {
                         CheckBox chBox=(CheckBox)buttonView;
                         pClass.setWeekCheck(chBox,isChecked,"ta305c",ta105cBox,"ta105c",ta205cBox,"ta205c" );
                         if(isChecked){
+                            pClass.setWeakUpTIme(pClass.tArarmTime3,pClass.tBDQTWeek,"friday");
                             pClass.ta305c=true;
                             pClass.ta105c=false;
                             pClass.ta205c=false;
@@ -921,6 +943,7 @@ public class TargetPlanFragment extends Fragment {
                         CheckBox chBox=(CheckBox)buttonView;
                         pClass.setWeekCheck(chBox,isChecked,"ta306c",ta106cBox,"ta106c",ta206cBox,"ta206c" );
                         if(isChecked){
+                            pClass.setWeakUpTIme(pClass.tArarmTime3,pClass.tBDQTWeek,"saturday");
                             pClass.ta306c=true;
                             pClass.ta106c=false;
                             pClass.ta206c=false;
@@ -945,6 +968,7 @@ public class TargetPlanFragment extends Fragment {
                         CheckBox chBox=(CheckBox)buttonView;
                         pClass.setWeekCheck(chBox,isChecked,"ta307c",ta107cBox,"ta107c",ta207cBox,"ta207c" );
                         if(isChecked){
+                            pClass.setWeakUpTIme(pClass.tArarmTime3,pClass.tBDQTWeek,"holiday");
                             pClass.ta307c=true;
                             pClass.ta107c=false;
                             pClass.ta207c=false;

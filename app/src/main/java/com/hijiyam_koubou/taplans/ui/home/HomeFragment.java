@@ -17,6 +17,7 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.graphics.drawable.DrawableCompat;
@@ -216,7 +217,6 @@ public class HomeFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         setTargetDays(v);
-
                    }
                 });
 
@@ -364,9 +364,15 @@ public class HomeFragment extends Fragment {
             Collections.sort(targetDayLidt);
             dbMsg += ",targetDayLidt=" + targetDayLidt.size() + "件";
             dbMsg += ",targetDayLidt=" + targetDayLidt.toString();
-            if(sequentialUpdatesSw.isChecked()){
-                saveData();
+            String farstItem = targetDayLidt.get(0);
+            dbMsg += ",farstItem=" + farstItem;
+            if(!farstItem.contains("/")){
+                targetDayLidt.remove(0);
+                dbMsg += ">>targetDayLidt=" + targetDayLidt.toString();
             }
+//            if(sequentialUpdatesSw.isChecked()){
+                saveData();
+//            }
             myLog(TAG, dbMsg);
         } catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -382,6 +388,11 @@ public class HomeFragment extends Fragment {
         try {
             dbMsg += ",targetDayLidt=" + targetDayLidt.size() + "件";
             String wStr = targetDayLidt.toString();
+            dbMsg += ",wStr=" + wStr;
+//            if(wStr.endsWith("[,")){
+//                wStr=wStr.replace("[,","[");
+//                dbMsg += ">>" + wStr;
+//            }
 //            JSONObject jsonObj = new JSONObject(targetDayLidt.toString());
 //            JSONArray items = jsonObj.getJSONArray("users");
 //
@@ -392,11 +403,12 @@ public class HomeFragment extends Fragment {
 //            JSONデータの読み取り（Java） https://mjeeeey.hatenablog.com/entry/2020/07/13/215929
 //            AndroidでJSONを使う http://blog.chatlune.jp/2019/04/03/post-1187/
 
-            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
-            SharedPreferences.Editor myEditor = sharedPref.edit();
-            myEditor.putString("targetDays", wStr);
-            myEditor.apply();
-
+//            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+//            SharedPreferences.Editor myEditor = sharedPref.edit();
+//            myEditor.putString("targetDays", wStr);
+//            pClass.myEditor.apply();
+            pClass.setStrPref("targetDays", wStr);
+            Toast.makeText(getActivity(), wStr, Toast.LENGTH_SHORT ).show();
             myLog(TAG , dbMsg);
 //        }catch(JSONException ej){
 //            myErrorLog(TAG , dbMsg + ";でエラー発生；" + ej);
@@ -416,15 +428,21 @@ public class HomeFragment extends Fragment {
             pClass=(MainActivity)inflater.getContext();
             dbMsg += "," + con.getResources().getString(R.string.pref_calender_account) +"=" +pClass.calenderAccount;
             dbMsg += "," + con.getResources().getString(R.string.pref_sunday_background) +"=" + pClass.sundayBackground ;
-            rBGSunDay = Color.parseColor(pClass.sundayBackground );             //"#FDE7E7"
+//            if(pClass.sundayBackground ==null || pClass.sundayBackground.equals("") ){
+                rBGSunDay = Color.parseColor("#FDE7E7");             //
+//            }else{
+//                rBGSunDay = Color.parseColor(pClass.sundayBackground );             //"#FDE7E7"
+//            }
             dbMsg += "＞rBGSunDay＞" + rBGSunDay;
             dbMsg += "," + con.getResources().getString(R.string.pref_sunday_text_color) +"=" + pClass.sundayTextColor ;
             dbMsg += "," + con.getResources().getString(R.string.pref_satuday_background) +"=" + pClass.satudayBackground ;
-            rBGSatuDay = Color.parseColor(pClass.satudayBackground );           //"#EDEDFF"
+            rBGSatuDay = Color.parseColor("#EDEDFF");           //
+//            rBGSatuDay = Color.parseColor(pClass.satudayBackground );           //"#EDEDFF"
             dbMsg += "＞rBGSatuDay＞" + rBGSatuDay;
             dbMsg += "," + con.getResources().getString(R.string.pref_satuday_text_color) +"=" + pClass.satudayTextColor ;
             dbMsg += "," + con.getResources().getString(R.string.pref_default_background) +"=" + pClass.defaultBackground ;
-            rBGWeekDay = Color.parseColor(pClass.defaultBackground );           //"#FFFFFF"
+            rBGWeekDay = Color.parseColor("#FFFFFF");           //
+ //           rBGWeekDay = Color.parseColor(pClass.defaultBackground );           //"#FFFFFF"
             dbMsg += "＞rBGWeekDay＞" + rBGWeekDay;
             dbMsg += "," + con.getResources().getString(R.string.pref_default_text_color) +"=" + pClass.defaultTextColor ;
             rBGbaMonth = Color.parseColor("#FFDCDCDC");

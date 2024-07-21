@@ -1,16 +1,10 @@
 package com.hijiyam_koubou.taplans;
 
-import static com.hijiyam_koubou.taplans.R.color.*;
-
 import android.app.AlarmManager;
-import android.app.LauncherActivity;
-import android.app.PendingIntent;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.media.RingtoneManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,11 +14,7 @@ import android.view.View;
 import android.view.Menu;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.TimePicker;
-import android.widget.Toolbar;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
@@ -38,12 +28,10 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.hijiyam_koubou.taplans.databinding.ActivityMainBinding;
-import com.hijiyam_koubou.taplans.ui.target_setting.TargetPlanFragment;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -69,6 +57,9 @@ public class MainActivity extends AppCompatActivity {
      * */
     private ArrayList<Date> tDates;
     public String targetDays;
+
+    public ByDayOfTheWeekStr tBDQTWeek;
+    public ByDayOfTheWeekStr ohBDQTWeek;
     /**
      * 設定す津予定
      * */
@@ -543,12 +534,15 @@ public class MainActivity extends AppCompatActivity {
         return selItem;
     }
 
+    /**
+     * チェックボックスのトグル
+     * */
     public void setWeekCheck(CheckBox targetCB,Boolean checkState,String prefName ,
                              CheckBox cBox2, String prefName2,
                              CheckBox cBox3, String prefName3
                              ) {
-        final String TAG = "onCheckedChanged";
-        String dbMsg = "[ta100cBox]";
+        final String TAG = "setWeekCheck";
+        String dbMsg = "[MainActivity]";
         try {
  //           dbMsg += prefName+ "=" + prefVal;
 //            prefVal=targetyCB.isChecked();
@@ -576,6 +570,50 @@ public class MainActivity extends AppCompatActivity {
             }else {
                 dbMsg += "解除";
             }
+            myLog(TAG , dbMsg);
+        } catch (Exception er) {
+            myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+        }
+    }
+
+    /**
+     *　曜日ごとの起床時刻
+     * */
+    public void setWeakUpTIme(String timeStr, ByDayOfTheWeekStr hangar, String dayOfWeek ) {
+        final String TAG = "setWeakUpTIme";
+        String dbMsg = "[MainActivity]";
+        try {
+            dbMsg += hangar.toString()+ "を" + timeStr;
+            dbMsg += "," + dayOfWeek;           //+ "は" + hangar.DOTWPosition.indexOf(dayOfWeek) + "番目";
+        //    dbMsg += "," + dayOfWeek+ "は" + hangar.DOTWPosition.indexOf(dayOfWeek) + "番目";
+            if(dayOfWeek.equals("sunday")) {
+                hangar.sunday = timeStr;
+                dbMsg += "日曜日";
+            }else if(dayOfWeek.equals("monday")) {
+                hangar.monday = timeStr;
+                dbMsg += "月曜日";
+            }else if(dayOfWeek.equals("tuesday")) {
+                hangar.tuesday = timeStr;
+                dbMsg += "火曜日";
+            }else if(dayOfWeek.equals("wednesday")) {
+                hangar.wednesday = timeStr;
+                dbMsg += "水曜日";
+            }else if(dayOfWeek.equals("thursday")) {
+                hangar.thursday = timeStr;
+                dbMsg += "木曜日";
+            }else if(dayOfWeek.equals("friday")) {
+                hangar.friday = timeStr;
+                dbMsg += "金曜日";
+            }else if(dayOfWeek.equals("saturday")) {
+                hangar.saturday = timeStr;
+                dbMsg += "土曜日";
+            }else if(dayOfWeek.equals("holiday")) {
+                hangar.holiday = timeStr;
+                dbMsg += "祝日";
+            }
+
+            dbMsg += ">>"+ hangar.toString();
+
             myLog(TAG , dbMsg);
         } catch (Exception er) {
             myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
@@ -734,6 +772,7 @@ public class MainActivity extends AppCompatActivity {
             setGoogleCalendarColors();
             myPref = new MyPreferences();
             myPref.readPref(this);
+
             this.calenderAccount=myPref.calenderAccount;
             dbMsg += "," + getResources().getString(R.string.pref_calender_account) +"=" + calenderAccount ;
             this.sundayBackground=myPref.sundayBackground;
@@ -925,6 +964,9 @@ public class MainActivity extends AppCompatActivity {
             dbMsg += ",予定の色リソースID=" + ohGCColorRss ;
 //            public int ohGCColorRss;           //
 
+            tBDQTWeek = new ByDayOfTheWeekStr();
+            ohBDQTWeek = new ByDayOfTheWeekStr();
+
             binding = ActivityMainBinding.inflate(getLayoutInflater());
             setContentView(binding.getRoot());
 
@@ -950,6 +992,7 @@ public class MainActivity extends AppCompatActivity {
             //ドロワーからの遷移動作
             NavigationView navigationView = binding.navView;            //(NavigationView)findViewById(R.id.my_nav_view);
             NavigationUI.setupWithNavController(navigationView, navController);
+
 
             loadAlarms();
 

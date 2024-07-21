@@ -40,7 +40,7 @@ public class MyPreferences extends PreferenceActivity {
     public Locale locale;
 
     public String calenderAccount;          //アカウント
-    public String sundayBackground;          //">#FDE7E7</color>
+    public String sundayBackground="#FDE7E7" ;//</color>
     public String sundayTextColor;         //">#ff0000</color>
     public String satudayBackground;          //">#EDEDFF</color>
     public String satudayTextColor;            //">#0000FF</color>
@@ -223,12 +223,6 @@ public class MyPreferences extends PreferenceActivity {
             defaultTextColor = sharedPref.getString("defaultTextColor", String.valueOf(con.getResources().getColor(R.color.default_text_color)));         //"#000000"
             dbMsg += ">>" + defaultTextColor ;
 
-            dbMsg += "," + con.getResources().getString(R.string.pref_tDates) +"=" + targetDays ;
-            targetDays = sharedPref.getString("targetDays", "");
-            targetDays=targetDays.replace("[","");
-            targetDays=targetDays.replaceAll("]","");
-            dbMsg += ">>" + targetDays ;
-
             dbMsg += "," + con.getResources().getString(R.string.sett_event_name)+"=" + tEventName ;
             tEventName = sharedPref.getString("tEventName", "");
             dbMsg += ">>" + tEventName ;
@@ -240,6 +234,12 @@ public class MyPreferences extends PreferenceActivity {
             dbMsg += "," + con.getResources().getString(R.string.set_alarm_sound) +"URI=" + tEventSoundURi ;
             tEventSoundURi = readStrPref(inPref, "tEventSoundURi", "");
             dbMsg += ">>" + tEventSoundURi ;
+
+            dbMsg += "\n" + con.getResources().getString(R.string.pref_tDates) +"=" + targetDays ;
+            targetDays = sharedPref.getString("targetDays", "");
+            targetDays=targetDays.replace("[","");
+            targetDays=targetDays.replaceAll("]","");
+            dbMsg += ">>" + targetDays ;
 
             dbMsg += "\n" + con.getResources().getString(R.string.sett_alarm_time) +"1=" + tArarmTime1 ;
             tArarmTime1 = readStrPref(inPref,"tArarmTime1", "");
