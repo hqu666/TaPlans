@@ -12,6 +12,12 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
+        android:id="@+id/nav_alarm_list"
+        android:name="com.hijiyam_koubou.taplans.ui.alarm_list.AlarmListFragment"
+        android:label="@string/menu_alarm_list"
+        tools:layout="@layout/fragment_alarm_list" />
+
+    <fragment
         android:id="@+id/nav_target_plan"
         android:name="com.hijiyam_koubou.taplans.ui.gallery.GalleryFragment"
         android:label="@string/menu_gallery"

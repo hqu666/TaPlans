@@ -63,6 +63,7 @@
     <string name="google_calendar_integration">Google Calendar Integration</string>
     <string name="gc_subject">subject</string>
     <string name="gca_subject_hint">If not set, it will be the same as the event name.</string>
+    <string name="menu_alarm_list">Wake-up time from today onwards</string>
     <string name="common_time">time</string>
     <string name="gc_enddate">End date</string>
     <string name="gc_location">location</string>

@@ -389,10 +389,6 @@ public class HomeFragment extends Fragment {
             dbMsg += ",targetDayLidt=" + targetDayLidt.size() + "件";
             String wStr = targetDayLidt.toString();
             dbMsg += ",wStr=" + wStr;
-//            if(wStr.endsWith("[,")){
-//                wStr=wStr.replace("[,","[");
-//                dbMsg += ">>" + wStr;
-//            }
 //            JSONObject jsonObj = new JSONObject(targetDayLidt.toString());
 //            JSONArray items = jsonObj.getJSONArray("users");
 //
@@ -402,11 +398,6 @@ public class HomeFragment extends Fragment {
 //            dbMsg += ",json=" + json.toString();
 //            JSONデータの読み取り（Java） https://mjeeeey.hatenablog.com/entry/2020/07/13/215929
 //            AndroidでJSONを使う http://blog.chatlune.jp/2019/04/03/post-1187/
-
-//            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
-//            SharedPreferences.Editor myEditor = sharedPref.edit();
-//            myEditor.putString("targetDays", wStr);
-//            pClass.myEditor.apply();
             pClass.setStrPref("targetDays", wStr);
             Toast.makeText(getActivity(), wStr, Toast.LENGTH_SHORT ).show();
             myLog(TAG , dbMsg);

@@ -70,6 +70,8 @@
     <string name="gc_location">予定の場所</string>
     <string name="gc_location_hint">住所表記</string>
     <string name="gc_color">予定の色</string>
-    <string name="gc_isPrivate">予定を限定公開にする</string>     <!-- 11	●トマト	#D50000	rgb(213, 0, 0)-->
+    <string name="gc_isPrivate">予定を限定公開にする</string>
+    <string name="menu_alarm_list">本日以降の起床時刻</string>
+    <string name="common_time">common_time</string>     <!-- 11	●トマト	#D50000	rgb(213, 0, 0)-->
 
 </resources>
