@@ -1,5 +1,7 @@
 package com.hijiyam_koubou.taplans.ui.home;
 
+import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -24,6 +26,8 @@ import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.hijiyam_koubou.taplans.AlarmItem;
+import com.hijiyam_koubou.taplans.AlarmItemComparator;
 import com.hijiyam_koubou.taplans.CalendarMembers;
 import com.hijiyam_koubou.taplans.MainActivity;
 import com.hijiyam_koubou.taplans.MyPreferences;
@@ -37,6 +41,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ObjectInputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -292,7 +297,7 @@ public class HomeFragment extends Fragment {
     }
 
     /**
-     * ここのチェックボックス操作
+     * 個々のチェックボックス操作
      * */
     public void setTargetDays(View v) {
         final String TAG = "setTargetDays";
@@ -370,9 +375,41 @@ public class HomeFragment extends Fragment {
                 targetDayLidt.remove(0);
                 dbMsg += ">>targetDayLidt=" + targetDayLidt.toString();
             }
+            boolean isWrite = false;
+            int alIndex = 0;
+            for (AlarmItem alAitem:pClass.alarmItemList){
+                String rDateStr = alAitem.dateStr;
+                if(rDateStr.equals(selectedDayStr)){
+                    dbMsg += "[" + alIndex + "]既存";
+                    if(alAitem.isTarget != cBox.isChecked()){
+                        alAitem=setAlarmTime(alAitem,cBox.isChecked());
+                        dbMsg += "、" + alAitem.dateStr+ " "+ alAitem.timeStr+ ",isTarget="+ alAitem.isTarget;
+                        pClass.alarmItemList.set(alIndex , alAitem);
+                    }
+                    isWrite=true;
+                }
+                alIndex++;
+            }
+            dbMsg += "、isWrite＝" + isWrite;
+            if(! isWrite){
+                AlarmItem alAitem = new AlarmItem();
+                alAitem.dateStr = selectedDayStr;
+                alAitem=setAlarmTime(alAitem,cBox.isChecked());
+                dbMsg += "、" + alAitem.dateStr+ " "+ alAitem.timeStr+ ",isTarget="+ alAitem.isTarget;
+                dbMsg += "、alarmItemList=" + pClass.alarmItemList.size() + "件";
+                pClass.alarmItemList.add(alAitem);
+                dbMsg += "＞＞" + pClass.alarmItemList.size() + "件";
+                Collections.sort( pClass.alarmItemList ,new AlarmItemComparator());
+            }
+            for (int i = 0; i < pClass.alarmItemList.size(); i++) {
+                dbMsg += "\n" + pClass.alarmItemList.get(i).dateStr+ " " + pClass.alarmItemList.get(i).timeStr
+                        + ",isTarget="+ pClass.alarmItemList.get(i).isTarget + ",DayOfTheWeek="+pClass.alarmItemList.get(i).DayOfTheWeek;
+            }
+
 //            if(sequentialUpdatesSw.isChecked()){
-                saveData();
+            saveData();
 //            }
+
             myLog(TAG, dbMsg);
         } catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -380,7 +417,61 @@ public class HomeFragment extends Fragment {
     }
 
     /**
+     * 亜指定された日の対象/非対称、曜日によってアラーム事項を指定して返す
+     * */
+    public AlarmItem setAlarmTime(AlarmItem alAitem,boolean isTarget) {
+        final String TAG = "setAlarmTime";
+        String dbMsg = "[HomeFragment]";
+        try {
+            dbMsg += "," + alAitem.dateStr;
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+            Date date = dateFormat.parse(alAitem.dateStr);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            alAitem.DayOfTheWeek=calendar.get(Calendar.DAY_OF_WEEK);
+            dbMsg += "," + calendar.get(Calendar.DATE)+"日の曜日(=)" + alAitem.DayOfTheWeek;
+            switch (alAitem.DayOfTheWeek){
+                case Calendar.SUNDAY :
+                    dbMsg += ")日曜日";
+                    break;
+                case Calendar.MONDAY:
+                    dbMsg += ")月曜日";
+                    break;
+                case Calendar.TUESDAY:
+                    dbMsg += ")火曜日";
+                    break;
+                case Calendar.WEDNESDAY:
+                    dbMsg += ")水曜日";
+                    break;
+                case Calendar.THURSDAY:
+                    dbMsg += ")木曜日";
+                    break;
+                case Calendar.FRIDAY:
+                    dbMsg += ")金曜日";
+                    break;
+                case Calendar.SATURDAY:
+                    dbMsg += ")土曜日";
+                    break;
+            }
+            dbMsg += ",isTarget="+isTarget;
+            if(isTarget){
+                alAitem.timeStr = pClass.tArarmTime1;
+            }else{
+                alAitem.timeStr = pClass.ohArarmTime1;
+            }
+            dbMsg += ",timeStr="+alAitem.timeStr;
+            myLog(TAG, dbMsg);
+        } catch (Exception e) {
+            myErrorLog(TAG ,  dbMsg + "で" + e);
+        }
+        return alAitem;
+    }
+    //Javaの日付データ型変換（Date, Calendar, String） https://qiita.com/ayaka105/items/1a68ed7ad84743dde7d5
+
+    /**
      * チェックされた日をリスト化してプリファレンスに書き込む
+     * 1.更新ボタンで任意書込み
+     * 2.setTargetDaysを経てチェックボックス操作の度々に書込み
      * */
     public void saveData() {
         final String TAG = "saveData";
@@ -389,16 +480,19 @@ public class HomeFragment extends Fragment {
             dbMsg += ",targetDayLidt=" + targetDayLidt.size() + "件";
             String wStr = targetDayLidt.toString();
             dbMsg += ",wStr=" + wStr;
-//            JSONObject jsonObj = new JSONObject(targetDayLidt.toString());
-//            JSONArray items = jsonObj.getJSONArray("users");
-//
-//            for (int i = 0; i < targetDayLidt.size(); i++) {
-//                json.put("tDay",targetDayLidt.get(i));
-//            }
-//            dbMsg += ",json=" + json.toString();
-//            JSONデータの読み取り（Java） https://mjeeeey.hatenablog.com/entry/2020/07/13/215929
-//            AndroidでJSONを使う http://blog.chatlune.jp/2019/04/03/post-1187/
             pClass.setStrPref("targetDays", wStr);
+            JSONArray jarray = new JSONArray();
+            for (int i = 0; i < pClass.alarmItemList.size(); i++) {
+                JSONObject jsonObj = new JSONObject();
+                jsonObj.put("dateStr",pClass.alarmItemList.get(i).dateStr);
+                jsonObj.put("timeStr",pClass.alarmItemList.get(i).timeStr);
+                jsonObj.put("isTarget",pClass.alarmItemList.get(i).isTarget);
+                jsonObj.put("DayOfTheWeek",pClass.alarmItemList.get(i).DayOfTheWeek);
+                jarray.put(jsonObj);
+            }
+            dbMsg += ",json=" + jarray.toString();
+            pClass.saveAlamList(jarray.toString());
+
             Toast.makeText(getActivity(), wStr, Toast.LENGTH_SHORT ).show();
             myLog(TAG , dbMsg);
 //        }catch(JSONException ej){
@@ -407,6 +501,8 @@ public class HomeFragment extends Fragment {
             myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
         }
     }
+//            JSONデータの読み取り（Java） https://mjeeeey.hatenablog.com/entry/2020/07/13/215929
+//            AndroidでJSONを使う http://blog.chatlune.jp/2019/04/03/post-1187/
 
     //ライフサイクル//////////////////////////////////////////////////////////////
     public View onCreateView(@NonNull LayoutInflater inflater,

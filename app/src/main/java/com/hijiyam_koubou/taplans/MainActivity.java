@@ -29,9 +29,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.hijiyam_koubou.taplans.databinding.ActivityMainBinding;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -57,6 +61,12 @@ public class MainActivity extends AppCompatActivity {
      * */
     private ArrayList<Date> tDates;
     public String targetDays;
+    /**アラームリスト*/
+    public SharedPreferences alameListDatas;
+    public SharedPreferences.Editor alEditor;
+    public String alFileName = "_alarm_list";
+    public ArrayList<AlarmItem> alarmItemList;
+
 
     public ByDayOfTheWeekStr tBDQTWeek;
     public ByDayOfTheWeekStr ohBDQTWeek;
@@ -760,6 +770,76 @@ public class MainActivity extends AppCompatActivity {
         return lastIndex;
     }
 
+    /**アラームリストを取得する*/
+    public ArrayList<AlarmItem> getAlarmList() {
+        final String TAG = "getAlarmList";
+        String dbMsg = "[MainActivity]";
+        ArrayList<AlarmItem>retList = null;
+
+        try {
+            retList = new ArrayList<AlarmItem>();
+            String fName = getPackageName() + alFileName;
+            dbMsg += ",fName=" + fName;
+            alameListDatas=this.getSharedPreferences(fName, MODE_PRIVATE);
+            Map<String, ?> inPref = alameListDatas.getAll();
+            dbMsg += inPref.size() + "件" ;
+            for(Map.Entry<String, ?> entry : inPref.entrySet()){
+                String keyName = entry.getKey();
+                String settingStr = entry.getValue().toString();
+                dbMsg += "," + keyName + " = " + settingStr;
+            }
+            alEditor = alameListDatas.edit();
+            alarmItemList = new ArrayList<AlarmItem>() ;
+            String alarm_list = alameListDatas.getString("alarm_list", "");
+            dbMsg += ",alarm_list=" + alarm_list;
+            if(! alarm_list.equals("")){
+                JSONArray jArray = new JSONArray(alarm_list);
+                for (int i = 0; i < jArray.length(); ++ i) {
+                    JSONObject jsonObj = jArray.getJSONObject(i);
+//                    String dateStr   = jsonObj.getString("dateStr");
+//                    String timeStr = jsonObj.getString("timeStr");
+//                    boolean isTarget = jsonObj.getBoolean("isTarget");
+//                    int DayOfTheWeek = jsonObj.getInt("DayOfTheWeek");
+                    AlarmItem alarmItem = new AlarmItem();
+                    alarmItem.dateStr = jsonObj.getString("dateStr");
+                    alarmItem.timeStr = jsonObj.getString("timeStr");
+                    alarmItem.isTarget = jsonObj.getBoolean("isTarget");
+                    alarmItem.DayOfTheWeek = jsonObj.getInt("DayOfTheWeek");
+                    alarmItemList.add(alarmItem);
+
+                }
+                dbMsg += ",alarmItemList=" + alarmItemList.size()+"件";
+            }
+
+            myLog(TAG , dbMsg);
+        } catch (Exception er) {
+            myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+        }
+        return retList;
+    }
+
+    public void saveAlamList(String wStr) {
+        //テキスト変更後
+        final String TAG = "saveAlamList";
+        String dbMsg = "[MainActivity]";
+        try {
+            dbMsg += ",wStr=" + wStr;
+            if(alameListDatas == null){
+                String fName = getPackageName() + alFileName;
+                dbMsg += ",fName=" + fName;
+                alameListDatas=this.getSharedPreferences(fName, MODE_PRIVATE);
+            }
+            if(alEditor == null){
+                alEditor = alameListDatas.edit();
+            }
+            alEditor.putString("alarm_list", wStr);
+            boolean ret = alEditor.commit();
+            dbMsg += ",commit=" + ret;
+            myLog(TAG , dbMsg);
+        } catch (Exception er) {
+            myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+        }
+    }
 
     //ライフサイクル//////////////////////////////////////////////////////////////
     @Override
@@ -966,6 +1046,8 @@ public class MainActivity extends AppCompatActivity {
 
             tBDQTWeek = new ByDayOfTheWeekStr();
             ohBDQTWeek = new ByDayOfTheWeekStr();
+
+            alarmItemList = getAlarmList();
 
             binding = ActivityMainBinding.inflate(getLayoutInflater());
             setContentView(binding.getRoot());
