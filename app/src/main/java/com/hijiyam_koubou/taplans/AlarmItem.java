@@ -8,4 +8,6 @@ public class AlarmItem {
     public Boolean isTarget = false;
     public int DayOfTheWeek;
 
+    public String[] dowDisplay= {};
+
 }

@@ -191,6 +191,7 @@ public class HomeFragment extends Fragment {
             dbMsg += ",開始=" + (vCalStart.get(Calendar.MONTH) +1)+ "月" +vCalStart.get(Calendar.DATE) + "日から";
             textView.setText(dbMsg);
 
+            int startArraySize = pClass.alarmItemList.size();
             for (int i=0; i < 42; i++) {            //c34cBox　まで
                 CalendarMembers cMember=new CalendarMembers();
                 cMember.cDate = vCalStart;
@@ -198,7 +199,7 @@ public class HomeFragment extends Fragment {
                 int rMonth = cMember.cDate.get(Calendar.MONTH) +1;
                 int rDay = cMember.cDate.get(Calendar.DATE) ;
                 int rDOW = cMember.cDate.get(Calendar.DAY_OF_WEEK) ;
-                dbMsg += "("+ i + ")" + rMonth + "月" +rDay+ "日;" + rDOW;
+                dbMsg += "\n("+ i + ")" + rMonth + "月" +rDay+ "日;" + rDOW;
                 calendarMembers.add(cMember);
                 String fDate = rYear+"";
                 if(rMonth<10){
@@ -212,7 +213,19 @@ public class HomeFragment extends Fragment {
                     fDate += "/" + rDay;
                 }
                 dbMsg += ",fDate=" + fDate;
-                boolean isTarget = targetDayLidt.contains(fDate);
+                boolean isTarget = false;           //targetDayLidt.contains(fDate);
+                AlarmItem alItem = pClass.fromAlarmList(fDate);
+                if(alItem == null){
+                    alItem = new AlarmItem();
+                    alItem.dateStr = fDate;
+                    alItem = setAlarmTime(alItem,false);
+                    pClass.alarmItemList.add(alItem);
+                }else{
+                    isTarget = alItem.isTarget;
+//                    if(! isTarget){
+//                        isTarget = true;
+//                    }
+                }
                 dbMsg += ",対象=" + isTarget;
 
                 CheckBox tCheckBox = dayChecks.get(i);
@@ -249,7 +262,10 @@ public class HomeFragment extends Fragment {
                   vCalStart.add(Calendar.DATE,1);
             }
             dbMsg += ",calendarMembers=" + calendarMembers.size() + "件";
-
+            if(startArraySize < pClass.alarmItemList.size()){
+                dbMsg += "＞alarmItemList＞" + pClass.alarmItemList.size() + "件";
+                pClass.alarmItemList.sort(new AlarmItemComparator());
+            }
             myLog(TAG , dbMsg);
         } catch (Exception er) {
             myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
@@ -347,64 +363,71 @@ public class HomeFragment extends Fragment {
                 selectedDayStr += dayInt;
             }
             dbMsg += ",dateStr=" + selectedDayStr;
-            int index = targetDayLidt.indexOf(selectedDayStr);
-            dbMsg += ",index=" + index;
-            if(cBox.isChecked()) {
-                // チェックされた状態の時の処理を記述
-                dbMsg += "＞＞登録操作";
-                if(index < 0){
-                    targetDayLidt.add( selectedDayStr);
-                }else{
-                    dbMsg += "＞＞登録済み";
-                }
-            }else {
-                // チェックされていない状態の時の処理を記述
-                dbMsg += "＞＞削除操作";
-                if(-1 < index){
-                    targetDayLidt.remove( index);
-                }else{
-                    dbMsg += "＞＞登録されていない";
-                }
-            }
-            Collections.sort(targetDayLidt);
-            dbMsg += ",targetDayLidt=" + targetDayLidt.size() + "件";
-            dbMsg += ",targetDayLidt=" + targetDayLidt.toString();
-            String farstItem = targetDayLidt.get(0);
-            dbMsg += ",farstItem=" + farstItem;
-            if(!farstItem.contains("/")){
-                targetDayLidt.remove(0);
-                dbMsg += ">>targetDayLidt=" + targetDayLidt.toString();
-            }
-            boolean isWrite = false;
-            int alIndex = 0;
-            for (AlarmItem alAitem:pClass.alarmItemList){
-                String rDateStr = alAitem.dateStr;
-                if(rDateStr.equals(selectedDayStr)){
-                    dbMsg += "[" + alIndex + "]既存";
-                    if(alAitem.isTarget != cBox.isChecked()){
-                        alAitem=setAlarmTime(alAitem,cBox.isChecked());
-                        dbMsg += "、" + alAitem.dateStr+ " "+ alAitem.timeStr+ ",isTarget="+ alAitem.isTarget;
-                        pClass.alarmItemList.set(alIndex , alAitem);
-                    }
-                    isWrite=true;
-                }
-                alIndex++;
-            }
-            dbMsg += "、isWrite＝" + isWrite;
-            if(! isWrite){
-                AlarmItem alAitem = new AlarmItem();
-                alAitem.dateStr = selectedDayStr;
-                alAitem=setAlarmTime(alAitem,cBox.isChecked());
-                dbMsg += "、" + alAitem.dateStr+ " "+ alAitem.timeStr+ ",isTarget="+ alAitem.isTarget;
-                dbMsg += "、alarmItemList=" + pClass.alarmItemList.size() + "件";
-                pClass.alarmItemList.add(alAitem);
-                dbMsg += "＞＞" + pClass.alarmItemList.size() + "件";
-                Collections.sort( pClass.alarmItemList ,new AlarmItemComparator());
-            }
-            for (int i = 0; i < pClass.alarmItemList.size(); i++) {
-                dbMsg += "\n" + pClass.alarmItemList.get(i).dateStr+ " " + pClass.alarmItemList.get(i).timeStr
-                        + ",isTarget="+ pClass.alarmItemList.get(i).isTarget + ",DayOfTheWeek="+pClass.alarmItemList.get(i).DayOfTheWeek;
-            }
+            AlarmItem alItem = pClass.fromAlarmList(selectedDayStr);
+
+            dbMsg += "\n[" + pClass.alarmItemIndex +"]" + alItem.dateStr+ " " + alItem.timeStr+ ",isTarget="+ alItem.isTarget + ",DayOfTheWeek="+alItem.DayOfTheWeek;
+            alItem = setAlarmTime(alItem,cBox.isChecked());
+            dbMsg += "\n>>" + alItem.dateStr+ " " + alItem.timeStr+ ",isTarget="+ alItem.isTarget + ",DayOfTheWeek="+alItem.DayOfTheWeek;
+            pClass.alarmItemList.set(pClass.alarmItemIndex , alItem);
+
+//            int index = targetDayLidt.indexOf(selectedDayStr);
+//            dbMsg += ",index=" + index;
+//            if(cBox.isChecked()) {
+//                // チェックされた状態の時の処理を記述
+//                dbMsg += "＞＞登録操作";
+//                if(index < 0){
+//                    targetDayLidt.add( selectedDayStr);
+//                }else{
+//                    dbMsg += "＞＞登録済み";
+//                }
+//            }else {
+//                // チェックされていない状態の時の処理を記述
+//                dbMsg += "＞＞削除操作";
+//                if(-1 < index){
+//                    targetDayLidt.remove( index);
+//                }else{
+//                    dbMsg += "＞＞登録されていない";
+//                }
+//            }
+//            Collections.sort(targetDayLidt);
+//            dbMsg += ",targetDayLidt=" + targetDayLidt.size() + "件";
+//            dbMsg += ",targetDayLidt=" + targetDayLidt.toString();
+//            String farstItem = targetDayLidt.get(0);
+//            dbMsg += ",farstItem=" + farstItem;
+//            if(!farstItem.contains("/")){
+//                targetDayLidt.remove(0);
+//                dbMsg += ">>targetDayLidt=" + targetDayLidt.toString();
+//            }
+//            boolean isWrite = false;
+//            int alIndex = 0;
+//            for (AlarmItem alAitem:pClass.alarmItemList){
+//                String rDateStr = alAitem.dateStr;
+//                if(rDateStr.equals(selectedDayStr)){
+//                    dbMsg += "[" + alIndex + "]既存";
+//                    if(alAitem.isTarget != cBox.isChecked()){
+//                        alAitem=setAlarmTime(alAitem,cBox.isChecked());
+//                        dbMsg += "、" + alAitem.dateStr+ " "+ alAitem.timeStr+ ",isTarget="+ alAitem.isTarget;
+//                        pClass.alarmItemList.set(alIndex , alAitem);
+//                    }
+//                    isWrite=true;
+//                }
+//                alIndex++;
+//            }
+//            dbMsg += "、isWrite＝" + isWrite;
+//            if(! isWrite){
+//                AlarmItem alAitem = new AlarmItem();
+//                alAitem.dateStr = selectedDayStr;
+//                alAitem=setAlarmTime(alAitem,cBox.isChecked());
+//                dbMsg += "、" + alAitem.dateStr+ " "+ alAitem.timeStr+ ",isTarget="+ alAitem.isTarget;
+//                dbMsg += "、alarmItemList=" + pClass.alarmItemList.size() + "件";
+//                pClass.alarmItemList.add(alAitem);
+//                dbMsg += "＞＞" + pClass.alarmItemList.size() + "件";
+//                Collections.sort( pClass.alarmItemList ,new AlarmItemComparator());
+//            }
+//            for (int i = 0; i < pClass.alarmItemList.size(); i++) {
+//                dbMsg += "\n" + pClass.alarmItemList.get(i).dateStr+ " " + pClass.alarmItemList.get(i).timeStr
+//                        + ",isTarget="+ pClass.alarmItemList.get(i).isTarget + ",DayOfTheWeek="+pClass.alarmItemList.get(i).DayOfTheWeek;
+//            }
 
 //            if(sequentialUpdatesSw.isChecked()){
             saveData();
@@ -429,31 +452,9 @@ public class HomeFragment extends Fragment {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(date);
             alAitem.DayOfTheWeek=calendar.get(Calendar.DAY_OF_WEEK);
-            dbMsg += "," + calendar.get(Calendar.DATE)+"日の曜日(=)" + alAitem.DayOfTheWeek;
-            switch (alAitem.DayOfTheWeek){
-                case Calendar.SUNDAY :
-                    dbMsg += ")日曜日";
-                    break;
-                case Calendar.MONDAY:
-                    dbMsg += ")月曜日";
-                    break;
-                case Calendar.TUESDAY:
-                    dbMsg += ")火曜日";
-                    break;
-                case Calendar.WEDNESDAY:
-                    dbMsg += ")水曜日";
-                    break;
-                case Calendar.THURSDAY:
-                    dbMsg += ")木曜日";
-                    break;
-                case Calendar.FRIDAY:
-                    dbMsg += ")金曜日";
-                    break;
-                case Calendar.SATURDAY:
-                    dbMsg += ")土曜日";
-                    break;
-            }
+            dbMsg += "," + calendar.get(Calendar.DATE)+"日の曜日(" + alAitem.DayOfTheWeek + ")" + pClass.dowDisplay.get(alAitem.DayOfTheWeek)+"曜日";
             dbMsg += ",isTarget="+isTarget;
+            alAitem.isTarget= isTarget;
             if(isTarget){
                 alAitem.timeStr = pClass.tArarmTime1;
             }else{
@@ -480,6 +481,7 @@ public class HomeFragment extends Fragment {
             dbMsg += ",targetDayLidt=" + targetDayLidt.size() + "件";
             String wStr = targetDayLidt.toString();
             dbMsg += ",wStr=" + wStr;
+            dbMsg += ",alarmItemList=" + pClass.alarmItemList.size() + "件";
             pClass.setStrPref("targetDays", wStr);
             JSONArray jarray = new JSONArray();
             for (int i = 0; i < pClass.alarmItemList.size(); i++) {
@@ -493,7 +495,7 @@ public class HomeFragment extends Fragment {
             dbMsg += ",json=" + jarray.toString();
             pClass.saveAlamList(jarray.toString());
 
-            Toast.makeText(getActivity(), wStr, Toast.LENGTH_SHORT ).show();
+            Toast.makeText(getActivity(), pClass.alarmItemList.size() + "件", Toast.LENGTH_SHORT ).show();
             myLog(TAG , dbMsg);
 //        }catch(JSONException ej){
 //            myErrorLog(TAG , dbMsg + ";でエラー発生；" + ej);

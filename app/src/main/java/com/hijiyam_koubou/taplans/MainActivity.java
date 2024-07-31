@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
     public SharedPreferences.Editor alEditor;
     public String alFileName = "_alarm_list";
     public ArrayList<AlarmItem> alarmItemList;
-
+    public ArrayList<String> dowDisplay;
 
     public ByDayOfTheWeekStr tBDQTWeek;
     public ByDayOfTheWeekStr ohBDQTWeek;
@@ -389,7 +389,6 @@ public class MainActivity extends AppCompatActivity {
             myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
         }
     }
-
 
     /**
      * タイムピッカー表示
@@ -780,9 +779,12 @@ public class MainActivity extends AppCompatActivity {
             retList = new ArrayList<AlarmItem>();
             String fName = getPackageName() + alFileName;
             dbMsg += ",fName=" + fName;
-            alameListDatas=this.getSharedPreferences(fName, MODE_PRIVATE);
+            if(alameListDatas == null){
+                dbMsg += ">開く>";
+                alameListDatas=this.getSharedPreferences(fName, MODE_PRIVATE);
+            }
             Map<String, ?> inPref = alameListDatas.getAll();
-            dbMsg += inPref.size() + "件" ;
+            dbMsg += "=" + inPref.size() + "件" ;
             for(Map.Entry<String, ?> entry : inPref.entrySet()){
                 String keyName = entry.getKey();
                 String settingStr = entry.getValue().toString();
@@ -810,7 +812,6 @@ public class MainActivity extends AppCompatActivity {
                 }
                 dbMsg += ",alarmItemList=" + alarmItemList.size()+"件";
             }
-
             myLog(TAG , dbMsg);
         } catch (Exception er) {
             myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
@@ -818,15 +819,51 @@ public class MainActivity extends AppCompatActivity {
         return retList;
     }
 
+    /**検索直後のAlarmItemインデックス*/
+    public int alarmItemIndex =-1;
+    /**
+     * 指定された日付文字に該当するAlarmItemを返す
+     * */
+    public AlarmItem fromAlarmList(String dateStr) {
+        final String TAG = "fromAlarmList";
+        String dbMsg = "[MainActivity]";
+        AlarmItem retItem = null;
+
+        try {
+            dbMsg += ",alarmItemList=" + alarmItemList.size()+"件";
+            if(! alarmItemList.isEmpty()){
+                for (int i = 0; i < alarmItemList.size(); ++ i) {
+                    retItem = alarmItemList.get(i);
+                    if(retItem.dateStr.equals(dateStr)){
+                        alarmItemIndex = i;
+                        dbMsg += ",該当インデックス=" + alarmItemIndex;
+                        break;
+                    }else{
+                        retItem=null;
+                    }
+                }
+            }
+            if(retItem !=null){
+                dbMsg += "," + retItem.dateStr + " "  + retItem.timeStr + ".isTarget="  + retItem.isTarget + ".DayOfTheWeek="  + retItem.DayOfTheWeek ;
+
+            }
+            myLog(TAG , dbMsg);
+        } catch (Exception er) {
+            myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+        }
+        return retItem;
+    }
+
+
     public void saveAlamList(String wStr) {
         //テキスト変更後
         final String TAG = "saveAlamList";
         String dbMsg = "[MainActivity]";
         try {
-            dbMsg += ",wStr=" + wStr;
+            dbMsg += ",wStr=" + wStr +"\n";
+            String fName = getPackageName() + alFileName;
+            dbMsg += ",fName=" + fName;
             if(alameListDatas == null){
-                String fName = getPackageName() + alFileName;
-                dbMsg += ",fName=" + fName;
                 alameListDatas=this.getSharedPreferences(fName, MODE_PRIVATE);
             }
             if(alEditor == null){
@@ -1046,6 +1083,17 @@ public class MainActivity extends AppCompatActivity {
 
             tBDQTWeek = new ByDayOfTheWeekStr();
             ohBDQTWeek = new ByDayOfTheWeekStr();
+
+            dowDisplay = new ArrayList<String>();
+            dowDisplay.add(getResources().getString(R.string.comm_holiday));
+            dowDisplay.add(getResources().getString(R.string.comm_sunday));
+            dowDisplay.add(getResources().getString(R.string.comm_monday));
+            dowDisplay.add(getResources().getString(R.string.comm_tuesday));
+            dowDisplay.add(getResources().getString(R.string.comm_wednesday));
+            dowDisplay.add(getResources().getString(R.string.comm_thursday));
+            dowDisplay.add(getResources().getString(R.string.comm_friday));
+            dowDisplay.add(getResources().getString(R.string.comm_saturday));
+
 
             alarmItemList = getAlarmList();
 
