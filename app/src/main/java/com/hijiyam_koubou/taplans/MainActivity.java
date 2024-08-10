@@ -804,7 +804,7 @@ public class MainActivity extends AppCompatActivity {
         return lastIndex;
     }
 
-    /**アラームリストを取得する*/
+    /**　保存してあるアラームリストを取得する*/
     public ArrayList<AlarmItem> getAlarmList() {
         final String TAG = "getAlarmList";
         String dbMsg = "[MainActivity]";
@@ -814,6 +814,7 @@ public class MainActivity extends AppCompatActivity {
             retList = new ArrayList<AlarmItem>();
             String fName = getPackageName() +"_"+ alFileName;
             dbMsg += ",プリファレンス=" + fName;
+
             if(alameListDatas == null){
 //                Context storageContext = ContextCompat.createDeviceProtectedStorageContext(this);
                 alameListDatas = getApplicationContext().getSharedPreferences(fName,MODE_PRIVATE);
@@ -829,6 +830,10 @@ public class MainActivity extends AppCompatActivity {
             }
             alEditor = alameListDatas.edit();
             String alarm_list = alameListDatas.getString("alarm_list", "");
+            dbMsg += ",alarm_list=" + alarm_list.length() + "文字" ;
+            if(alarm_list.length()>50){
+                dbMsg += alarm_list.substring(0,20) + "" + alarm_list.substring(alarm_list.length()-20,alarm_list.length());
+            }
             // テキストファイル
             if(alarmFile.exists()){
                 String filename = alarmFile.getName();
@@ -844,7 +849,9 @@ public class MainActivity extends AppCompatActivity {
                         line = reader.readLine();
                     }
                     dbMsg += ",line=" + line.length() + "文字" ;
-                    alarm_list=line;
+                    if(alarm_list == null || alarm_list.equals("")){
+                        alarm_list=line;
+                    }
                 } catch (IOException e) {
                     // Error occurred when opening raw file for reading.
                 } finally {
@@ -906,9 +913,9 @@ public class MainActivity extends AppCompatActivity {
             }
             if(retItem !=null){
                 dbMsg += "," + retItem.dateStr + " "  + retItem.timeStr + ".isTarget="  + retItem.isTarget + ".DayOfTheWeek="  + retItem.DayOfTheWeek ;
-
+            }else{
+                myLog(TAG , dbMsg);
             }
-            myLog(TAG , dbMsg);
         } catch (Exception er) {
             myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
         }
@@ -938,10 +945,10 @@ public class MainActivity extends AppCompatActivity {
             dbMsg += ",該当Pref　commit前=" + inPref.size() + "件" ;
             alEditor.putString("alarm_list", wStr);
             boolean ret = alEditor.commit();
+            alEditor.apply();
             dbMsg += ",commit=" + ret;
             inPref = alameListDatas.getAll();
             dbMsg += "=" + inPref.size() + "件" ;
-            alEditor.apply();
             //このエディターから編集中の SharedPreferences オブジェクトに設定の変更をコミットします。これにより、要求された変更がアトミックに実行され、SharedPreferences に現在あるものがすべて置き換えられます。
 
             if(alarmFile.exists()){
