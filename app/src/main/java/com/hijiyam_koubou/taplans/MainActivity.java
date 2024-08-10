@@ -1,9 +1,15 @@
 package com.hijiyam_koubou.taplans;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.RingtoneManager;
 import android.os.Build;
@@ -15,10 +21,17 @@ import android.view.Menu;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.documentfile.provider.DocumentFile;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
@@ -28,10 +41,20 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.hijiyam_koubou.taplans.databinding.ActivityMainBinding;
+import com.hijiyam_koubou.taplans.ui.target_setting.TargetPlanViewModel;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.w3c.dom.Document;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -39,11 +62,16 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
+    public MainViewModel mainViewModel;
     public MyPreferences myPref;
     public SharedPreferences sharedPref;
     public SharedPreferences.Editor myEditor;
+    /**起動動作へ**/
+    public static int to_wakeUp=1;
 
-    private AppBarConfiguration mAppBarConfiguration;
+    /**読み書き可能な領域*/
+    public String fileDir;              // + File.separator + wFile.getName();
+     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
 
     /**
@@ -64,9 +92,12 @@ public class MainActivity extends AppCompatActivity {
     /**アラームリスト*/
     public SharedPreferences alameListDatas;
     public SharedPreferences.Editor alEditor;
-    public String alFileName = "_alarm_list";
+    /**アラーム用テキストファイル*/
+    public File alarmFile;
+    public String alFileName = "alarm_list";
     public ArrayList<AlarmItem> alarmItemList;
     public ArrayList<String> dowDisplay;
+    public String alarmListFileName;           // = fileDir + File.separator + "taplans_alarm_list";
 
     public ByDayOfTheWeekStr tBDQTWeek;
     public ByDayOfTheWeekStr ohBDQTWeek;
@@ -318,6 +349,7 @@ public class MainActivity extends AppCompatActivity {
             myEditor.putString(key, wStr);
             boolean ret = myEditor.commit();
             dbMsg += ",commit=" + ret;
+            alEditor.apply();
             myLog(TAG , dbMsg);
         } catch (Exception er) {
             myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
@@ -343,6 +375,7 @@ public class MainActivity extends AppCompatActivity {
             myEditor.putInt(key, wInt);
             boolean ret = myEditor.commit();
             dbMsg += ",commit=" + ret;
+            alEditor.apply();
             myLog(TAG , dbMsg);
         } catch (Exception er) {
             myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
@@ -369,6 +402,7 @@ public class MainActivity extends AppCompatActivity {
             myEditor.putBoolean(key, wBool);
             boolean ret = myEditor.commit();
             dbMsg += ",commit=" + ret;
+            alEditor.apply();
             myLog(TAG , dbMsg);
         } catch (Exception er) {
             myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
@@ -453,6 +487,7 @@ public class MainActivity extends AppCompatActivity {
 
     public ArrayList<soundItem> soundItemArrayList;
     public ArrayList<String> soundNameList;
+    /**端末に登録してあるアラーム音をリストアップ*/
     private ArrayList<soundItem> loadAlarms() {
         final String TAG = "loadAlarms";
         String dbMsg = "[MainActivity]";
@@ -777,40 +812,64 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             retList = new ArrayList<AlarmItem>();
-            String fName = getPackageName() + alFileName;
-            dbMsg += ",fName=" + fName;
+            String fName = getPackageName() +"_"+ alFileName;
+            dbMsg += ",プリファレンス=" + fName;
             if(alameListDatas == null){
-                dbMsg += ">開く>";
-                alameListDatas=this.getSharedPreferences(fName, MODE_PRIVATE);
-            }
-            Map<String, ?> inPref = alameListDatas.getAll();
-            dbMsg += "=" + inPref.size() + "件" ;
-            for(Map.Entry<String, ?> entry : inPref.entrySet()){
-                String keyName = entry.getKey();
-                String settingStr = entry.getValue().toString();
-                dbMsg += "," + keyName + " = " + settingStr;
+//                Context storageContext = ContextCompat.createDeviceProtectedStorageContext(this);
+                alameListDatas = getApplicationContext().getSharedPreferences(fName,MODE_PRIVATE);
+                dbMsg += "　>　開く　>　";
+               // alameListDatas=this.getSharedPreferences(fName,MODE_PRIVATE);
+                Map<String, ?> inPref = alameListDatas.getAll();
+                dbMsg += "=" + inPref.size() + "件" ;
+                for(Map.Entry<String, ?> entry : inPref.entrySet()){
+                    String keyName = entry.getKey();
+                    String settingStr = entry.getValue().toString();
+              //      dbMsg += "\n" + keyName + " = " + settingStr;
+                }
             }
             alEditor = alameListDatas.edit();
-            alarmItemList = new ArrayList<AlarmItem>() ;
             String alarm_list = alameListDatas.getString("alarm_list", "");
-            dbMsg += ",alarm_list=" + alarm_list;
+            // テキストファイル
+            if(alarmFile.exists()){
+                String filename = alarmFile.getName();
+                dbMsg += "\n" + filename;
+                FileInputStream fis = this.openFileInput(filename);
+                InputStreamReader inputStreamReader =
+                        new InputStreamReader(fis, StandardCharsets.UTF_8);
+                StringBuilder stringBuilder = new StringBuilder();
+                try (BufferedReader reader = new BufferedReader(inputStreamReader)) {
+                    String line = reader.readLine();
+                    while (line != null) {
+                        stringBuilder.append(line).append('\n');
+                        line = reader.readLine();
+                    }
+                    dbMsg += ",line=" + line.length() + "文字" ;
+                    alarm_list=line;
+                } catch (IOException e) {
+                    // Error occurred when opening raw file for reading.
+                } finally {
+                    String contents = stringBuilder.toString();
+                }
+            }else{
+                dbMsg += ",ファイル未作成" ;
+            }
+
             if(! alarm_list.equals("")){
+                dbMsg += ",alarm_list=" + alarm_list.substring(0,50) + "～"+ alarm_list.substring(alarm_list.length()-50,alarm_list.length()) ;
+                alarmItemList = new ArrayList<AlarmItem>() ;
                 JSONArray jArray = new JSONArray(alarm_list);
                 for (int i = 0; i < jArray.length(); ++ i) {
                     JSONObject jsonObj = jArray.getJSONObject(i);
-//                    String dateStr   = jsonObj.getString("dateStr");
-//                    String timeStr = jsonObj.getString("timeStr");
-//                    boolean isTarget = jsonObj.getBoolean("isTarget");
-//                    int DayOfTheWeek = jsonObj.getInt("DayOfTheWeek");
                     AlarmItem alarmItem = new AlarmItem();
                     alarmItem.dateStr = jsonObj.getString("dateStr");
                     alarmItem.timeStr = jsonObj.getString("timeStr");
                     alarmItem.isTarget = jsonObj.getBoolean("isTarget");
                     alarmItem.DayOfTheWeek = jsonObj.getInt("DayOfTheWeek");
+                    dbMsg += "\n[" +alarmItemList.size() + "]"+ alarmItem.dateStr+" " + alarmItem.timeStr+";" + alarmItem.isTarget+";" + dowDisplay.get(alarmItem.DayOfTheWeek);
                     alarmItemList.add(alarmItem);
-
                 }
                 dbMsg += ",alarmItemList=" + alarmItemList.size()+"件";
+                mainViewModel.setList(alarmItemList);
             }
             myLog(TAG , dbMsg);
         } catch (Exception er) {
@@ -830,9 +889,11 @@ public class MainActivity extends AppCompatActivity {
         AlarmItem retItem = null;
 
         try {
+            dbMsg += ",dateStr=" + dateStr;
             dbMsg += ",alarmItemList=" + alarmItemList.size()+"件";
             if(! alarmItemList.isEmpty()){
                 for (int i = 0; i < alarmItemList.size(); ++ i) {
+                    retItem=new AlarmItem();
                     retItem = alarmItemList.get(i);
                     if(retItem.dateStr.equals(dateStr)){
                         alarmItemIndex = i;
@@ -855,34 +916,54 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @SuppressLint("WorldReadableFiles")
     public void saveAlamList(String wStr) {
         //テキスト変更後
         final String TAG = "saveAlamList";
         String dbMsg = "[MainActivity]";
         try {
-            dbMsg += ",wStr=" + wStr +"\n";
-            String fName = getPackageName() + alFileName;
+            dbMsg += ",wStr=" + wStr.substring(0,50) +"～"+wStr.substring(wStr.length()-70,wStr.length())+"\n";
+            String fName = getPackageName() + "_" + alFileName;
             dbMsg += ",fName=" + fName;
             if(alameListDatas == null){
-                alameListDatas=this.getSharedPreferences(fName, MODE_PRIVATE);
+//                Context storageContext = ContextCompat.createDeviceProtectedStorageContext(this);
+                alameListDatas = getApplicationContext().getSharedPreferences(fName, MODE_PRIVATE);
+//                alameListDatas=this.getSharedPreferences(fName, MODE_PRIVATE);
+                dbMsg += "読み出し";
             }
             if(alEditor == null){
                 alEditor = alameListDatas.edit();
             }
+            Map<String, ?> inPref = alameListDatas.getAll();
+            dbMsg += ",該当Pref　commit前=" + inPref.size() + "件" ;
             alEditor.putString("alarm_list", wStr);
             boolean ret = alEditor.commit();
             dbMsg += ",commit=" + ret;
+            inPref = alameListDatas.getAll();
+            dbMsg += "=" + inPref.size() + "件" ;
+            alEditor.apply();
+            //このエディターから編集中の SharedPreferences オブジェクトに設定の変更をコミットします。これにより、要求された変更がアトミックに実行され、SharedPreferences に現在あるものがすべて置き換えられます。
+
+            if(alarmFile.exists()){
+                dbMsg += "\nテキスト更新前=" + alarmFile.length();
+                String filename = alarmFile.getName();
+                try (FileOutputStream fos = this.openFileOutput(filename, Context.MODE_PRIVATE)) {
+                    fos.write(wStr.getBytes());     //toByteArray()
+                    dbMsg += "＞＞" + alarmFile.length();
+                } catch (IOException er) {
+                    myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+                }
+
+            }
+
             myLog(TAG , dbMsg);
         } catch (Exception er) {
             myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
         }
     }
 
-    //ライフサイクル//////////////////////////////////////////////////////////////
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        final String TAG = "onCreate";
+    protected void wakeUp() {
+        final String TAG = "wakeUp";
         String dbMsg = "[MainActivity]";
         try {
 
@@ -1079,11 +1160,9 @@ public class MainActivity extends AppCompatActivity {
             dbMsg += ",予定の色名称=" + ohGCColorName ;
             this.ohGCColorRss = myPref.ohGCColorRss;
             dbMsg += ",予定の色リソースID=" + ohGCColorRss ;
+
+
 //            public int ohGCColorRss;           //
-
-            tBDQTWeek = new ByDayOfTheWeekStr();
-            ohBDQTWeek = new ByDayOfTheWeekStr();
-
             dowDisplay = new ArrayList<String>();
             dowDisplay.add(getResources().getString(R.string.comm_holiday));
             dowDisplay.add(getResources().getString(R.string.comm_sunday));
@@ -1093,9 +1172,42 @@ public class MainActivity extends AppCompatActivity {
             dowDisplay.add(getResources().getString(R.string.comm_thursday));
             dowDisplay.add(getResources().getString(R.string.comm_friday));
             dowDisplay.add(getResources().getString(R.string.comm_saturday));
+            //    alarmItemList = getAlarmList();
 
+            File inStrage = getFilesDir();
+            dbMsg += "\n内部=" + inStrage.getPath() ;
+            alarmFile = new File(this.getFilesDir(),  alFileName+".txt");
+            dbMsg += "、アラーム用テキストファイル=" + alarmFile.getPath();           // + File.separator + alarmFile.getName();
+            if(!alarmFile.exists()){
+                dbMsg += ">>未作成";
+            }
 
-            alarmItemList = getAlarmList();
+//            File exStrage = getExternalFilesDir("DIRECTORY_DOCUMENTS");
+//            dbMsg += ",外部=" + exStrage.getPath() ;
+
+            File[] externalFilesDirs = this.getExternalFilesDirs("DIRECTORY_DOCUMENTS");
+            dbMsg += ",externalFilesDirs=" + externalFilesDirs.length + "件";
+            for (int i = 0; i < externalFilesDirs.length; ++ i) {
+                File wFile =externalFilesDirs[i];
+                String wFileName = wFile.getName();
+                fileDir = wFile.getPath();              // + File.separator + wFile.getName();
+                dbMsg += ",fileDir=" + fileDir;
+                String alarmListFileName = fileDir + File.separator + "taplans_alarm_list";
+                dbMsg += ",alarmListFileName=" + alarmListFileName;
+                File chFile = new File(alarmListFileName);
+                if(chFile.exists()){
+                    dbMsg += "有り";
+                }
+            }
+//            String chFileName = "/storage/emulated/0/Android/data/com.hijiyam_koubou.taplans";          //_alarm_list";
+//            dbMsg += ",chFileName=" + chFileName;
+//            File chFile = new File(chFileName);
+//            if(chFile.exists()){
+//                dbMsg += "有り";
+//            }
+
+            tBDQTWeek = new ByDayOfTheWeekStr();
+            ohBDQTWeek = new ByDayOfTheWeekStr();
 
             binding = ActivityMainBinding.inflate(getLayoutInflater());
             setContentView(binding.getRoot());
@@ -1113,7 +1225,7 @@ public class MainActivity extends AppCompatActivity {
                             .setOpenableLayout((DrawerLayout)findViewById(R.id.drawer_layout))
                             .build();
             // ツールバーを取得する
-        //    Toolbar toolbar = findViewById(R.id.toolbar);           //
+            //    Toolbar toolbar = findViewById(R.id.toolbar);           //
             // ナビゲーションUIをセットアップする
             NavigationUI.setupWithNavController(binding.appBarMain.toolbar, navController, appBarConfiguration);
             //////////////////////////ここから以前のやり方//
@@ -1123,7 +1235,11 @@ public class MainActivity extends AppCompatActivity {
             NavigationView navigationView = binding.navView;            //(NavigationView)findViewById(R.id.my_nav_view);
             NavigationUI.setupWithNavController(navigationView, navController);
 
-
+//            if(alarmItemList == null){
+//                alarmItemList = new ArrayList<AlarmItem>();
+//                alarmItemList=mainViewModel.getList().getValue();
+//                dbMsg += ",alarmItemList=" + alarmItemList.size() + "件";
+//            }
             loadAlarms();
 
 //            DrawerLayout drawer = binding.drawerLayout;
@@ -1157,6 +1273,141 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //ライフサイクル//////////////////////////////////////////////////////////////
+
+    private final ActivityResultLauncher<String[]> requestPermissionsLauncher =
+            registerForActivityResult(
+                    new ActivityResultContracts.RequestMultiplePermissions(),
+                    (Map<String, Boolean> grantStates) -> {
+                        final String TAG = "ActivityResultLauncher";
+                        String dbMsg = "[MainActivity]";
+                        try {
+                            boolean allPass = true;
+                            ArrayList<String> unPass = new ArrayList<String>();
+                            for (Map.Entry<String, Boolean> grantState : grantStates.entrySet()) {
+                                dbMsg += "," + grantState.getKey() + "=" + grantState.getValue();
+                                Boolean grant = grantState.getValue();
+                                if(! grant){
+                                    allPass = false;
+                                    dbMsg += ">>未許可" ;
+                                    unPass.add(grantState.getKey());
+                                }
+                                //   Timber.d(grantState.getKey() + " - " + grantState.getValue());
+                            }
+                            int unPassSize = unPass.size();
+                            dbMsg += ">>未許可" +unPassSize + "件";
+                            wakeUp();
+//                            if(allPass){
+//                                wakeUp();
+//                            }else{
+//                                String[] PERMISSIONS = unPass.toArray(new String[unPassSize]);
+//                                dbMsg += ">>再表示";
+//                                checkMyPermission(PERMISSIONS);
+//                            }
+                            myLog(TAG , dbMsg);
+                        } catch (Exception er) {
+                            myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+                        }
+                    });
+//ActivityResultContracts.RequestMultiplePermissions チートシート  ActivityResultContracts.RequestMultiplePermissions チートシート
+
+    private ActivityResultLauncher<String> SingleRequestPermissionLauncher  =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                final String TAG = "singlerequestPermissionLauncher";
+                String dbMsg = "[MainActivity]";
+                try {
+
+                    if (isGranted) {
+                        dbMsg = "権限が付与されました。アプリでアクションまたはワークフローを続行します。";
+                    } else {
+                        // この機能にはユーザーが拒否した権限が必要であるため、使用できないことをユーザーに説明します。
+                        // 同時に、ユーザーの決定を尊重します。
+                        // ユーザーに決定を変更するよう説得するために、システム設定にリンクしないでください。
+                    }
+                    myLog(TAG, dbMsg);
+                } catch (Exception e) {
+                    myErrorLog(TAG ,  dbMsg + "で" + e);
+                }
+
+
+            });
+
+    public void checkMyPermission(String[] PERMISSIONS) {
+        final String TAG = "checkMyPermission";
+        String dbMsg = "[MainActivity]";
+        try {
+            if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ) {                //(初回起動で)全パーミッションの許諾を取る
+                dbMsg += "許諾確認";
+                boolean isNeedParmissionReqest = false;
+                for ( String permissionName : PERMISSIONS ) {
+                    dbMsg += "," + permissionName;
+                    int checkResalt = checkSelfPermission(permissionName);
+                    dbMsg += "=" + checkResalt;
+                    if ( checkResalt != PackageManager.PERMISSION_GRANTED ) {//許可されていなければ -1 いれば 0
+                        isNeedParmissionReqest = true;
+                    }
+                }
+                dbMsg += "、許諾が必要=" + isNeedParmissionReqest;
+                if ( isNeedParmissionReqest ) {
+                    dbMsg += "::許諾処理へ";
+                    requestPermissionsLauncher.launch(PERMISSIONS);
+
+//                    for ( String permissionName : PERMISSIONS ) {
+//                        SingleRequestPermissionLauncher.launch(permissionName);
+//                    }
+//                      new AlertDialog.Builder(MainActivity.this)
+//                            .setTitle( getResources().getString(R.string.permission_titol) )
+//                            .setMessage( getResources().getString(R.string.permission_msg))
+//                            .setPositiveButton(android.R.string.ok , new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialog , int which) {
+//                                    ActivityCompat.requestPermissions(MainActivity.this, permissions, to_wakeUp);
+//                             //       requestPermissions(PERMISSIONS ,to_wakeUp);
+//                                }
+//                            })
+//                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialog , int which) {
+//                       //             quitMe();
+//                                }
+//                            })
+//                            .create().show();
+                }else{
+                    dbMsg += "::許諾済み";
+                    wakeUp();
+                }
+            } else{
+                dbMsg += "::許諾操作不要";
+                wakeUp();
+            }
+            myLog(TAG , dbMsg);
+        } catch (Exception er) {
+            myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+        }
+    }
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        final String TAG = "onCreate";
+        String dbMsg = "[MainActivity]";
+        try {
+            mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
+
+            String[] PERMISSIONS = {
+                    Manifest.permission.INTERNET,
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+//                        android.Manifest.permission.WRITE_SETTINGS
+            };
+            checkMyPermission(PERMISSIONS);
+              myLog(TAG, dbMsg);
+        } catch (Exception e) {
+            myErrorLog(TAG ,  dbMsg + "で" + e);
+        }
+    }
+
 //    private PendingIntent getPendingIntent() {
 //        PendingIntent pInt =null;
 //        return pInt;
@@ -1174,3 +1425,4 @@ public class MainActivity extends AppCompatActivity {
     }
 
 }
+

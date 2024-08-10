@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
-    <application
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
+<!--    <uses-permission android:name="android.permission.WRITE_SETTINGS"-->
+<!--        tools:ignore="ProtectedPermissions" />-->
+     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -13,6 +19,7 @@
         android:theme="@style/Theme.TaPlans"
         tools:targetApi="34"
         tools:ignore="HardcodedDebugMode,ObsoleteSdkInt">
+
 <!--        android:debuggable="true"-->
 
         <activity

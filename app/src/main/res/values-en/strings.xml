@@ -5,6 +5,7 @@
     <string name="nav_header_title">Android Studio</string>
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
+    <string name="comm_time">time</string>
     <string name="comm_sunday">Sun</string>
     <string name="comm_wednesday">Wed</string>
     <string name="comm_thursday">Thu</string>
@@ -68,5 +69,7 @@
     <string name="gc_enddate">End date</string>
     <string name="gc_location">location</string>
     <string name="gc_isPrivate">is Private</string>
+    <string name="permission_titol">Saving the configuration data</string>
+    <string name="permission_msg">Keep checked events on your device</string>
 
 </resources>

@@ -149,6 +149,7 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    /**チェック状況を読み取り表示に反映する*/
     public void setTargetDate(Calendar setCal) {
         final String TAG = "setTargetDate";
         String dbMsg = "[HomeFragment]";
@@ -191,7 +192,19 @@ public class HomeFragment extends Fragment {
             dbMsg += ",開始=" + (vCalStart.get(Calendar.MONTH) +1)+ "月" +vCalStart.get(Calendar.DATE) + "日から";
             textView.setText(dbMsg);
 
+            String jsonStr = pClass.mainViewModel.getAlarnLiostJsom();
+            dbMsg += ",jsonStr=" + jsonStr.length() + "文字";
+            ArrayList<AlarmItem> stockList = pClass.mainViewModel.getList();
+            if(stockList != null){
+                pClass.alarmItemList = pClass.mainViewModel.getList();
+            }
             int startArraySize = pClass.alarmItemList.size();
+            dbMsg += ",startArraySize=" + startArraySize + "件";
+//            if(0 == startArraySize){
+//                pClass.alarmItemList = new ArrayList<AlarmItem>();
+//                pClass.alarmItemList= pClass.mainViewModel.getList().getValue();
+//                dbMsg += ">>" + startArraySize + "件";
+//            }
             for (int i=0; i < 42; i++) {            //c34cBox　まで
                 CalendarMembers cMember=new CalendarMembers();
                 cMember.cDate = vCalStart;
@@ -341,7 +354,7 @@ public class HomeFragment extends Fragment {
                         yearInt=yearInt+1;
                         dbMsg += ">>"+ yearInt + "年" + monthInt + "月";
                     }
-                }else if((dayInt > 25)&&(dayInt < 31) ){
+                }else if((dayInt > 25)&&(dayInt <= 31) ){
                     dbMsg += ",前月";
                     monthInt=monthInt-1;
                     if(12<monthInt){
@@ -480,7 +493,7 @@ public class HomeFragment extends Fragment {
         try {
             dbMsg += ",targetDayLidt=" + targetDayLidt.size() + "件";
             String wStr = targetDayLidt.toString();
-            dbMsg += ",wStr=" + wStr;
+         //   dbMsg += ",wStr=" + wStr.substring(0,50) +"～"+wStr.substring(wStr.length()-70,wStr.length())+"\n";
             dbMsg += ",alarmItemList=" + pClass.alarmItemList.size() + "件";
             pClass.setStrPref("targetDays", wStr);
             JSONArray jarray = new JSONArray();
@@ -494,6 +507,9 @@ public class HomeFragment extends Fragment {
             }
             dbMsg += ",json=" + jarray.toString();
             pClass.saveAlamList(jarray.toString());
+
+            pClass.mainViewModel.setAlarnLiostJsom(jarray.toString());
+            pClass.mainViewModel.setList(pClass.alarmItemList);
 
             Toast.makeText(getActivity(), pClass.alarmItemList.size() + "件", Toast.LENGTH_SHORT ).show();
             myLog(TAG , dbMsg);
@@ -516,6 +532,8 @@ public class HomeFragment extends Fragment {
             Context con = getActivity();
             pClass=(MainActivity)inflater.getContext();
             dbMsg += "," + con.getResources().getString(R.string.pref_calender_account) +"=" +pClass.calenderAccount;
+            pClass.alarmItemList= pClass.getAlarmList();
+            dbMsg += ",alarmItemList=" +pClass.alarmItemList.size() + "件";
             dbMsg += "," + con.getResources().getString(R.string.pref_sunday_background) +"=" + pClass.sundayBackground ;
 //            if(pClass.sundayBackground ==null || pClass.sundayBackground.equals("") ){
                 rBGSunDay = Color.parseColor("#FDE7E7");             //
@@ -554,7 +572,6 @@ public class HomeFragment extends Fragment {
                 targetDayLidt.add(dList[i]);
             }
             dbMsg += ">>" + targetDayLidt.toString() ;
-
 
             dayChecks = new ArrayList<>();           //CheckBox
             dayChecks.add(binding.c00cBox);
