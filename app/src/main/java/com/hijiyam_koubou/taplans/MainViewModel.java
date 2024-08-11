@@ -54,7 +54,7 @@ public class MainViewModel extends ViewModel {
                 alarmItemJson = new MutableLiveData<String> ();
                 alarmItemJson.setValue("");
             }else{
-                if(alarmItemJson.getValue().length()>50){
+                if(alarmItemJson.getValue().length()>50   ){
                     dbMsg += ">>" + alarmItemJson.getValue().substring(0,50) + "～" + alarmItemJson.getValue().substring(alarmItemJson.getValue().length()-50,alarmItemJson.getValue().length());
                 }
                 dbMsg += ":" + alarmItemJson.getValue().length()+ "文字";

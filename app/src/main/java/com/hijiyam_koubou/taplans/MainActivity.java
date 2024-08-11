@@ -832,33 +832,36 @@ public class MainActivity extends AppCompatActivity {
             String alarm_list = alameListDatas.getString("alarm_list", "");
             dbMsg += ",alarm_list=" + alarm_list.length() + "文字" ;
             if(alarm_list.length()>50){
-                dbMsg += alarm_list.substring(0,20) + "" + alarm_list.substring(alarm_list.length()-20,alarm_list.length());
+                dbMsg += alarm_list.substring(0,20) + "～" + alarm_list.substring(alarm_list.length()-20,alarm_list.length());
             }
-            // テキストファイル
-            if(alarmFile.exists()){
-                String filename = alarmFile.getName();
-                dbMsg += "\n" + filename;
-                FileInputStream fis = this.openFileInput(filename);
-                InputStreamReader inputStreamReader =
-                        new InputStreamReader(fis, StandardCharsets.UTF_8);
-                StringBuilder stringBuilder = new StringBuilder();
-                try (BufferedReader reader = new BufferedReader(inputStreamReader)) {
-                    String line = reader.readLine();
-                    while (line != null) {
-                        stringBuilder.append(line).append('\n');
-                        line = reader.readLine();
-                    }
-                    dbMsg += ",line=" + line.length() + "文字" ;
-                    if(alarm_list == null || alarm_list.equals("")){
+
+            if(alarm_list.equals("")){
+                // テキストファイル
+                if(alarmFile.exists()){
+                    String filename = alarmFile.getName();
+                    dbMsg += "\n" + filename;
+                    FileInputStream fis = this.openFileInput(filename);
+                    InputStreamReader inputStreamReader =
+                            new InputStreamReader(fis, StandardCharsets.UTF_8);
+                    StringBuilder stringBuilder = new StringBuilder();
+                    try (BufferedReader reader = new BufferedReader(inputStreamReader)) {
+                        String line = reader.readLine();            //テキスト行を読み込みます。
+                        while (line != null) {
+                            stringBuilder.append(line).append('\n');
+                            line += reader.readLine();
+                        }
+                    //    dbMsg += ",line=" + line.length() + "文字" ;
                         alarm_list=line;
+                    } catch (IOException e) {
+                        // Error occurred when opening raw file for reading.
+                    } finally {
+                        String contents = stringBuilder.toString();
+                        alarm_list=contents;
                     }
-                } catch (IOException e) {
-                    // Error occurred when opening raw file for reading.
-                } finally {
-                    String contents = stringBuilder.toString();
+                    dbMsg += ">>alarm_list=" + alarm_list.length() + "文字" ;
+                }else{
+                    dbMsg += ",ファイル未作成" ;
                 }
-            }else{
-                dbMsg += ",ファイル未作成" ;
             }
 
             if(! alarm_list.equals("")){
@@ -951,9 +954,10 @@ public class MainActivity extends AppCompatActivity {
             dbMsg += "=" + inPref.size() + "件" ;
             //このエディターから編集中の SharedPreferences オブジェクトに設定の変更をコミットします。これにより、要求された変更がアトミックに実行され、SharedPreferences に現在あるものがすべて置き換えられます。
 
-            if(alarmFile.exists()){
+         //   if(alarmFile.exists()){
                 dbMsg += "\nテキスト更新前=" + alarmFile.length();
                 String filename = alarmFile.getName();
+                dbMsg += ",filename=" + filename;
                 try (FileOutputStream fos = this.openFileOutput(filename, Context.MODE_PRIVATE)) {
                     fos.write(wStr.getBytes());     //toByteArray()
                     dbMsg += "＞＞" + alarmFile.length();
@@ -961,7 +965,7 @@ public class MainActivity extends AppCompatActivity {
                     myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
                 }
 
-            }
+         //   }
 
             myLog(TAG , dbMsg);
         } catch (Exception er) {
