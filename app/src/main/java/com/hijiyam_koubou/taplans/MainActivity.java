@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**読み書き可能な領域*/
     public String fileDir;              // + File.separator + wFile.getName();
-     private AppBarConfiguration mAppBarConfiguration;
+    private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
 
     /**

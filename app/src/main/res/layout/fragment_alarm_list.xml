@@ -13,15 +13,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/text_alarm_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:text="@string/menu_alarm_list"
-        android:textSize="20sp" />
-
-    <ScrollView
+     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -30,7 +22,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </ScrollView>
-
+    <TextView
+        android:id="@+id/text_alarm_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="@string/menu_alarm_list"
+        android:textSize="20sp" />
 
 </LinearLayout>
 <!--</androidx.constraintlayout.widget.ConstraintLayout>-->
