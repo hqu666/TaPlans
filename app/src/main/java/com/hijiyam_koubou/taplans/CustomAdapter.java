@@ -19,48 +19,89 @@ public class CustomAdapter extends ArrayAdapter<String> {
     public CustomAdapter(Context context, int resource, String[] strings, ArrayList<GoogleCalendarColors> googleCalendarColorList) {
 
         super( context, resource, strings );
-        this.googleCalendarColorList = googleCalendarColorList;
-      //  this.colors = colors;
+        final String TAG = "CustomAdapter";
+        String dbMsg = "[CustomAdapter]";
+    //    Object retObject=null;
+        try {
+            this.googleCalendarColorList = googleCalendarColorList;
+            myLog(TAG , dbMsg);
+        } catch (Exception er) {
+            myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+        }
     }
 
 
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent ) {
-
-        if( convertView == null ) {
-            LayoutInflater inflater = LayoutInflater.from( getContext() );
-            convertView = inflater.inflate( android.R.layout.simple_spinner_dropdown_item, parent, false );
-            //** android.R.layout.simple_spinner_dropdown_item で inflate **//
+        final String TAG = "getDropDownView";
+        String dbMsg = "[CustomAdapter]";
+        Object retObject=null;
+        try {
+            dbMsg += "[" + position + "]";
+            if( convertView == null ) {
+                LayoutInflater inflater = LayoutInflater.from( getContext() );
+                convertView = inflater.inflate( android.R.layout.simple_spinner_dropdown_item, parent, false );
+                //** android.R.layout.simple_spinner_dropdown_item で inflate **//
+            }
+            this.setCustomTextView( (TextView) convertView, position );
+            myLog(TAG , dbMsg);
+        } catch (Exception er) {
+            myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
         }
-
-        this.setCustomTextView( (TextView) convertView, position );
         return convertView;
     }
 
 
     @Override
     public View getView( int position, View convertView, ViewGroup parent ) {
-
-        if( convertView == null ) {
-            LayoutInflater inflater = LayoutInflater.from( getContext() );
-            convertView = inflater.inflate( android.R.layout.simple_spinner_item, parent, false );
-            //** android.R.layout.sinple_spinner_item で inflate **//
+        final String TAG = "getView";
+        String dbMsg = "[CustomAdapter]";
+        Object retObject=null;
+        try {
+            dbMsg += "[" + position + "]";
+            if( convertView == null ) {
+                LayoutInflater inflater = LayoutInflater.from( getContext() );
+                convertView = inflater.inflate( android.R.layout.simple_spinner_item, parent, false );
+                //** android.R.layout.sinple_spinner_item で inflate **//
+            }
+            this.setCustomTextView( (TextView) convertView, position );
+            myLog(TAG , dbMsg);
+        } catch (Exception er) {
+            myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
         }
-
-        this.setCustomTextView( (TextView) convertView, position );
-
-        return convertView;
+         return convertView;
     }
 
 
     //** Spinnerの中身のTextViewを作る **//
     private void setCustomTextView( TextView textView, int position ) {
+        final String TAG = "setCustomTextView";
+        String dbMsg = "[CustomAdapter]";
+        Object retObject=null;
+        try {
+            dbMsg += "[" + position + "]";
+            textView.setText( super.getItem( position ) );
+            GoogleCalendarColors gcItem = googleCalendarColorList.get(position);
+            textView.setBackgroundColor(Color.parseColor(gcItem.HEXStr));
+            textView.setTextColor(Color.parseColor(gcItem.FontColorStr));
+            myLog(TAG , dbMsg);
+        } catch (Exception er) {
+            myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+        }
+     }
 
-        textView.setText( super.getItem( position ) );
-        GoogleCalendarColors gcItem = googleCalendarColorList.get(position);
-        textView.setBackgroundColor(Color.parseColor(gcItem.HEXStr));
-        textView.setTextColor(Color.parseColor(gcItem.FontColorStr));
+    /////////////////////////////////////////////////////////////
+    public static void myLog(String TAG , String dbMsg) {
+        Util UTIL = new Util();
+        UTIL.myLog(TAG , dbMsg);
     }
+
+    public static void myErrorLog(String TAG , String dbMsg) {
+        Util UTIL = new Util();
+        UTIL.myErrorLog(TAG , dbMsg);
+    }
+
+
 }
 
 
