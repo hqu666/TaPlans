@@ -98,6 +98,8 @@ public class MainActivity extends AppCompatActivity {
     public ArrayList<AlarmItem> alarmItemList;
     public ArrayList<String> dowDisplay;
     public String alarmListFileName;           // = fileDir + File.separator + "taplans_alarm_list";
+    public ArrayList<String> targetWakeUpTime;
+    public ArrayList<String> otherWakeUpTime;
 
     public ByDayOfTheWeekStr tBDQTWeek;
     public ByDayOfTheWeekStr ohBDQTWeek;
@@ -143,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
     public String ohEventSoundName;           // アラーム名
     public String ohEventSoundURi;           // アラームURI
 
-    public String ohArarmTime1 = "06 : 00";           // アラーム時刻1
+    public String ohArarmTime1 = "06 : 30";           // アラーム時刻1
     public Boolean oh100c = false;               // アラーム時刻1 の日曜
     public Boolean oh101c = false;          // アラーム時刻1 の月曜
     public Boolean oh102c = false;        // アラーム時刻1 の火曜
@@ -153,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
     public Boolean oh106c = false;            // アラーム時刻1 の土曜
     public Boolean oh107c = false;            // アラーム時刻1 の祝日
 
-    public String ohArarmTime2 = "07 : 00";           // アラーム時刻2
+    public String ohArarmTime2 = "07 : 30";           // アラーム時刻2
     public Boolean oh200c = false;             // アラーム時刻2 の日曜
     public Boolean oh201c = false;            // アラーム時刻2 の月曜
     public Boolean oh202c = false;            // アラーム時刻2 の火曜
@@ -163,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
     public Boolean oh206c = false;              // アラーム時刻2 の土曜
     public Boolean oh207c = false;            // アラーム時刻2 の祝日
 
-    public String ohArarmTime3 = "08 : 00";           // アラーム時刻3
+    public String ohArarmTime3 = "08 : 30";           // アラーム時刻3
     public Boolean oh300c = false;             // アラーム時刻3 の日曜
     public Boolean oh301c = false;            // アラーム時刻3 の月曜
     public Boolean oh302c = false;            // アラーム時刻3 の火曜
@@ -588,8 +590,7 @@ public class MainActivity extends AppCompatActivity {
         final String TAG = "setWeekCheck";
         String dbMsg = "[MainActivity]";
         try {
- //           dbMsg += prefName+ "=" + prefVal;
-//            prefVal=targetyCB.isChecked();
+            dbMsg += "targetCB=" + targetCB.getAccessibilityClassName();
             dbMsg += ">>" + checkState;
             setBoolPref(prefName,checkState);
             dbMsg += "," + prefName + "を";
@@ -610,6 +611,41 @@ public class MainActivity extends AppCompatActivity {
                     setBoolPref(prefName3,false);
                     dbMsg += "を解除";
                 }
+                String boxNoStr = prefName.substring(2, prefName.length() - 1);
+                dbMsg += ",boxNoStr=" + boxNoStr;
+                int dowInt = Integer.parseInt(prefName.substring(prefName.length() - 2, prefName.length() - 1));
+                if(dowInt == 7){
+                    dowInt = -1;
+                }
+                dbMsg += ",dowInt=" + dowInt;
+                dbMsg += "=" +dowDisplay.get(dowInt+1) + "曜日";
+
+                String setTimeStr = tArarmTime1;
+                if(prefName.startsWith("ta")){              //ta100c
+                    dbMsg += "\n対象側";
+                    if(boxNoStr.startsWith("10")) {
+                        setTimeStr = tArarmTime1;
+                    }else if(boxNoStr.startsWith("20")){
+                        setTimeStr = tArarmTime2;
+                    }else if(boxNoStr.startsWith("30")){
+                        setTimeStr = tArarmTime3;
+                    }
+                    targetWakeUpTime.set(dowInt+1,setTimeStr);
+                    dbMsg += ",targetWakeUpTime=" + targetWakeUpTime.toString();
+                }else if(prefName.startsWith("oh")){        //oh100c
+                    dbMsg += "\n非対象側";
+                    if(boxNoStr.startsWith("10")) {
+                        setTimeStr = ohArarmTime1;
+                    }else if(boxNoStr.startsWith("20")){
+                        setTimeStr = ohArarmTime2;
+                    }else if(boxNoStr.startsWith("30")){
+                        setTimeStr = ohArarmTime3;
+                    }
+                    otherWakeUpTime.set(dowInt+1,setTimeStr);
+                    dbMsg += ",otherWakeUpTime=" + otherWakeUpTime.toString();
+                }
+                dbMsg += ",setTimeStr=" + setTimeStr;
+
                 //      myPref.readPref(this);
             }else {
                 dbMsg += "解除";
@@ -1183,7 +1219,24 @@ public class MainActivity extends AppCompatActivity {
             dowDisplay.add(getResources().getString(R.string.comm_thursday));
             dowDisplay.add(getResources().getString(R.string.comm_friday));
             dowDisplay.add(getResources().getString(R.string.comm_saturday));
-            //    alarmItemList = getAlarmList();
+            targetWakeUpTime = new ArrayList<String>();
+            targetWakeUpTime.add("06 : 00");
+            targetWakeUpTime.add("06 : 01");
+            targetWakeUpTime.add("06 : 02");
+            targetWakeUpTime.add("06 : 03");
+            targetWakeUpTime.add("06 : 04");
+            targetWakeUpTime.add("06 : 05");
+            targetWakeUpTime.add("06 : 06");
+            targetWakeUpTime.add("06 : 07");
+            otherWakeUpTime = new ArrayList<String>();
+            otherWakeUpTime.add("12 : 00");
+            otherWakeUpTime.add("12 : 01");
+            otherWakeUpTime.add("12 : 02");
+            otherWakeUpTime.add("12 : 03");
+            otherWakeUpTime.add("12 : 04");
+            otherWakeUpTime.add("12 : 05");
+            otherWakeUpTime.add("12 : 06");
+            otherWakeUpTime.add("12 : 07");
 
             File inStrage = getFilesDir();
             dbMsg += "\n内部=" + inStrage.getPath() ;
