@@ -469,6 +469,7 @@ public class MainActivity extends AppCompatActivity {
                                     MainActivity.this.prefValue+= minute + "";
                                 }
                                 dbMsg += " >> "+ MainActivity.this.prefValue;
+                                dbMsg += " >prefName> "+ MainActivity.this.prefName + "へ記録";
                                 setStrPref(MainActivity.this.prefName,MainActivity.this.prefValue);
                                 MainActivity.this.targetButton.setText(MainActivity.this.prefValue);
 
@@ -631,7 +632,9 @@ public class MainActivity extends AppCompatActivity {
                         setTimeStr = tArarmTime3;
                     }
                     targetWakeUpTime.set(dowInt+1,setTimeStr);
-                    dbMsg += ",targetWakeUpTime=" + targetWakeUpTime.toString();
+                    String targetWakeUpTimeStr = targetWakeUpTime.toString();
+                    dbMsg += ",targetWakeUpTime=" + targetWakeUpTimeStr;
+                    setStrPref("targetWakeUpTime", targetWakeUpTimeStr);
                 }else if(prefName.startsWith("oh")){        //oh100c
                     dbMsg += "\n非対象側";
                     if(boxNoStr.startsWith("10")) {
@@ -642,7 +645,9 @@ public class MainActivity extends AppCompatActivity {
                         setTimeStr = ohArarmTime3;
                     }
                     otherWakeUpTime.set(dowInt+1,setTimeStr);
-                    dbMsg += ",otherWakeUpTime=" + otherWakeUpTime.toString();
+                    String otherWakeUpTimeStr = otherWakeUpTime.toString();
+                    dbMsg += ",otherWakeUpTime=" + otherWakeUpTimeStr;
+                    setStrPref("otherWakeUpTimeStr", otherWakeUpTimeStr);
                 }
                 dbMsg += ",setTimeStr=" + setTimeStr;
 
@@ -1207,9 +1212,11 @@ public class MainActivity extends AppCompatActivity {
             dbMsg += ",予定の色名称=" + ohGCColorName ;
             this.ohGCColorRss = myPref.ohGCColorRss;
             dbMsg += ",予定の色リソースID=" + ohGCColorRss ;
+            this.targetWakeUpTime = myPref.targetWakeUpTime;
+            dbMsg += ",対象の起床時刻=" + targetWakeUpTime.toString() ;
+            this.otherWakeUpTime = myPref.otherWakeUpTime;
+            dbMsg += ",対象外の起床時刻=" + otherWakeUpTime.toString() ;
 
-
-//            public int ohGCColorRss;           //
             dowDisplay = new ArrayList<String>();
             dowDisplay.add(getResources().getString(R.string.comm_holiday));
             dowDisplay.add(getResources().getString(R.string.comm_sunday));
@@ -1219,24 +1226,6 @@ public class MainActivity extends AppCompatActivity {
             dowDisplay.add(getResources().getString(R.string.comm_thursday));
             dowDisplay.add(getResources().getString(R.string.comm_friday));
             dowDisplay.add(getResources().getString(R.string.comm_saturday));
-            targetWakeUpTime = new ArrayList<String>();
-            targetWakeUpTime.add("06 : 00");
-            targetWakeUpTime.add("06 : 01");
-            targetWakeUpTime.add("06 : 02");
-            targetWakeUpTime.add("06 : 03");
-            targetWakeUpTime.add("06 : 04");
-            targetWakeUpTime.add("06 : 05");
-            targetWakeUpTime.add("06 : 06");
-            targetWakeUpTime.add("06 : 07");
-            otherWakeUpTime = new ArrayList<String>();
-            otherWakeUpTime.add("12 : 00");
-            otherWakeUpTime.add("12 : 01");
-            otherWakeUpTime.add("12 : 02");
-            otherWakeUpTime.add("12 : 03");
-            otherWakeUpTime.add("12 : 04");
-            otherWakeUpTime.add("12 : 05");
-            otherWakeUpTime.add("12 : 06");
-            otherWakeUpTime.add("12 : 07");
 
             File inStrage = getFilesDir();
             dbMsg += "\n内部=" + inStrage.getPath() ;

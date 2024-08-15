@@ -88,6 +88,9 @@ public class MyPreferences extends PreferenceActivity {
     public Boolean ta306c = false;              // アラーム時刻3 の土曜
     public Boolean ta307c = false;            // アラーム時刻3 の祝日
 
+    public ArrayList<String> targetWakeUpTime;
+    public ArrayList<String> otherWakeUpTime;
+
     //Googleカレンダー連携
     public Boolean googleCalAlignment= true;       //Googleカレンダー連携
     public String gcaSubject;         //登録する名称"
@@ -241,6 +244,58 @@ public class MyPreferences extends PreferenceActivity {
             targetDays=targetDays.replaceAll("]","");
             dbMsg += ">>" + targetDays ;
 
+            dbMsg += "\n対象側" + con.getResources().getString(R.string.sett_alarm_time) +"リスト=" ;
+            String targetWakeUpTimeStr = readStrPref(inPref, "targetWakeUpTime", "");
+            dbMsg += targetWakeUpTimeStr;
+            targetWakeUpTime = new ArrayList<String>();
+            if(targetWakeUpTimeStr.equals("")){
+                dbMsg += ">>仮作成" ;
+                targetWakeUpTime.add("05 : 00");
+                targetWakeUpTime.add("05 : 01");
+                targetWakeUpTime.add("05 : 02");
+                targetWakeUpTime.add("05 : 03");
+                targetWakeUpTime.add("05 : 04");
+                targetWakeUpTime.add("05 : 05");
+                targetWakeUpTime.add("05 : 06");
+                targetWakeUpTime.add("05 : 07");
+            }else{
+                dbMsg += ">>" + targetWakeUpTimeStr ;
+                targetWakeUpTimeStr=targetWakeUpTimeStr.replace("[","");
+                targetWakeUpTimeStr=targetWakeUpTimeStr.replaceAll("]","");
+                dbMsg += ">>" + targetWakeUpTimeStr;
+                String[] targetWakeUpTimeArray = targetWakeUpTimeStr.split(",");
+                for(String s: targetWakeUpTimeArray) {
+                    targetWakeUpTime.add(s);
+                }
+            }
+            dbMsg += ">>" + targetWakeUpTime.toString() ;
+
+            dbMsg += "\n対象外" + con.getResources().getString(R.string.sett_alarm_time) +"リスト=";
+            String otherWakeUpTimeStr = readStrPref(inPref, "otherWakeUpTime", "");
+            dbMsg += otherWakeUpTimeStr;
+            otherWakeUpTime = new ArrayList<String>();
+            if(otherWakeUpTimeStr.equals("")){
+                dbMsg += ">>仮作成" ;
+                otherWakeUpTime.add("12 : 00");
+                otherWakeUpTime.add("12 : 01");
+                otherWakeUpTime.add("12 : 02");
+                otherWakeUpTime.add("12 : 03");
+                otherWakeUpTime.add("12 : 04");
+                otherWakeUpTime.add("12 : 05");
+                otherWakeUpTime.add("12 : 06");
+                otherWakeUpTime.add("12 : 07");
+            }else{
+                dbMsg += ">>" + otherWakeUpTimeStr ;
+                otherWakeUpTimeStr=otherWakeUpTimeStr.replace("[","");
+                otherWakeUpTimeStr=otherWakeUpTimeStr.replaceAll("]","");
+                dbMsg += ">>" + otherWakeUpTimeStr;
+                String[] otherWakeUpTimeArray = otherWakeUpTimeStr.split(",");
+                for(String s: otherWakeUpTimeArray) {
+                    otherWakeUpTime.add(s);
+                }
+            }
+            dbMsg += ">>" + otherWakeUpTime.toString() ;
+
             dbMsg += "\n" + con.getResources().getString(R.string.sett_alarm_time) +"1=" + tArarmTime1 ;
             tArarmTime1 = readStrPref(inPref,"tArarmTime1", "");
             dbMsg += ">>" + tArarmTime1 ;
@@ -352,6 +407,7 @@ public class MyPreferences extends PreferenceActivity {
             dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"3の祝日=" + ta307c ;
             ta307c = sharedPref.getBoolean("ta307c", ta307c);
             dbMsg += ">>" + ta307c ;
+
             //Googleカレンダー連携
             dbMsg += "\nGoogleカレンダー連携=" + googleCalAlignment ;
             googleCalAlignment = sharedPref.getBoolean("googleCalAlignment", googleCalAlignment);
@@ -439,6 +495,10 @@ public class MyPreferences extends PreferenceActivity {
             dbMsg += ">>" + oh106c ;
 
             dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"の祝日" + oh107c ;
+            oh107c = sharedPref.getBoolean("oh107c", oh107c);
+            dbMsg += ">>" + oh107c ;
+
+            dbMsg += "," + con.getResources().getString(R.string.sett_alarm_time) +"配列" + oh107c ;
             oh107c = sharedPref.getBoolean("oh107c", oh107c);
             dbMsg += ">>" + oh107c ;
 
