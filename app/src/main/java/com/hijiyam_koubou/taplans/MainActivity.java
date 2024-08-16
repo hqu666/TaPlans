@@ -55,6 +55,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -84,6 +85,8 @@ public class MainActivity extends AppCompatActivity {
     public String satudayTextColor;            //">#0000FF</color>
     public String defaultBackground;            //">#FFFFFF</color>
     public String defaultTextColor;             //">#000000</color>
+    public String otherBackground = "#DDDDDD";            //">#FFFFFF</color>対象外の背景
+    public String otherTextColor = "#222222";            //">#000000</color>対象外の文字色
     /**
      * 前後2か月の対象日リスト：Googleカレンダー非連動時の対策
      * */
@@ -967,6 +970,63 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * 指定された日のアラームを更新
+     * */
+    public void renewalAlam(String dateStr) {
+        //テキスト変更後
+        final String TAG = "renewalAlam";
+        String dbMsg = "[MainActivity]";
+        try {
+            dbMsg += ",更新対象=" + dateStr;
+            int listIndex = 0;
+            for (AlarmItem rItem:alarmItemList) {
+                if(rItem.dateStr.equals(dateStr)){
+                    break;
+                }
+                listIndex++;
+            }
+            dbMsg += "("+listIndex+")";
+
+            myLog(TAG , dbMsg);
+        } catch (Exception er) {
+            myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+        }
+    }
+
+
+    /**
+     * 本日以降のアラームを一括更新
+     * */
+    public void renewalAllAlam() {
+        //テキスト変更後
+        final String TAG = "renewalAllAlam";
+        String dbMsg = "[MainActivity]";
+        try {
+            //現在
+            Date toDay = new Date();
+            dbMsg += ",本日=" + toDay;
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+            String toDayStr = dateFormat.format(toDay);
+            dbMsg += ",toDayStr=" + toDayStr;
+            int listIndex = 0;
+            for (AlarmItem rItem:alarmItemList) {
+                if(rItem.dateStr.equals(toDayStr)){
+                    break;
+                }
+                listIndex++;
+            }
+            dbMsg += "("+listIndex+")";
+            String listEnd = alarmItemList.get(alarmItemList.size() - 1).dateStr;
+            dbMsg += "～"+listEnd;
+
+            myLog(TAG , dbMsg);
+        } catch (Exception er) {
+            myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+        }
+    }
+
+
     @SuppressLint("WorldReadableFiles")
     public void saveAlamList(String wStr) {
         //テキスト変更後
@@ -1309,13 +1369,14 @@ public class MainActivity extends AppCompatActivity {
             binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                    renewalAllAlam();
+                    Snackbar.make(view, "本日以降のアラームを一括更新します。", Snackbar.LENGTH_LONG)
                             .setAction("Action", null)
                             .setAnchorView(R.id.fab).show();
                 }
             });
 
-//            alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//            alarmManager = (AlarmManagerAlarmManager) getSystemService(Context.ALARM_SERVICE);
 //            PendingIntent pendingIntent = getPendingIntent();
 //            alarmManager.setAlarmClock(new AlarmManager.AlarmClockInfo(alarmTimeMillis, null), pendingIntent);
 //

@@ -1,33 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="5dp"
+    >
 
-    <RadioButton
-        android:id="@+id/target_bt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="" />
+<!--    <RadioButton-->
+<!--        android:id="@+id/target_bt"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="" />-->
 
     <TextView
         android:id="@+id/date_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_marginLeft="5dp"
         android:text="年月日" />
 
     <TextView
         android:id="@+id/time_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_marginLeft="5dp"
         android:text="起床時刻" />
 
     <TextView
         android:id="@+id/dow_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="TextView" />
+        android:layout_marginLeft="5dp"
+        android:text="曜日" />
+
+    <TextView
+        android:id="@+id/memo_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:text="備考" />
 
 </LinearLayout>

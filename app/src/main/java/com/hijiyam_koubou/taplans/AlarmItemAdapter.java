@@ -27,6 +27,8 @@ public class AlarmItemAdapter extends ArrayAdapter<AlarmItem> {
     private int rBGSunDay;
     private int rBGSatuDay;
     private int rBGWeekDay;
+    private int rBGotherDayBG;
+    private int rBGotherDayTC;
 
     public AlarmItemAdapter(@NonNull Context context, int resource,ArrayList<AlarmItem> alarmItemList) {
         super(context, resource);
@@ -41,6 +43,8 @@ public class AlarmItemAdapter extends ArrayAdapter<AlarmItem> {
             this.rBGSunDay = Color.parseColor("#FDE7E7");             //
             this.rBGSatuDay = Color.parseColor("#EDEDFF");           //
             this.rBGWeekDay = Color.parseColor("#FFFFFF");           //
+            this.rBGotherDayBG = Color.parseColor("#DDDDDD");           //対象外の背景
+            this.rBGotherDayTC = Color.parseColor("#222222");           //対象外の文字色
             myLog(TAG , dbMsg);
         } catch (Exception er) {
             myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
@@ -127,11 +131,11 @@ public class AlarmItemAdapter extends ArrayAdapter<AlarmItem> {
 //                convertView = inflater.inflate( android.R.layout.simple_spinner_item, parent, false );
                 //** android.R.layout.sinple_spinner_item で inflate **//
             }
-            RadioButton target_bt = convertView.findViewById(R.id.target_bt);
+//            RadioButton target_bt = convertView.findViewById(R.id.target_bt);
             TextView date_tv = convertView.findViewById(R.id.date_tv);
             TextView time_tv = convertView.findViewById(R.id.time_tv);
             TextView dow_tv = convertView.findViewById(R.id.dow_tv);
-            target_bt.setChecked(gcItem.isTarget);
+            TextView memo_tv = convertView.findViewById(R.id.memo_tv);
             date_tv.setText(gcItem.dateStr);
             time_tv.setText(gcItem.timeStr);
             String dayOfTheWeek = this.pClass.dowDisplay.get(gcItem.DayOfTheWeek);
@@ -142,48 +146,23 @@ public class AlarmItemAdapter extends ArrayAdapter<AlarmItem> {
             }else if(gcItem.DayOfTheWeek == Calendar.SATURDAY){
                 dbMsg += "[土曜日]";
                 convertView.setBackgroundColor(rBGSatuDay);
+            }else if(! gcItem.isTarget){
+                dbMsg += "対象外";
+                convertView.setBackgroundColor(rBGotherDayBG);
             }else{
                 convertView.setBackgroundColor(rBGWeekDay);
+            }
+
+            if(gcItem.isTarget){
+
             }
             myLog(TAG , dbMsg);
         } catch (Exception er) {
             myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
         }
         return Objects.requireNonNull(convertView);
-//        return Objects.requireNonNull(convertView);
     }
 
-
-//    @Override
-//    public View getDropDownView(int position, View convertView, ViewGroup parent ) {
-//
-//        if( convertView == null ) {
-//            LayoutInflater inflater = LayoutInflater.from( getContext() );
-//            convertView = inflater.inflate( android.R.layout.simple_spinner_dropdown_item, parent, false );
-//            //** android.R.layout.simple_spinner_dropdown_item で inflate **//
-//        }
-//        this.getView(position,convertView,parent);
-//        //  this.setCustomTextView( (TextView) convertView, position );
-//        return convertView;
-//    }
-
-    //** Spinnerの中身のTextViewを作る **//
-//    private void setCustomTextView( TextView textView, int position ) {
-//
-//  //        textView.setBackgroundColor(Color.parseColor(gcItem.HEXStr));
-////        textView.setTextColor(Color.parseColor(gcItem.FontColorStr));
-//        final String TAG = "AlarmItemAdapter";
-//        String dbMsg = "[AlarmItemAdapter]";
-//        try {
-//            textView.setText((CharSequence) super.getItem( position ));
-//            AlarmItem gcItem = alarmItemList.get(position);
-//            String wStr = gcItem.dateStr + " " + gcItem.timeStr + " " + gcItem.DayOfTheWeek + " " + gcItem.isTarget;
-//            textView.setText(wStr);
-//            myLog(TAG , dbMsg);
-//        } catch (Exception er) {
-//            myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
-//        }
-//    }
     /////////////////////////////////////////////////////////////
     public static void myLog(String TAG , String dbMsg) {
         Util UTIL = new Util();

@@ -4,10 +4,12 @@ import static androidx.databinding.DataBindingUtil.setContentView;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -31,7 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AlarmListFragment extends Fragment {
+public class AlarmListFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     private MainActivity pClass;
     private FragmentAlarmListBinding binding;
@@ -54,6 +56,7 @@ public class AlarmListFragment extends Fragment {
                 );
                 alarmLV.setAdapter(alarmItemAdapter);
                 dbMsg += ",getCount=" + alarmLV.getCount() + "件";
+                alarmLV.setOnItemClickListener(this);
             }else{
                 dbMsg += ">>リスト無し";
             }
@@ -64,6 +67,19 @@ public class AlarmListFragment extends Fragment {
         return retInt;
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+        final String TAG = "onItemClick";
+        String dbMsg = "[AlarmListFragment]";
+        try {
+            dbMsg += "[" + position + "]" + pClass.alarmItemList.get(position).dateStr;
+            pClass.renewalAlam(pClass.alarmItemList.get(position).dateStr);
+            myLog(TAG , dbMsg);
+        } catch (Exception er) {
+            myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+        }
+
+    }
 
     @SuppressLint("SetTextI18n")
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -84,6 +100,7 @@ public class AlarmListFragment extends Fragment {
             int alarmLVId = alarmLV.getId();
             dbMsg += ",alarmLVId=" + alarmLVId;
             Integer lSize = readAlarmList(pClass.alarmItemList);
+            dbMsg += ",作成したリストの行数=" + lSize;
 
             final TextView textView = binding.textAlarmList;
             galleryViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
