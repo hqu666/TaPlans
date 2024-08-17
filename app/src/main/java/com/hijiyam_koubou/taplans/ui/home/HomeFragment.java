@@ -380,72 +380,9 @@ public class HomeFragment extends Fragment {
 
             dbMsg += "\n[" + pClass.alarmItemIndex +"]" + alItem.dateStr+ " " + alItem.timeStr+ ",isTarget="+ alItem.isTarget + ",DayOfTheWeek="+alItem.DayOfTheWeek;
             alItem = setAlarmTime(alItem,cBox.isChecked());
-            dbMsg += "\n>>" + alItem.dateStr+ " " + alItem.timeStr+ ",isTarget="+ alItem.isTarget + ",DayOfTheWeek="+alItem.DayOfTheWeek;
+            dbMsg += "\n>>" + alItem.dateStr+ " " + alItem.timeStr+ ",isTarget="+ alItem.isTarget + ",DayOfTheWeek="+alItem.DayOfTheWeek + ",comment="+alItem.comment;
             pClass.alarmItemList.set(pClass.alarmItemIndex , alItem);
-
-//            int index = targetDayLidt.indexOf(selectedDayStr);
-//            dbMsg += ",index=" + index;
-//            if(cBox.isChecked()) {
-//                // チェックされた状態の時の処理を記述
-//                dbMsg += "＞＞登録操作";
-//                if(index < 0){
-//                    targetDayLidt.add( selectedDayStr);
-//                }else{
-//                    dbMsg += "＞＞登録済み";
-//                }
-//            }else {
-//                // チェックされていない状態の時の処理を記述
-//                dbMsg += "＞＞削除操作";
-//                if(-1 < index){
-//                    targetDayLidt.remove( index);
-//                }else{
-//                    dbMsg += "＞＞登録されていない";
-//                }
-//            }
-//            Collections.sort(targetDayLidt);
-//            dbMsg += ",targetDayLidt=" + targetDayLidt.size() + "件";
-//            dbMsg += ",targetDayLidt=" + targetDayLidt.toString();
-//            String farstItem = targetDayLidt.get(0);
-//            dbMsg += ",farstItem=" + farstItem;
-//            if(!farstItem.contains("/")){
-//                targetDayLidt.remove(0);
-//                dbMsg += ">>targetDayLidt=" + targetDayLidt.toString();
-//            }
-//            boolean isWrite = false;
-//            int alIndex = 0;
-//            for (AlarmItem alAitem:pClass.alarmItemList){
-//                String rDateStr = alAitem.dateStr;
-//                if(rDateStr.equals(selectedDayStr)){
-//                    dbMsg += "[" + alIndex + "]既存";
-//                    if(alAitem.isTarget != cBox.isChecked()){
-//                        alAitem=setAlarmTime(alAitem,cBox.isChecked());
-//                        dbMsg += "、" + alAitem.dateStr+ " "+ alAitem.timeStr+ ",isTarget="+ alAitem.isTarget;
-//                        pClass.alarmItemList.set(alIndex , alAitem);
-//                    }
-//                    isWrite=true;
-//                }
-//                alIndex++;
-//            }
-//            dbMsg += "、isWrite＝" + isWrite;
-//            if(! isWrite){
-//                AlarmItem alAitem = new AlarmItem();
-//                alAitem.dateStr = selectedDayStr;
-//                alAitem=setAlarmTime(alAitem,cBox.isChecked());
-//                dbMsg += "、" + alAitem.dateStr+ " "+ alAitem.timeStr+ ",isTarget="+ alAitem.isTarget;
-//                dbMsg += "、alarmItemList=" + pClass.alarmItemList.size() + "件";
-//                pClass.alarmItemList.add(alAitem);
-//                dbMsg += "＞＞" + pClass.alarmItemList.size() + "件";
-//                Collections.sort( pClass.alarmItemList ,new AlarmItemComparator());
-//            }
-//            for (int i = 0; i < pClass.alarmItemList.size(); i++) {
-//                dbMsg += "\n" + pClass.alarmItemList.get(i).dateStr+ " " + pClass.alarmItemList.get(i).timeStr
-//                        + ",isTarget="+ pClass.alarmItemList.get(i).isTarget + ",DayOfTheWeek="+pClass.alarmItemList.get(i).DayOfTheWeek;
-//            }
-
-//            if(sequentialUpdatesSw.isChecked()){
             saveData();
-//            }
-
             myLog(TAG, dbMsg);
         } catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -469,11 +406,13 @@ public class HomeFragment extends Fragment {
             dbMsg += ",isTarget="+isTarget;
             alAitem.isTarget= isTarget;
             if(isTarget){
-                alAitem.timeStr = pClass.tArarmTime1;
+                alAitem.timeStr = pClass.targetWakeUpTime.get(alAitem.DayOfTheWeek);
+                alAitem.comment = pClass.tEventName;
             }else{
-                alAitem.timeStr = pClass.ohArarmTime1;
+                alAitem.timeStr = pClass.otherWakeUpTime.get(alAitem.DayOfTheWeek);
+                alAitem.comment = pClass.ohEventName;
             }
-            dbMsg += ",timeStr="+alAitem.timeStr;
+            dbMsg += ",timeStr="+alAitem.timeStr+ ",comment="+alAitem.comment;
             myLog(TAG, dbMsg);
         } catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -503,6 +442,8 @@ public class HomeFragment extends Fragment {
                 jsonObj.put("timeStr",pClass.alarmItemList.get(i).timeStr);
                 jsonObj.put("isTarget",pClass.alarmItemList.get(i).isTarget);
                 jsonObj.put("DayOfTheWeek",pClass.alarmItemList.get(i).DayOfTheWeek);
+                jsonObj.put("comment",pClass.alarmItemList.get(i).comment);
+                jsonObj.put("isNotChangeable",pClass.alarmItemList.get(i).isNotChangeable);
                 jarray.put(jsonObj);
             }
             dbMsg += ",json=" + jarray.toString();

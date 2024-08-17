@@ -16,13 +16,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
-        android:text="年月日" />
+        android:text="年月日"
+        android:textSize="20sp"
+        />
 
     <TextView
         android:id="@+id/time_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
+        android:textSize="20sp"
         android:text="起床時刻" />
 
     <TextView

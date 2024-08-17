@@ -59,6 +59,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
@@ -107,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
     public ByDayOfTheWeekStr tBDQTWeek;
     public ByDayOfTheWeekStr ohBDQTWeek;
     /**
-     * 設定す津予定
+     * 設定する予定
      * */
     public String tEventName;             //  予定の名称
     public String tEventSoundName;           // アラーム名
@@ -585,7 +586,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * チェックボックスのトグル
+     * 対象/非対称設定画面の曜日チェックボックスのトグル
      * */
     public void setWeekCheck(CheckBox targetCB,Boolean checkState,String prefName ,
                              CheckBox cBox2, String prefName2,
@@ -914,12 +915,21 @@ public class MainActivity extends AppCompatActivity {
                 JSONArray jArray = new JSONArray(alarm_list);
                 for (int i = 0; i < jArray.length(); ++ i) {
                     JSONObject jsonObj = jArray.getJSONObject(i);
+                    Iterator<String> jKeys = jsonObj.keys();
                     AlarmItem alarmItem = new AlarmItem();
                     alarmItem.dateStr = jsonObj.getString("dateStr");
                     alarmItem.timeStr = jsonObj.getString("timeStr");
                     alarmItem.isTarget = jsonObj.getBoolean("isTarget");
                     alarmItem.DayOfTheWeek = jsonObj.getInt("DayOfTheWeek");
                     dbMsg += "\n[" +alarmItemList.size() + "]"+ alarmItem.dateStr+" " + alarmItem.timeStr+";" + alarmItem.isTarget+";" + dowDisplay.get(alarmItem.DayOfTheWeek);
+                    if(! jsonObj.isNull("comment")){
+                        alarmItem.comment = jsonObj.getString("comment");
+                        dbMsg += ",comment=" + alarmItem.comment;
+                    }
+                    if(! jsonObj.isNull("isNotChangeable")){
+                        alarmItem.isNotChangeable = jsonObj.getBoolean("isNotChangeable");
+                        dbMsg += ",isNotChangeable=" + alarmItem.isNotChangeable;
+                    }
                     alarmItemList.add(alarmItem);
                 }
                 dbMsg += ",alarmItemList=" + alarmItemList.size()+"件";
@@ -987,6 +997,14 @@ public class MainActivity extends AppCompatActivity {
                 listIndex++;
             }
             dbMsg += "("+listIndex+")";
+            AlarmItem oldItem=alarmItemList.get(listIndex);
+            dbMsg += oldItem.dateStr + " " + oldItem.timeStr + "=" +  oldItem.isTarget + ":" + oldItem.comment + ",isNotChangeable=" + oldItem.isNotChangeable;
+            if(! oldItem.isNotChangeable){
+
+            }
+
+
+
 
             myLog(TAG , dbMsg);
         } catch (Exception er) {

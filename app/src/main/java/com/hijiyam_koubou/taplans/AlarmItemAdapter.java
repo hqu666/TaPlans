@@ -122,7 +122,7 @@ public class AlarmItemAdapter extends ArrayAdapter<AlarmItem> {
         try {
             dbMsg += "[" + position + "]";
             AlarmItem gcItem = this.alarmItemList.get(position);
-            String wStr = gcItem.isTarget + ";" + gcItem.dateStr + " :" + gcItem.timeStr+ " " + gcItem.DayOfTheWeek;
+            String wStr = gcItem.isTarget + ";" + gcItem.dateStr + " :" + gcItem.timeStr+ " " + gcItem.DayOfTheWeek+ ";" + gcItem.comment;
           //  String wStr = gcItem.get("isTarget") + ";" + gcItem.get("dateStr") + " :" + gcItem.get("timeStr")+ " " + gcItem.get("DayOfTheWeek");
             dbMsg += ";" + wStr;
             if( convertView == null ) {
@@ -140,6 +140,7 @@ public class AlarmItemAdapter extends ArrayAdapter<AlarmItem> {
             time_tv.setText(gcItem.timeStr);
             String dayOfTheWeek = this.pClass.dowDisplay.get(gcItem.DayOfTheWeek);
             dow_tv.setText(dayOfTheWeek);
+            memo_tv.setText(gcItem.comment);
             if(gcItem.DayOfTheWeek == Calendar.SUNDAY){
                 dbMsg += "[日曜日]";
                 convertView.setBackgroundColor(rBGSunDay);
