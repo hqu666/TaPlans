@@ -473,15 +473,17 @@ public class MainActivity extends AppCompatActivity {
                                     MainActivity.this.prefValue+= minute + "";
                                 }
                                 dbMsg += " >> "+ MainActivity.this.prefValue;
-                                dbMsg += " >prefName> "+ MainActivity.this.prefName + "へ記録";
-                                setStrPref(MainActivity.this.prefName,MainActivity.this.prefValue);
-                                MainActivity.this.targetButton.setText(MainActivity.this.prefValue);
-
+                                if(!prefName.isEmpty()){
+                                    dbMsg += " >prefName> "+ MainActivity.this.prefName + "へ記録";
+                                    setStrPref(MainActivity.this.prefName,MainActivity.this.prefValue);
+                                }
+                                if(targetButton != null){
+                                    MainActivity.this.targetButton.setText(MainActivity.this.prefValue);
+                                }
                                 myLog(TAG , dbMsg);
                             } catch (Exception er) {
                                 myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
                             }
-                            //    Log.d(“test”,String.format(“%02d:%02d”, hourOfDay,minute));
                         }
                     },
                     hour,minute,true);
@@ -983,15 +985,16 @@ public class MainActivity extends AppCompatActivity {
     /**
      * 指定された日のアラームを更新
      * */
-    public void renewalAlam(String dateStr) {
+    public AlarmItem renewalAlam(AlarmItem setItem) {
         //テキスト変更後
         final String TAG = "renewalAlam";
         String dbMsg = "[MainActivity]";
+        AlarmItem retItem = null;
         try {
-            dbMsg += ",更新対象=" + dateStr;
+            dbMsg += ",更新対象=" + setItem.dateStr;
             int listIndex = 0;
             for (AlarmItem rItem:alarmItemList) {
-                if(rItem.dateStr.equals(dateStr)){
+                if(rItem.dateStr.equals(setItem.dateStr)){
                     break;
                 }
                 listIndex++;
@@ -1000,16 +1003,15 @@ public class MainActivity extends AppCompatActivity {
             AlarmItem oldItem=alarmItemList.get(listIndex);
             dbMsg += oldItem.dateStr + " " + oldItem.timeStr + "=" +  oldItem.isTarget + ":" + oldItem.comment + ",isNotChangeable=" + oldItem.isNotChangeable;
             if(! oldItem.isNotChangeable){
-
+                alarmItemList.set(listIndex,setItem);
             }
-
-
-
-
+            retItem = alarmItemList.get(listIndex);
+            dbMsg += "\n" + retItem.dateStr + " " + retItem.timeStr + ":" + retItem.comment + ":" + retItem.isNotChangeable;
             myLog(TAG , dbMsg);
         } catch (Exception er) {
             myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
         }
+        return retItem;
     }
 
 
@@ -1534,7 +1536,7 @@ public class MainActivity extends AppCompatActivity {
 //                        android.Manifest.permission.WRITE_SETTINGS
             };
             checkMyPermission(PERMISSIONS);
-              myLog(TAG, dbMsg);
+            myLog(TAG, dbMsg);
         } catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);
         }

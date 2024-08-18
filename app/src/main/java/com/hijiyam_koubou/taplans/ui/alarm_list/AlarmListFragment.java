@@ -3,6 +3,7 @@ package com.hijiyam_koubou.taplans.ui.alarm_list;
 import static androidx.databinding.DataBindingUtil.setContentView;
 
 import android.annotation.SuppressLint;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +15,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -56,7 +59,6 @@ public class AlarmListFragment extends Fragment implements AdapterView.OnItemCli
                 );
                 alarmLV.setAdapter(alarmItemAdapter);
                 dbMsg += ",getCount=" + alarmLV.getCount() + "件";
-                alarmLV.setOnItemClickListener(this);
             }else{
                 dbMsg += ">>リスト無し";
             }
@@ -67,13 +69,59 @@ public class AlarmListFragment extends Fragment implements AdapterView.OnItemCli
         return retInt;
     }
 
+
+    public AlarmItem setItem;
+    private int tIndex;
     @Override
     public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
         final String TAG = "onItemClick";
         String dbMsg = "[AlarmListFragment]";
         try {
             dbMsg += "[" + position + "]" + pClass.alarmItemList.get(position).dateStr;
-            pClass.renewalAlam(pClass.alarmItemList.get(position).dateStr);
+            setItem = pClass.alarmItemList.get(position);
+            dbMsg += setItem.dateStr + " " + setItem.timeStr + ":" + setItem.isTarget;
+            tIndex=position;
+        //    pClass.showTimePicker("",wItem.timeStr,null);
+            String[] hourMinitStrs = setItem.timeStr.split(":");
+            int hour = Integer.parseInt(hourMinitStrs[0].trim());
+            int minute = Integer.parseInt(hourMinitStrs[1].trim());
+            TimePickerDialog dialog = new TimePickerDialog(
+                    getActivity(),
+                    new TimePickerDialog.OnTimeSetListener(){
+                        @Override
+                        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                            //                    final String TAG = "onTextChanged";
+                            final String TAG = "onTimeSet";
+                            String dbMsg = "[onItemClick]";
+                            try {
+                                String wTimeStr = hourOfDay + ":" + minute;
+                                if(hourOfDay<10){
+                                    wTimeStr = "0" + hourOfDay;
+                                }
+                                if(minute<10){
+                                    wTimeStr += ":0" + hourOfDay;
+                                }else{
+                                     wTimeStr += ":" + minute;
+                                }
+                                dbMsg += "指定された時刻="+ ","+ wTimeStr;
+                                setItem.timeStr =wTimeStr;
+                                setItem.isNotChangeable =true;
+                                AlarmItem retItem = pClass.renewalAlam(setItem);
+                                String tStr = retItem.dateStr + " " + retItem.timeStr + ":" + retItem.comment + ":変更不可" + retItem.isNotChangeable;
+//                                Thread.sleep(1000);
+                                Toast.makeText(getActivity(), tStr, Toast.LENGTH_LONG ).show();
+                                Integer lSize = readAlarmList(pClass.alarmItemList);
+                                dbMsg += ",作成したリストの行数=" + lSize;
+                                alarmLV.setSelection(tIndex);
+                                myLog(TAG , dbMsg);
+                            } catch (Exception er) {
+                                myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+                            }
+                        }
+                    },
+                    hour,minute,true);
+            dialog.show();
+
             myLog(TAG , dbMsg);
         } catch (Exception er) {
             myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
@@ -101,6 +149,7 @@ public class AlarmListFragment extends Fragment implements AdapterView.OnItemCli
             dbMsg += ",alarmLVId=" + alarmLVId;
             Integer lSize = readAlarmList(pClass.alarmItemList);
             dbMsg += ",作成したリストの行数=" + lSize;
+            alarmLV.setOnItemClickListener(this);
 
             final TextView textView = binding.textAlarmList;
             galleryViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
