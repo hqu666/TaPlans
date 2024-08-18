@@ -920,14 +920,32 @@ public class MainActivity extends AppCompatActivity {
                     Iterator<String> jKeys = jsonObj.keys();
                     AlarmItem alarmItem = new AlarmItem();
                     alarmItem.dateStr = jsonObj.getString("dateStr");
-                    alarmItem.timeStr = jsonObj.getString("timeStr");
+                    alarmItem.timeStr = jsonObj.getString("timeStr").trim();
                     alarmItem.isTarget = jsonObj.getBoolean("isTarget");
                     alarmItem.DayOfTheWeek = jsonObj.getInt("DayOfTheWeek");
                     dbMsg += "\n[" +alarmItemList.size() + "]"+ alarmItem.dateStr+" " + alarmItem.timeStr+";" + alarmItem.isTarget+";" + dowDisplay.get(alarmItem.DayOfTheWeek);
+                    boolean isRepair = false;
                     if(! jsonObj.isNull("comment")){
                         alarmItem.comment = jsonObj.getString("comment");
                         dbMsg += ",comment=" + alarmItem.comment;
+                        if(alarmItem.comment.isEmpty()){
+                            isRepair = true;
+                        }
+                    }else{
+                        isRepair = true;
                     }
+                    if(isRepair){
+                        dbMsg += ",isTarget="+alarmItem.isTarget;
+                        if(alarmItem.isTarget){
+                            alarmItem.timeStr = targetWakeUpTime.get(alarmItem.DayOfTheWeek);
+                            alarmItem.comment = tEventName;
+                        }else{
+                            alarmItem.timeStr = otherWakeUpTime.get(alarmItem.DayOfTheWeek);
+                            alarmItem.comment = ohEventName;
+                        }
+                        dbMsg += ",timeStr="+alarmItem.timeStr+ ",comment="+alarmItem.comment;
+                    }
+
                     if(! jsonObj.isNull("isNotChangeable")){
                         alarmItem.isNotChangeable = jsonObj.getBoolean("isNotChangeable");
                         dbMsg += ",isNotChangeable=" + alarmItem.isNotChangeable;
@@ -981,6 +999,38 @@ public class MainActivity extends AppCompatActivity {
         return retItem;
     }
 
+    /**
+     * アラーム情報の欠損補正
+     * */
+//    public AlarmItem repairAlamItem(AlarmItem setItem) {
+//        //テキスト変更後
+//        final String TAG = "repairAlamItem";
+//        String dbMsg = "[MainActivity]";
+//        AlarmItem retItem = null;
+//        try {
+//            dbMsg += ",更新対象=" + setItem.dateStr;
+//            int listIndex = 0;
+//            for (AlarmItem rItem:alarmItemList) {
+//                if(rItem.dateStr.equals(setItem.dateStr)){
+//                    break;
+//                }
+//                listIndex++;
+//            }
+//            dbMsg += "("+listIndex+")";
+//            AlarmItem oldItem=alarmItemList.get(listIndex);
+//            dbMsg += oldItem.dateStr + " " + oldItem.timeStr + "=" +  oldItem.isTarget + ":" + oldItem.comment + ",isNotChangeable=" + oldItem.isNotChangeable;
+//            if( oldItem.comment.isEmpty()){
+//                alarmItemList.set(listIndex,setItem);
+//            }
+//            retItem = alarmItemList.get(listIndex);
+//            dbMsg += "\n" + retItem.dateStr + " " + retItem.timeStr + ":" + retItem.comment + ":" + retItem.isNotChangeable;
+//            myLog(TAG , dbMsg);
+//        } catch (Exception er) {
+//            myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+//        }
+//        return retItem;
+//    }
+//
 
     /**
      * 指定された日のアラームを更新
