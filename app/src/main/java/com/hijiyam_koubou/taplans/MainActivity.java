@@ -999,40 +999,7 @@ public class MainActivity extends AppCompatActivity {
         return retItem;
     }
 
-    /**
-     * アラーム情報の欠損補正
-     * */
-//    public AlarmItem repairAlamItem(AlarmItem setItem) {
-//        //テキスト変更後
-//        final String TAG = "repairAlamItem";
-//        String dbMsg = "[MainActivity]";
-//        AlarmItem retItem = null;
-//        try {
-//            dbMsg += ",更新対象=" + setItem.dateStr;
-//            int listIndex = 0;
-//            for (AlarmItem rItem:alarmItemList) {
-//                if(rItem.dateStr.equals(setItem.dateStr)){
-//                    break;
-//                }
-//                listIndex++;
-//            }
-//            dbMsg += "("+listIndex+")";
-//            AlarmItem oldItem=alarmItemList.get(listIndex);
-//            dbMsg += oldItem.dateStr + " " + oldItem.timeStr + "=" +  oldItem.isTarget + ":" + oldItem.comment + ",isNotChangeable=" + oldItem.isNotChangeable;
-//            if( oldItem.comment.isEmpty()){
-//                alarmItemList.set(listIndex,setItem);
-//            }
-//            retItem = alarmItemList.get(listIndex);
-//            dbMsg += "\n" + retItem.dateStr + " " + retItem.timeStr + ":" + retItem.comment + ":" + retItem.isNotChangeable;
-//            myLog(TAG , dbMsg);
-//        } catch (Exception er) {
-//            myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
-//        }
-//        return retItem;
-//    }
-//
-
-    /**
+     /**
      * 指定された日のアラームを更新
      * */
     public AlarmItem renewalAlam(AlarmItem setItem) {

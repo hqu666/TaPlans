@@ -52,7 +52,18 @@ dependencies {
 
     implementation libs.preference
     implementation libs.support.annotations
+    implementation libs.easypermissions
 
+    implementation libs.google.api.client
+    implementation libs.play.services.auth
+    implementation libs.google.oauth.client.jetty
+    implementation libs.google.api.services.calendar
+    implementation(libs.google.api.client.android) {
+        exclude group: 'org.apache.httpcomponents'
+    }
+    implementation(libs.google.api.services.calendar.vv3rev2141220) {
+        exclude group: 'org.apache.httpcomponents'
+    }
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core

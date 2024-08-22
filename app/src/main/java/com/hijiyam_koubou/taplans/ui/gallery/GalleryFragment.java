@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,17 +20,28 @@ public class GalleryFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        GalleryViewModel galleryViewModel =
-                new ViewModelProvider(this).get(GalleryViewModel.class);
+        final String TAG = "onCreateView";
+        String dbMsg = "[GalleryFragment]";
+        View root = null;
+        try {
+            GalleryViewModel galleryViewModel =
+                    new ViewModelProvider(this).get(GalleryViewModel.class);
 
-        binding = FragmentGalleryBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
+            binding = FragmentGalleryBinding.inflate(inflater, container, false);
+            root = binding.getRoot();
 
-        final TextView textView = binding.textGallery;
-        galleryViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+            ListView gCalLV = binding.gCalLV;
+            
+            
+
+            final TextView textView = binding.textGallery;
+            galleryViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+            myLog(TAG , dbMsg);
+        } catch (Exception er) {
+            myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
+        }
         return root;
     }
-
 
     /**
      * 中身のFragmentがひゃきされた時
@@ -58,3 +70,37 @@ public class GalleryFragment extends Fragment {
         UTIL.myErrorLog(TAG , dbMsg);
     }
 }
+
+/*
+①C:\Program Files\Android\Android Studio\jbr\bin\keytool.exe にたどり着くには
+PS C:\> cd "C:\Program Files\Android\Android Studio\jbr\bin"
+
+
+ .\keytool -exportcert -alias androiddebugkey -keystore path-to-debug-or-production
+
+ -keystore -list -v
+
+ .\keytool -exportcert -alias androiddebugkey -keystore path-to-debug-or-production
+
+
+ .\keytool -list -v -keystore ~/.android/debug.keystore
+
+
+
+
+
+debug.keystoreの作成
+ .\keytool -genkey -v -keystore android/app/debug.keystore -storepass android -alias androiddebugkey -keypass android -dname "CN=Android Debug,O=Android,C=US"
+ -keyalgオプションを指定する必要があります。
+
+
+
+名前      My Project 64394
+ID      enduring-palace-433014-e0
+API キー  AIzaSyCh7OlwR7eXklfuw8ip1R_Sk9zevNvZo1g
+パッケージ名  com.hijiyam_koubou.taplans
+APIキー   AIzaSyCh7OlwR7eXklfuw8ip1R_Sk9zevNvZo1g
+*
+
+
+* */
