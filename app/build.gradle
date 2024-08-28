@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 
 android {
@@ -49,24 +50,31 @@ dependencies {
     implementation libs.lifecycle.viewmodel.ktx
     implementation libs.navigation.fragment
     implementation libs.navigation.ui
+    implementation libs.easypermissions.v300
 
     implementation libs.preference
     implementation libs.support.annotations
     implementation libs.easypermissions
 
-    implementation libs.google.api.client
-    implementation libs.play.services.auth
-    implementation libs.google.oauth.client.jetty
-    implementation libs.google.api.services.calendar
-    implementation(libs.google.api.client.android) {
-        exclude group: 'org.apache.httpcomponents'
-    }
-    implementation(libs.google.api.services.calendar.vv3rev2141220) {
-        exclude group: 'org.apache.httpcomponents'
-    }
+//    implementation libs.play.services.auth
+////    implementation libs.play.services.auth.v1600    //    implementation 'com.google.android.gms:play-services-auth:16.0.0'
+////    implementation libs.play.services.auth.v1900//    implementation 'com.google.android.gms:play-services-auth:19.0.0'
+//    implementation libs.play.services.identity
+//    implementation libs.google.api.client
+//    implementation libs.google.oauth.client.jetty
+//
+//    implementation libs.google.api.services.calendar
+//    implementation libs.google.http.client.gson     //    implementation 'com.google.http-client:google-http-client-gson:1.26.0'
+//    implementation(libs.google.api.client.android) {
+//        exclude group: 'org.apache.httpcomponents'
+//    }
+//    implementation(libs.google.api.services.calendar.vv3rev2141220) {
+//        exclude group: 'org.apache.httpcomponents'
+//    }
+    
     testImplementation libs.junit
-    androidTestImplementation libs.ext.junit
-    androidTestImplementation libs.espresso.core
+    implementation libs.ext.junit
+    implementation libs.espresso.core
 
 
 }
