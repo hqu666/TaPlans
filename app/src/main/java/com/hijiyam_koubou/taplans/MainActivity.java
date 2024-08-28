@@ -1,8 +1,10 @@
 package com.hijiyam_koubou.taplans;
 
 import android.Manifest;
+import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
@@ -13,6 +15,7 @@ import android.database.Cursor;
 import android.media.RingtoneManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -23,6 +26,9 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.TimePicker;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
@@ -39,6 +45,15 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GooglePlayServicesAvailabilityIOException;
+import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.util.ExponentialBackOff;
+import com.google.api.services.calendar.model.CalendarListEntry;
 import com.hijiyam_koubou.taplans.databinding.ActivityMainBinding;
 
 import org.json.JSONArray;
@@ -51,8 +66,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.security.GeneralSecurityException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
@@ -61,6 +78,7 @@ import java.util.Map;
 
 //import com.google.api.services.calendar.model.Calendar;
 
+import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
 
@@ -989,6 +1007,223 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
     private static final String[] SCOPES = {Manifest.permission_group.CALENDAR};
 
 
+    GoogleAccountCredential mCredential;
+
+    /**
+     * Google Calendar API の呼び出しの事前条件を確認し、条件を満たしていればAPIを呼び出す。
+     *
+     * 事前条件：
+     * - 有効な Google Play Services がインストールされていること
+     * - 有効な Google アカウントが選択されていること
+     * - 端末がインターネット接続可能であること
+     *
+     * 事前条件を満たしていない場合には、ユーザーに説明を表示する。
+     */
+    private void getResultsFromApi() throws GeneralSecurityException, IOException {
+        if (!isGooglePlayServicesAvailable()) {
+            // Google Play Services が無効な場合
+            acquireGooglePlayServices();
+        }
+        else if (mCredential.getSelectedAccountName() == null) {
+            // 有効な Google アカウントが選択されていない場合
+            chooseAccount();
+        }
+        else if (!isDeviceOnline()) {
+            // 端末がインターネットに接続されていない場合
+            mOutputText.setText("No network connection available.");
+        }
+        else {
+            new MakeRequestTask(mCredential).execute();
+        }
+    }
+
+    /**
+     * 端末に Google Play Services がインストールされ、アップデートされているか否かを確認する。
+     *
+     * @return 利用可能な Google Play Services がインストールされ、アップデートされている場合にはtrueを、
+     * そうでない場合にはfalseを返す。
+     */
+    private boolean isGooglePlayServicesAvailable() {
+        GoogleApiAvailability apiAvailability =
+                GoogleApiAvailability.getInstance();
+        final int connectionStatusCode =
+                apiAvailability.isGooglePlayServicesAvailable(this);
+        return connectionStatusCode == ConnectionResult.SUCCESS;
+    }
+
+
+    /**
+     * ユーザーにダイアログを表示して、Google Play Services を利用可能な状態に設定するように促す。
+     * ただし、ユーザーが解決できないようなエラーの場合には、ダイアログを表示しない。
+     */
+    private void acquireGooglePlayServices() {
+        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+        final int connectionStatusCode = apiAvailability.isGooglePlayServicesAvailable(this);
+        if (apiAvailability.isUserResolvableError(connectionStatusCode)) {
+            showGooglePlayServicesAvailabilityErrorDialog(connectionStatusCode);
+        }
+    }
+
+    /**
+     * 有効な Google Play Services が見つからないことをエラーダイアログで表示する。
+     *
+     * @param connectionStatusCode Google Play Services が無効であることを示すコード
+     */
+    void showGooglePlayServicesAvailabilityErrorDialog(final int connectionStatusCode) {
+        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+        Dialog dialog = apiAvailability.getErrorDialog(
+                MainActivity.this,
+                connectionStatusCode,
+                REQUEST_GOOGLE_PLAY_SERVICES
+        );
+        dialog.show();
+    }
+
+    /**
+     * Google　Calendar API の認証情報を使用するGoogleアカウントを設定する。
+     *
+     * 既にGoogleアカウント名が保存されていればそれを使用し、保存されていなければ、
+     * Googleアカウントの選択ダイアログを表示する。
+     *
+     * 認証情報を用いたGoogleアカウントの設定には、"GET_ACCOUNTS"パーミッションを
+     * 必要とするため、必要に応じてユーザーに"GET_ACCOUNTS"パーミッションを要求する
+     * ダイアログが表示する。
+     */
+    @AfterPermissionGranted(REQUEST_PERMISSION_GET_ACCOUNTS)
+    private void chooseAccount() throws GeneralSecurityException, IOException {
+        // "GET_ACCOUNTS"パーミッションを取得済みか確認する
+        if (EasyPermissions.hasPermissions(this, Manifest.permission.GET_ACCOUNTS)) {
+            // SharedPreferencesから保存済みGoogleアカウントを取得する
+            String accountName = getPreferences(Context.MODE_PRIVATE)
+                    .getString(PREF_ACCOUNT_NAME, null);
+            if (accountName != null) {
+                mCredential.setSelectedAccountName(accountName);
+                getResultsFromApi();
+            } else {
+                // Googleアカウントの選択を表示する
+                // GoogleAccountCredentialのアカウント選択画面を使用する
+                startActivityForResult(
+                        mCredential.newChooseAccountIntent(),
+                        REQUEST_ACCOUNT_PICKER);
+            }
+        }
+        else {
+            // ダイアログを表示して、ユーザーに"GET_ACCOUNTS"パーミッションを要求する
+            EasyPermissions.requestPermissions(
+                    this,
+                    "This app needs to access your Google account (via Contacts).",
+                    REQUEST_PERMISSION_GET_ACCOUNTS,
+                    Manifest.permission.GET_ACCOUNTS);
+        }
+    }
+
+    /**
+     * 非同期で　Google Calendar API の呼び出しを行うクラス。
+     */
+    private class MakeRequestTask extends AsyncTask<Void, Void, String> {
+
+        private com.google.api.services.calendar.Calendar mService = null;
+        private Exception mLastError = null;
+
+        public MakeRequestTask(GoogleAccountCredential credential) throws GeneralSecurityException, IOException {
+           // HttpTransport transport = AndroidHttp.newCompatibleTransport();           //org
+            HttpTransport transport = GoogleNetHttpTransport.newTrustedTransport();
+            JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+            mService = new com.google.api.services.calendar.Calendar
+                    .Builder(transport, jsonFactory, credential)
+                    .setApplicationName("Google Calendar API Android Quickstart")
+                    .build();
+        }
+
+        /**
+         * Google Calendar API を呼び出すバックグラウンド処理。
+         *
+         * @param params 引数は不要
+         */
+        @Override
+        protected String doInBackground(Void... params) {
+            try {
+                return createCalendar();
+            } catch (Exception e) {
+                mLastError = e;
+                cancel(true);
+                return null;
+            }
+        }
+
+        /**
+         * 選択されたGoogleアカウントに対して、新規にカレンダーを追加する。
+         *
+         * @return 作成したカレンダーのID
+         * @throws IOException
+         */
+        private String createCalendar() throws IOException {
+            // 新規にカレンダーを作成する
+            com.google.api.services.calendar.model.Calendar calendar = new com.google.api.services.calendar.model.Calendar();
+            // カレンダーにタイトルを設定する
+            calendar.setSummary("CalendarTitle");
+            // カレンダーにタイムゾーンを設定する
+            calendar.setTimeZone("Asia/Tokyo");
+
+            // 作成したカレンダーをGoogleカレンダーに追加する
+            com.google.api.services.calendar.model.Calendar createdCalendar = mService.calendars().insert(calendar).execute();
+            String calendarId = createdCalendar.getId();
+
+            // カレンダー一覧から新規に作成したカレンダーのエントリを取得する
+            CalendarListEntry calendarListEntry = mService.calendarList().get(calendarId).execute();
+
+            // カレンダーのデフォルトの背景色を設定する
+            calendarListEntry.setBackgroundColor("#ff0000");
+
+            // カレンダーのデフォルトの背景色をGoogleカレンダーに反映させる
+            CalendarListEntry updatedCalendarListEntry =
+                    mService.calendarList()
+                            .update(calendarListEntry.getId(), calendarListEntry)
+                            .setColorRgbFormat(true)
+                            .execute();
+
+            // 新規に作成したカレンダーのIDを返却する
+            return calendarId;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            mOutputText.setText("");
+            mProgress.show();
+        }
+
+        @Override
+        protected void onPostExecute(String output) {
+            mProgress.hide();
+            if (output == null || output.isEmpty()) {
+                mOutputText.setText("No results returned.");
+            } else {
+                mOutputText.setText("Calendar created using the Google Calendar API: " + output);
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            mProgress.hide();
+            if (mLastError != null) {
+                if (mLastError instanceof GooglePlayServicesAvailabilityIOException) {
+                    showGooglePlayServicesAvailabilityErrorDialog(
+                            ((GooglePlayServicesAvailabilityIOException) mLastError)
+                                    .getConnectionStatusCode());
+                } else if (mLastError instanceof UserRecoverableAuthIOException) {
+                    startActivityForResult(
+                            ((UserRecoverableAuthIOException) mLastError).getIntent(),
+                            MainActivity.REQUEST_AUTHORIZATION);
+                } else {
+                    mOutputText.setText("The following error occurred:\n" + mLastError.getMessage());
+                }
+            } else {
+                mOutputText.setText("Request cancelled.");
+            }
+        }
+    }
+
+
     /**
      * アカウント選択や認証など、呼び出し先のActivityから戻ってきた際に呼び出される。
      *
@@ -1003,38 +1238,56 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
             Intent data
     ) {
         super.onActivityResult(requestCode, resultCode, data);
-//        switch (requestCode) {
-//            case REQUEST_GOOGLE_PLAY_SERVICES:
-//                if (resultCode != RESULT_OK) {
-//                    mOutputText.setText(
-//                            "This app requires Google Play Services. Please install " +
-//                                    "Google Play Services on your device and relaunch this app.");
-//                } else {
-//                    getResultsFromApi();
-//                }
-//                break;
-//
-//            case REQUEST_ACCOUNT_PICKER:
-//                if (resultCode == RESULT_OK && data != null && data.getExtras() != null) {
-//                  //  AccountManager am = AccountManager.get(this);
-//                    String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-//                    if (accountName != null) {
-//                        SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
-//                        SharedPreferences.Editor editor = settings.edit();
-//                        editor.putString(PREF_ACCOUNT_NAME, accountName);
-//                        editor.apply();
-//                        mCredential.setSelectedAccountName(accountName);
-//                        getResultsFromApi();
-//                    }
-//                }
-//                break;
-//
-//            case REQUEST_AUTHORIZATION:
-//                if (resultCode == RESULT_OK) {
-//                    getResultsFromApi();
-//                }
-//                break;
-//        }
+        switch (requestCode) {
+            case REQUEST_GOOGLE_PLAY_SERVICES:
+                if (resultCode != RESULT_OK) {
+                    mOutputText.setText(
+                            "This app requires Google Play Services. Please install " +
+                                    "Google Play Services on your device and relaunch this app.");
+                } else {
+                    try {
+                        getResultsFromApi();
+                    } catch (GeneralSecurityException e) {
+                        throw new RuntimeException(e);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                break;
+
+            case REQUEST_ACCOUNT_PICKER:
+                if (resultCode == RESULT_OK && data != null && data.getExtras() != null) {
+                  //  AccountManager am = AccountManager.get(this);
+                    String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+                    if (accountName != null) {
+                        SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = settings.edit();
+                        editor.putString(PREF_ACCOUNT_NAME, accountName);
+                        editor.apply();
+                        mCredential.setSelectedAccountName(accountName);
+                        try {
+                            getResultsFromApi();
+                        } catch (GeneralSecurityException e) {
+                            throw new RuntimeException(e);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+                break;
+
+            case REQUEST_AUTHORIZATION:
+                if (resultCode == RESULT_OK) {
+                    try {
+                        getResultsFromApi();
+                    } catch (GeneralSecurityException e) {
+                        throw new RuntimeException(e);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                break;
+        }
     }
 
     /**
@@ -1050,8 +1303,7 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
     public void onRequestPermissionsResult(
             int requestCode,
             @NonNull String[] permissions,
-            @NonNull int[] grantResults
-    ) {
+            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
@@ -1514,12 +1766,12 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
 //                dbMsg += ",alarmItemList=" + alarmItemList.size() + "件";
 //            }
             loadAlarms();
-//            // Google Calendar API の呼び出しのための認証情報を初期化する                          202408
-//            mCredential = GoogleAccountCredential.usingOAuth2(
-//                    getApplicationContext(),
-//                    Arrays.asList(SCOPES)
-//            ).setBackOff(new ExponentialBackOff());
-//            dbMsg += ",mCredential=" + mCredential.toString();
+            // Google Calendar API の呼び出しのための認証情報を初期化する                          202408
+            mCredential = GoogleAccountCredential.usingOAuth2(
+                    getApplicationContext(),
+                    Arrays.asList(SCOPES)
+            ).setBackOff(new ExponentialBackOff());
+            dbMsg += ",mCredential=" + mCredential.toString();
 
 //            DrawerLayout drawer = binding.drawerLayout;
 //            NavigationView navigationView = binding.navView;

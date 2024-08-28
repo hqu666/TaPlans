@@ -3,12 +3,11 @@ agp = "8.5.2"
 #easypermissions = "3.0.0"
 easypermissionsVersion = "3.0.0"
 #googleApiClient = "2.6.0"
-#googleApiClientAndroid = "1.22.0"
-#googleApiServicesCalendar = "v3-rev20220715-2.0.0"
 #googleApiServicesCalendarVersion = "v3-rev214-1.22.0"
-#googleHttpClientGson = "1.45.0"
-#googleOauthClientJetty = "2.6.0"
-#googlePlayServicesAuth = "21.2.0"
+googleApiClientAndroid = "2.6.0"
+#googleApiClientAndroid = "1.22.0"
+googleApiServicesCalendar = "v3-rev214-1.22.0"
+#googleApiServicesCalendar = "v3-rev20220715-2.0.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
@@ -19,20 +18,17 @@ lifecycleLivedataKtx = "2.8.4"
 lifecycleViewmodelKtx = "2.8.4"
 navigationFragment = "2.7.7"
 navigationUi = "2.7.7"
-#playServicesAuth = "21.2.0"
-#playServicesAuthVersion = "21.2.0"
+playServicesAuth = "21.2.0"
 preference = "1.2.1"
 supportAnnotations = "28.0.0"
 
 [libraries]
 easypermissions = { module = "pub.devrel:easypermissions", version.ref = "easypermissionsVersion" }
 easypermissions-v300 = { module = "pub.devrel:easypermissions", version.ref = "easypermissionsVersion" }
-#google-api-client = { module = "com.google.api-client:google-api-client", version.ref = "googleOauthClientJetty" }
-#google-api-client-android = { module = "com.google.api-client:google-api-client-android", version.ref = "googleApiClient" }
-#google-api-services-calendar = { module = "com.google.apis:google-api-services-calendar", version.ref = "googleApiServicesCalendarVersion" }
-#google-api-services-calendar-vv3rev2141220 = { module = "com.google.apis:google-api-services-calendar", version.ref = "googleApiServicesCalendarVersion" }
-#google-http-client-gson = { module = "com.google.http-client:google-http-client-gson", version.ref = "googleHttpClientGson" }
-#google-oauth-client-jetty = { module = "com.google.oauth-client:google-oauth-client-jetty", version = "1.36.0" }
+google-api-client-android = { module = "com.google.api-client:google-api-client-android", version.ref = "googleApiClientAndroid" }
+# version.ref = "googleApiClient" }ではない
+google-api-services-calendar = { module = "com.google.apis:google-api-services-calendar", version.ref = "googleApiServicesCalendar" }
+#version.ref = "googleApiServicesCalendarVersion" }ではない
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -43,11 +39,7 @@ lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-lived
 lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
 navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigationFragment" }
 navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigationUi" }
-#play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
-#play-services-auth-v1600 = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuthVersion" }
-#play-services-auth-v1900 = { module = "com.google.android.gms:play-services-auth", version.ref = "googlePlayServicesAuth" }
-#play-services-identity = { module = "com.google.android.gms:play-services-identity", version = "18.1.0" }
-#//21.1.0
+play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
 preference = { module = "androidx.preference:preference", version.ref = "preference" }
 support-annotations = { group = "com.android.support", name = "support-annotations", version.ref = "supportAnnotations" }
 

@@ -54,24 +54,18 @@ dependencies {
 
     implementation libs.preference
     implementation libs.support.annotations
-    implementation libs.easypermissions
+    implementation libs.easypermissions                                    //    compile 'pub.devrel:easypermissions:0.1.5'
 
-//    implementation libs.play.services.auth
-////    implementation libs.play.services.auth.v1600    //    implementation 'com.google.android.gms:play-services-auth:16.0.0'
-////    implementation libs.play.services.auth.v1900//    implementation 'com.google.android.gms:play-services-auth:19.0.0'
-//    implementation libs.play.services.identity
-//    implementation libs.google.api.client
-//    implementation libs.google.oauth.client.jetty
-//
-//    implementation libs.google.api.services.calendar
-//    implementation libs.google.http.client.gson     //    implementation 'com.google.http-client:google-http-client-gson:1.26.0'
-//    implementation(libs.google.api.client.android) {
-//        exclude group: 'org.apache.httpcomponents'
-//    }
-//    implementation(libs.google.api.services.calendar.vv3rev2141220) {
-//        exclude group: 'org.apache.httpcomponents'
-//    }
-    
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation libs.play.services.auth                    //    compile 'com.google.android.gms:play-services-auth:9.6.1'
+    implementation(libs.google.api.client.android) {          //    compile('com.google.api-client:google-api-client-android:1.22.0') {
+        exclude group: 'org.apache.httpcomponents'
+    }
+    implementation(libs.google.api.services.calendar) {       //    compile('com.google.apis:google-api-services-calendar:v3-rev214-1.22.0') {
+                                                                //    implementation(libs.google.api.services.calendar.vv3rev2141220) {
+        exclude group: 'org.apache.httpcomponents'
+    }
+
     testImplementation libs.junit
     implementation libs.ext.junit
     implementation libs.espresso.core
