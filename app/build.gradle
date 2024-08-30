@@ -1,4 +1,7 @@
 plugins {
+//    id 'com.android.application' version '8.5.2' apply false
+//    id 'com.android.library' version '8.5.2' apply false
+//    id 'org.jetbrains.kotlin.android' version '1.9.23' apply false
     alias(libs.plugins.android.application)
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
@@ -39,6 +42,12 @@ android {
     dataBinding {
         enabled true
     }
+    buildToolsVersion '34.0.0'
+}
+
+//構成全体（またはすべての構成）から依存関係を除外
+configurations {
+    all*.exclude group: 'com.google.guava', module: 'guava-jdk5'
 }
 
 dependencies {
@@ -57,18 +66,24 @@ dependencies {
     implementation libs.easypermissions                                    //    compile 'pub.devrel:easypermissions:0.1.5'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
     implementation libs.play.services.auth                    //    compile 'com.google.android.gms:play-services-auth:9.6.1'
     implementation(libs.google.api.client.android) {          //    compile('com.google.api-client:google-api-client-android:1.22.0') {
         exclude group: 'org.apache.httpcomponents'
     }
+
     implementation(libs.google.api.services.calendar) {       //    compile('com.google.apis:google-api-services-calendar:v3-rev214-1.22.0') {
                                                                 //    implementation(libs.google.api.services.calendar.vv3rev2141220) {
         exclude group: 'org.apache.httpcomponents'
     }
 
-    testImplementation libs.junit
     implementation libs.ext.junit
-    implementation libs.espresso.core
+    // Adds a remote binary dependency only for local tests.
+    testImplementation libs.junit   //    testImplementation 'junit:junit:4.12'>>4.13.2
 
+    // Adds a remote binary dependency only for the instrumented test APK.
+    androidTestImplementation libs.espresso.core
+//    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'>>3.6.1
+//    implementation libs.espresso.core
 
 }
