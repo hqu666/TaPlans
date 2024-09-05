@@ -59,9 +59,12 @@ dependencies {
     implementation libs.lifecycle.viewmodel.ktx
     implementation libs.navigation.fragment
     implementation libs.navigation.ui
-    implementation libs.easypermissions.v300
+//    implementation libs.easypermissions.v300
+// 追加
+//    implementation(libs.permissionutility)  //    implementation("com.github.milkcocoa0902:PermissionUtility:0.1.0")
 
     implementation libs.preference
+
     implementation libs.support.annotations
     implementation libs.easypermissions                                    //    compile 'pub.devrel:easypermissions:0.1.5'
 
@@ -76,7 +79,7 @@ dependencies {
                                                                 //    implementation(libs.google.api.services.calendar.vv3rev2141220) {
         exclude group: 'org.apache.httpcomponents'
     }
-
+//    implementation libs.play.services.ads        //    'com.google.android.gms:play-services-ads:7.5.0'
     implementation libs.ext.junit
     // Adds a remote binary dependency only for local tests.
     testImplementation libs.junit   //    testImplementation 'junit:junit:4.12'>>4.13.2

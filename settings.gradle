@@ -10,6 +10,7 @@ pluginManagement {
         maven { url 'https://maven.google.com' } // googleのmavenリポジトリにアクセスできるようにする
         mavenCentral()
         gradlePluginPortal()
+//        maven( url =  "https://jitpack.io" )        // 追加:パーミッション
     }
 }
 dependencyResolutionManagement {

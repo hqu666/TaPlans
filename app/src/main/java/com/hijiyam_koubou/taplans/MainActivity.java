@@ -36,6 +36,7 @@ import com.google.android.material.navigation.NavigationView;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -67,6 +68,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
+import java.security.Permission;
+import java.sql.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -75,6 +78,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 //import com.google.api.services.calendar.model.Calendar;
 
@@ -82,8 +86,8 @@ import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
 
-public class MainActivity extends AppCompatActivity  implements EasyPermissions.PermissionCallbacks {
-
+public class MainActivity extends AppCompatActivity  {
+// implements EasyPermissions.PermissionCallbacks
     public MainViewModel mainViewModel;
     public MyPreferences myPref;
     public SharedPreferences sharedPref;
@@ -547,6 +551,31 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
                 soundNameList.add(item.title);
             }
             dbMsg += "\n"+ soundItemArrayList.size() +"件=" ;
+
+
+//            if(alarmItemList == null){
+//                alarmItemList = new ArrayList<AlarmItem>();
+//                alarmItemList=mainViewModel.getList().getValue();
+//                dbMsg += ",alarmItemList=" + alarmItemList.size() + "件";
+//            }
+            // Google Calendar API の呼び出しのための認証情報を初期化する                          202408
+            mCredential = GoogleAccountCredential.usingOAuth2(
+                    getApplicationContext(),
+                    Arrays.asList(SCOPES)
+            ).setBackOff(new ExponentialBackOff());
+            dbMsg += "\nmCredential=" + mCredential.toString();
+
+//            DrawerLayout drawer = binding.drawerLayout;
+//            NavigationView navigationView = binding.navView;
+//            // Passing each menu ID as a set of Ids because each menu should be considered as top level destinations.
+//            mAppBarConfiguration = new AppBarConfiguration.Builder(
+//                    R.id.nav_home, R.id.nav_target_plan, R.id.nav_target_setting, R.id.nav_other_setting)
+//                    .setOpenableLayout(drawer)
+//                    .build();
+//          //  NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+//            NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
+//            NavigationUI.setupWithNavController(navigationView, navController);
+
             myLog(TAG , dbMsg);
         } catch (Exception er) {
             myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
@@ -1020,20 +1049,24 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
      * 事前条件を満たしていない場合には、ユーザーに説明を表示する。
      */
     private void getResultsFromApi() throws GeneralSecurityException, IOException {
-        if (!isGooglePlayServicesAvailable()) {
-            // Google Play Services が無効な場合
-            acquireGooglePlayServices();
-        }
-        else if (mCredential.getSelectedAccountName() == null) {
-            // 有効な Google アカウントが選択されていない場合
-            chooseAccount();
-        }
-        else if (!isDeviceOnline()) {
-            // 端末がインターネットに接続されていない場合
-            mOutputText.setText("No network connection available.");
-        }
-        else {
-            new MakeRequestTask(mCredential).execute();
+        final String TAG = "getResultsFromApi";
+        String dbMsg = "[MainActivity]";
+        try {
+            if (!isGooglePlayServicesAvailable()) {
+                dbMsg += "Google Play Services が無効";
+                acquireGooglePlayServices();
+            }else if (mCredential.getSelectedAccountName() == null) {
+                dbMsg += "有効な Google アカウントが選択されていない";
+                chooseAccount();
+            }else if (!isDeviceOnline()) {
+                dbMsg += "端末がインターネットに接続されていない";
+                mOutputText.setText("ネットワーク接続が利用できません。");            //No network connection available.
+            }else {
+                new MakeRequestTask(mCredential).execute();
+            }
+            myLog(TAG, dbMsg);
+        } catch (Exception e) {
+            myErrorLog(TAG ,  dbMsg + "で" + e);
         }
     }
 
@@ -1044,11 +1077,22 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
      * そうでない場合にはfalseを返す。
      */
     private boolean isGooglePlayServicesAvailable() {
-        GoogleApiAvailability apiAvailability =
-                GoogleApiAvailability.getInstance();
-        final int connectionStatusCode =
-                apiAvailability.isGooglePlayServicesAvailable(this);
-        return connectionStatusCode == ConnectionResult.SUCCESS;
+        final String TAG = "isGooglePlayServicesAvailable";
+        String dbMsg = "[MainActivity]";
+        boolean retBool = false;
+        int connectionStatusCode;
+        try {
+            GoogleApiAvailability apiAvailability =GoogleApiAvailability.getInstance();
+            connectionStatusCode =apiAvailability.isGooglePlayServicesAvailable(this);
+            dbMsg += ",connectionStatusCode=" + connectionStatusCode;
+            if(connectionStatusCode == ConnectionResult.SUCCESS){
+                retBool = true;
+            }
+            myLog(TAG, dbMsg);
+        } catch (Exception e) {
+            myErrorLog(TAG ,  dbMsg + "で" + e);
+        }
+         return retBool;
     }
 
 
@@ -1057,10 +1101,18 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
      * ただし、ユーザーが解決できないようなエラーの場合には、ダイアログを表示しない。
      */
     private void acquireGooglePlayServices() {
-        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
-        final int connectionStatusCode = apiAvailability.isGooglePlayServicesAvailable(this);
-        if (apiAvailability.isUserResolvableError(connectionStatusCode)) {
-            showGooglePlayServicesAvailabilityErrorDialog(connectionStatusCode);
+        final String TAG = "acquireGooglePlayServices";
+        String dbMsg = "[MainActivity]";
+        try {
+            GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+            final int connectionStatusCode = apiAvailability.isGooglePlayServicesAvailable(this);
+            dbMsg += ",connectionStatusCode=" + connectionStatusCode;
+            if (apiAvailability.isUserResolvableError(connectionStatusCode)) {
+                showGooglePlayServicesAvailabilityErrorDialog(connectionStatusCode);
+            }
+            myLog(TAG, dbMsg);
+        } catch (Exception e) {
+            myErrorLog(TAG ,  dbMsg + "で" + e);
         }
     }
 
@@ -1070,50 +1122,61 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
      * @param connectionStatusCode Google Play Services が無効であることを示すコード
      */
     void showGooglePlayServicesAvailabilityErrorDialog(final int connectionStatusCode) {
-        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
-        Dialog dialog = apiAvailability.getErrorDialog(
-                MainActivity.this,
-                connectionStatusCode,
-                REQUEST_GOOGLE_PLAY_SERVICES
-        );
-        dialog.show();
-    }
+
+        final String TAG = "showGooglePlayServicesAvailabilityErrorDialog";
+        String dbMsg = "[MainActivity]";
+        try {
+            GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+            Dialog dialog = apiAvailability.getErrorDialog(
+                    MainActivity.this,
+                    connectionStatusCode,
+                    REQUEST_GOOGLE_PLAY_SERVICES
+            );
+            Objects.requireNonNull(dialog).show();
+            myLog(TAG, dbMsg);
+        } catch (Exception e) {
+            myErrorLog(TAG ,  dbMsg + "で" + e);
+        }
+     }
 
     /**
      * Google　Calendar API の認証情報を使用するGoogleアカウントを設定する。
-     *
      * 既にGoogleアカウント名が保存されていればそれを使用し、保存されていなければ、
      * Googleアカウントの選択ダイアログを表示する。
-     *
      * 認証情報を用いたGoogleアカウントの設定には、"GET_ACCOUNTS"パーミッションを
      * 必要とするため、必要に応じてユーザーに"GET_ACCOUNTS"パーミッションを要求する
      * ダイアログが表示する。
      */
     @AfterPermissionGranted(REQUEST_PERMISSION_GET_ACCOUNTS)
     private void chooseAccount() throws GeneralSecurityException, IOException {
-        // "GET_ACCOUNTS"パーミッションを取得済みか確認する
-        if (EasyPermissions.hasPermissions(this, Manifest.permission.GET_ACCOUNTS)) {
-            // SharedPreferencesから保存済みGoogleアカウントを取得する
-            String accountName = getPreferences(Context.MODE_PRIVATE)
-                    .getString(PREF_ACCOUNT_NAME, null);
-            if (accountName != null) {
-                mCredential.setSelectedAccountName(accountName);
-                getResultsFromApi();
-            } else {
-                // Googleアカウントの選択を表示する
-                // GoogleAccountCredentialのアカウント選択画面を使用する
-                startActivityForResult(
-                        mCredential.newChooseAccountIntent(),
-                        REQUEST_ACCOUNT_PICKER);
+
+        final String TAG = "chooseAccount";
+        String dbMsg = "[MainActivity]";
+        try {
+            // "GET_ACCOUNTS"パーミッションを取得済みか確認する
+            if (EasyPermissions.hasPermissions(this, Manifest.permission.GET_ACCOUNTS)) {
+                // SharedPreferencesから保存済みGoogleアカウントを取得する
+                String accountName = getPreferences(Context.MODE_PRIVATE).getString(PREF_ACCOUNT_NAME, null);
+                dbMsg += ",accountName=" + accountName;
+                if (accountName != null) {
+                    mCredential.setSelectedAccountName(accountName);
+                    getResultsFromApi();
+                } else {
+                    // Googleアカウントの選択を表示する
+                    // GoogleAccountCredentialのアカウント選択画面を使用する
+                    startActivityForResult(mCredential.newChooseAccountIntent(),REQUEST_ACCOUNT_PICKER);
+                }
+            }else {
+                // ダイアログを表示して、ユーザーに"GET_ACCOUNTS"パーミッションを要求する
+                EasyPermissions.requestPermissions(
+                        this,
+                        "このアプリは、Google アカウント (連絡先経由) にアクセスする必要があります。",      //This app needs to access your Google account (via Contacts).
+                        REQUEST_PERMISSION_GET_ACCOUNTS,
+                        Manifest.permission.GET_ACCOUNTS);
             }
-        }
-        else {
-            // ダイアログを表示して、ユーザーに"GET_ACCOUNTS"パーミッションを要求する
-            EasyPermissions.requestPermissions(
-                    this,
-                    "This app needs to access your Google account (via Contacts).",
-                    REQUEST_PERMISSION_GET_ACCOUNTS,
-                    Manifest.permission.GET_ACCOUNTS);
+            myLog(TAG, dbMsg);
+        } catch (Exception e) {
+            myErrorLog(TAG ,  dbMsg + "で" + e);
         }
     }
 
@@ -1126,13 +1189,21 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
         private Exception mLastError = null;
 
         public MakeRequestTask(GoogleAccountCredential credential) throws GeneralSecurityException, IOException {
-           // HttpTransport transport = AndroidHttp.newCompatibleTransport();           //org
-            HttpTransport transport = GoogleNetHttpTransport.newTrustedTransport();
-            JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-            mService = new com.google.api.services.calendar.Calendar
-                    .Builder(transport, jsonFactory, credential)
-                    .setApplicationName("Google Calendar API Android Quickstart")
-                    .build();
+            final String TAG = "MakeRequestTask";
+            String dbMsg = "[MainActivity]";
+            try {
+                // HttpTransport transport = AndroidHttp.newCompatibleTransport();           //org
+                HttpTransport transport = GoogleNetHttpTransport.newTrustedTransport();
+                JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+                mService = new com.google.api.services.calendar.Calendar
+                        .Builder(transport, jsonFactory, credential)
+                        .setApplicationName("Google カレンダー API Android クイックスタート")       //Google Calendar API Android Quickstart
+                        .build();
+                myLog(TAG, dbMsg);
+            } catch (Exception e) {
+                myErrorLog(TAG ,  dbMsg + "で" + e);
+            }
+
         }
 
         /**
@@ -1142,13 +1213,19 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
          */
         @Override
         protected String doInBackground(Void... params) {
+            final String TAG = "doInBackground.MakeRequestTask";
+            String dbMsg = "[MainActivity]";
+            String retCale = null;
             try {
-                return createCalendar();
+                retCale = createCalendar();
+                dbMsg += ",retCale=" + retCale;
+                myLog(TAG, dbMsg);
             } catch (Exception e) {
                 mLastError = e;
                 cancel(true);
-                return null;
+                myErrorLog(TAG ,  dbMsg + "で" + e);
             }
+            return retCale;
         }
 
         /**
@@ -1158,38 +1235,52 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
          * @throws IOException
          */
         private String createCalendar() throws IOException {
-            // 新規にカレンダーを作成する
-            com.google.api.services.calendar.model.Calendar calendar = new com.google.api.services.calendar.model.Calendar();
-            // カレンダーにタイトルを設定する
-            calendar.setSummary("CalendarTitle");
-            // カレンダーにタイムゾーンを設定する
-            calendar.setTimeZone("Asia/Tokyo");
+            final String TAG = "createCalendar";
+            String dbMsg = "[MainActivity]";
+            String calendarId=null;
+            try {
+                // 新規にカレンダーを作成する
+                com.google.api.services.calendar.model.Calendar calendar = new com.google.api.services.calendar.model.Calendar();
+                // カレンダーにタイトルを設定する
+                calendar.setSummary("CalendarTitle");
+                // カレンダーにタイムゾーンを設定する
+                calendar.setTimeZone("Asia/Tokyo");
 
-            // 作成したカレンダーをGoogleカレンダーに追加する
-            com.google.api.services.calendar.model.Calendar createdCalendar = mService.calendars().insert(calendar).execute();
-            String calendarId = createdCalendar.getId();
+                // 作成したカレンダーをGoogleカレンダーに追加する
+                com.google.api.services.calendar.model.Calendar createdCalendar = mService.calendars().insert(calendar).execute();
+                calendarId = createdCalendar.getId();
+                dbMsg += ",calendarId=" + calendarId;
+                // カレンダー一覧から新規に作成したカレンダーのエントリを取得する
+                CalendarListEntry calendarListEntry = mService.calendarList().get(calendarId).execute();
 
-            // カレンダー一覧から新規に作成したカレンダーのエントリを取得する
-            CalendarListEntry calendarListEntry = mService.calendarList().get(calendarId).execute();
+                // カレンダーのデフォルトの背景色を設定する
+                calendarListEntry.setBackgroundColor("#ff0000");
 
-            // カレンダーのデフォルトの背景色を設定する
-            calendarListEntry.setBackgroundColor("#ff0000");
-
-            // カレンダーのデフォルトの背景色をGoogleカレンダーに反映させる
-            CalendarListEntry updatedCalendarListEntry =
-                    mService.calendarList()
-                            .update(calendarListEntry.getId(), calendarListEntry)
-                            .setColorRgbFormat(true)
-                            .execute();
-
-            // 新規に作成したカレンダーのIDを返却する
-            return calendarId;
+                // カレンダーのデフォルトの背景色をGoogleカレンダーに反映させる
+                CalendarListEntry updatedCalendarListEntry =
+                        mService.calendarList()
+                                .update(calendarListEntry.getId(), calendarListEntry)
+                                .setColorRgbFormat(true)
+                                .execute();
+                myLog(TAG, dbMsg);
+            } catch (Exception e) {
+                myErrorLog(TAG ,  dbMsg + "で" + e);
+            }
+            return calendarId;                // 新規に作成したカレンダーのIDを返却する
         }
 
         @Override
         protected void onPreExecute() {
             mOutputText.setText("");
             mProgress.show();
+
+            final String TAG = "onPreExecute.MakeRequestTask";
+            String dbMsg = "[MainActivity]";
+            try {
+                myLog(TAG, dbMsg);
+            } catch (Exception e) {
+                myErrorLog(TAG ,  dbMsg + "で" + e);
+            }
         }
 
         @Override
@@ -1200,112 +1291,43 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
             } else {
                 mOutputText.setText("Calendar created using the Google Calendar API: " + output);
             }
+
+            final String TAG = "onPostExecute.MakeRequestTask";
+            String dbMsg = "[MainActivity]";
+            try {
+                myLog(TAG, dbMsg);
+            } catch (Exception e) {
+                myErrorLog(TAG ,  dbMsg + "で" + e);
+            }
+
         }
 
         @Override
         protected void onCancelled() {
-            mProgress.hide();
-            if (mLastError != null) {
-                if (mLastError instanceof GooglePlayServicesAvailabilityIOException) {
-                    showGooglePlayServicesAvailabilityErrorDialog(
-                            ((GooglePlayServicesAvailabilityIOException) mLastError)
-                                    .getConnectionStatusCode());
-                } else if (mLastError instanceof UserRecoverableAuthIOException) {
-                    startActivityForResult(
-                            ((UserRecoverableAuthIOException) mLastError).getIntent(),
-                            MainActivity.REQUEST_AUTHORIZATION);
+            final String TAG = "onCancelled.MakeRequestTask";
+            String dbMsg = "[MainActivity]";
+            try {
+                mProgress.hide();
+                if (mLastError != null) {
+                    if (mLastError instanceof GooglePlayServicesAvailabilityIOException) {
+                        showGooglePlayServicesAvailabilityErrorDialog(
+                                ((GooglePlayServicesAvailabilityIOException) mLastError)
+                                        .getConnectionStatusCode());
+                    } else if (mLastError instanceof UserRecoverableAuthIOException) {
+                        startActivityForResult(
+                                ((UserRecoverableAuthIOException) mLastError).getIntent(),
+                                MainActivity.REQUEST_AUTHORIZATION);
+                    } else {
+                        mOutputText.setText("次のエラーが発生しました:\n" + mLastError.getMessage());       //The following error occurred
+                    }
                 } else {
-                    mOutputText.setText("The following error occurred:\n" + mLastError.getMessage());
+                    mOutputText.setText("リクエストはキャンセルされました。");                              //Request cancelled.
                 }
-            } else {
-                mOutputText.setText("Request cancelled.");
+                myLog(TAG, dbMsg);
+            } catch (Exception e) {
+                myErrorLog(TAG ,  dbMsg + "で" + e);
             }
         }
-    }
-
-
-    /**
-     * アカウント選択や認証など、呼び出し先のActivityから戻ってきた際に呼び出される。
-     *
-     * @param requestCode Activityの呼び出し時に指定したコード
-     * @param resultCode  呼び出し先のActivityでの処理結果を表すコード
-     * @param data        呼び出し先のActivityでの処理結果のデータ
-     */
-    @Override
-    protected void onActivityResult(
-            int requestCode,
-            int resultCode,
-            Intent data
-    ) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case REQUEST_GOOGLE_PLAY_SERVICES:
-                if (resultCode != RESULT_OK) {
-                    mOutputText.setText(
-                            "This app requires Google Play Services. Please install " +
-                                    "Google Play Services on your device and relaunch this app.");
-                } else {
-                    try {
-                        getResultsFromApi();
-                    } catch (GeneralSecurityException e) {
-                        throw new RuntimeException(e);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-                break;
-
-            case REQUEST_ACCOUNT_PICKER:
-                if (resultCode == RESULT_OK && data != null && data.getExtras() != null) {
-                  //  AccountManager am = AccountManager.get(this);
-                    String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-                    if (accountName != null) {
-                        SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = settings.edit();
-                        editor.putString(PREF_ACCOUNT_NAME, accountName);
-                        editor.apply();
-                        mCredential.setSelectedAccountName(accountName);
-                        try {
-                            getResultsFromApi();
-                        } catch (GeneralSecurityException e) {
-                            throw new RuntimeException(e);
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                }
-                break;
-
-            case REQUEST_AUTHORIZATION:
-                if (resultCode == RESULT_OK) {
-                    try {
-                        getResultsFromApi();
-                    } catch (GeneralSecurityException e) {
-                        throw new RuntimeException(e);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-                break;
-        }
-    }
-
-    /**
-     * Android 6.0 (API 23) 以降にて、実行時にパーミッションを要求した際の結果を受け取る。
-     *
-     * @param requestCode  requestPermissions(android.app.Activity, String, int, String[])
-     *                     を呼び出した際に渡した　request code
-     * @param permissions  要求したパーミッションの一覧
-     * @param grantResults 要求したパーミッションに対する承諾結果の配列
-     *                     PERMISSION_GRANTED または PERMISSION_DENIED　が格納される。
-     */
-    @Override
-    public void onRequestPermissionsResult(
-            int requestCode,
-            @NonNull String[] permissions,
-            @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
 
 
@@ -1315,32 +1337,38 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
      * @return ネットワークに接続されている場合にはtrueを、そうでない場合にはfalseを返す。
      */
     private boolean isDeviceOnline() {
-        ConnectivityManager connMgr =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        return (networkInfo != null && networkInfo.isConnected());
+        final String TAG = "isDeviceOnline";
+        String dbMsg = "[MainActivity]";
+        boolean retBool = false;
+        try {
+            ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+            retBool =networkInfo != null && networkInfo.isConnected();
+            dbMsg += ",retBool=" + retBool;
+            myLog(TAG, dbMsg);
+        } catch (Exception e) {
+            myErrorLog(TAG ,  dbMsg + "で" + e);
+        }
+        return retBool;
     }
 
     /**
      * 要求したパーミッションがユーザーに承諾された際に、EasyPermissionsライブラリから呼び出される。
-     *
+     *　サンプルでは何もしない
      * @param requestCode 要求したパーミッションに関連した request code
      * @param list        要求したパーミッションのリスト
      */
-    @Override
+//    @Override
     public void onPermissionsGranted(int requestCode, List<String> list) {
-        // 何もしない
-    }
-
-    /**
-     * 要求したパーミッションがユーザーに拒否された際に、EasyPermissionsライブラリから呼び出される。
-     *
-     * @param requestCode 要求したパーミッションに関連した request code
-     * @param list        要求したパーミッションのリスト
-     */
-    @Override
-    public void onPermissionsDenied(int requestCode, List<String> list) {
-        // 何もしない
+        final String TAG = "onPermissionsGranted";
+        String dbMsg = "[MainActivity]";
+        try {
+            dbMsg += ",requestCode=" + requestCode;
+            dbMsg += ",list=" + list.toString();
+            myLog(TAG, dbMsg);
+        } catch (Exception e) {
+            myErrorLog(TAG ,  dbMsg + "で" + e);
+        }
     }
 
 
@@ -1760,30 +1788,6 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
             NavigationView navigationView = binding.navView;            //(NavigationView)findViewById(R.id.my_nav_view);
             NavigationUI.setupWithNavController(navigationView, navController);
 
-//            if(alarmItemList == null){
-//                alarmItemList = new ArrayList<AlarmItem>();
-//                alarmItemList=mainViewModel.getList().getValue();
-//                dbMsg += ",alarmItemList=" + alarmItemList.size() + "件";
-//            }
-            loadAlarms();
-            // Google Calendar API の呼び出しのための認証情報を初期化する                          202408
-            mCredential = GoogleAccountCredential.usingOAuth2(
-                    getApplicationContext(),
-                    Arrays.asList(SCOPES)
-            ).setBackOff(new ExponentialBackOff());
-            dbMsg += ",mCredential=" + mCredential.toString();
-
-//            DrawerLayout drawer = binding.drawerLayout;
-//            NavigationView navigationView = binding.navView;
-//            // Passing each menu ID as a set of Ids because each menu should be considered as top level destinations.
-//            mAppBarConfiguration = new AppBarConfiguration.Builder(
-//                    R.id.nav_home, R.id.nav_target_plan, R.id.nav_target_setting, R.id.nav_other_setting)
-//                    .setOpenableLayout(drawer)
-//                    .build();
-//          //  NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-//            NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-//            NavigationUI.setupWithNavController(navigationView, navController);
-
             binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -1806,11 +1810,11 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
     }
 
 
-    private final ActivityResultLauncher<String[]> requestPermissionsLauncher =
+    private final ActivityResultLauncher<String[]> requestPermissionLauncher =
             registerForActivityResult(
                     new ActivityResultContracts.RequestMultiplePermissions(),
                     (Map<String, Boolean> grantStates) -> {
-                        final String TAG = "ActivityResultLauncher";
+                        final String TAG = "registerForActivityResult";
                         String dbMsg = "[MainActivity]";
                         try {
                             boolean allPass = true;
@@ -1822,9 +1826,16 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
                                     allPass = false;
                                     dbMsg += ">>未許可" ;
                                     unPass.add(grantState.getKey());
+                                }else{
+                                    //    まだ１回も表示していない場合のfalseを回避できます。
+                                    boolean isShouldShow = ActivityCompat.shouldShowRequestPermissionRationale(this, grantState.getKey());
+                                    dbMsg += ",isShouldShow=" + isShouldShow;
+                                    if(! isShouldShow){
+                                        dbMsg += "＝権限ダイアログは表示されない=";
+                                    }
                                 }
                                 //   Timber.d(grantState.getKey() + " - " + grantState.getValue());
-                            }
+                             }
                             int unPassSize = unPass.size();
                             dbMsg += ">>未許可" +unPassSize + "件";
                             wakeUp();
@@ -1842,7 +1853,7 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
                     });
 //ActivityResultContracts.RequestMultiplePermissions チートシート  ActivityResultContracts.RequestMultiplePermissions チートシート
 
-    private ActivityResultLauncher<String> SingleRequestPermissionLauncher  =
+    private final ActivityResultLauncher<String> SingleRequestPermissionLauncher  =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 final String TAG = "singlerequestPermissionLauncher";
                 String dbMsg = "[MainActivity]";
@@ -1863,29 +1874,215 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
 
             });
 
-    public void checkMyPermission(String[] PERMISSIONS) {
+
+    /**
+     * アカウント選択や認証など、呼び出し先のActivityから戻ってきた際に呼び出される。
+     *
+     * @param requestCode Activityの呼び出し時に指定したコード
+     * @param resultCode  呼び出し先のActivityでの処理結果を表すコード
+     * @param data        呼び出し先のActivityでの処理結果のデータ
+     */
+    @Override
+    protected void onActivityResult( int requestCode,int resultCode, Intent data ) {
+        super.onActivityResult(requestCode, resultCode, data);
+        final String TAG = "onActivityResult";
+        String dbMsg = "[MainActivity]";
+        try {
+            dbMsg += ",requestCode=" + requestCode;
+            dbMsg += ",resultCode=" + resultCode;
+            switch (requestCode) {
+                case REQUEST_GOOGLE_PLAY_SERVICES:
+                    if (resultCode != RESULT_OK) {
+                        mOutputText.setText(
+                                "This app requires Google Play Services. Please install " +
+                                        "Google Play Services on your device and relaunch this app.");  //このアプリにはGoogle Play Servicesが必要です。インストールしてください,デバイスで Google Play 開発者サービスを起動し、このアプリを再起動します。
+                    } else {
+                        try {
+                            getResultsFromApi();
+                        } catch (GeneralSecurityException e) {
+                            throw new RuntimeException(e);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    break;
+                case REQUEST_ACCOUNT_PICKER:
+                    if (resultCode == RESULT_OK && data != null && data.getExtras() != null) {
+                        //  AccountManager am = AccountManager.get(this);
+                        String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+                        dbMsg += ",accountName=" + accountName;
+                        if (accountName != null) {
+                            SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = settings.edit();
+                            editor.putString(PREF_ACCOUNT_NAME, accountName);
+                            editor.apply();
+                            mCredential.setSelectedAccountName(accountName);
+                            try {
+                                getResultsFromApi();
+                            } catch (GeneralSecurityException e) {
+                                throw new RuntimeException(e);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    }
+                    break;
+
+                case REQUEST_AUTHORIZATION:
+                    if (resultCode == RESULT_OK) {
+                        try {
+                            getResultsFromApi();
+                        } catch (GeneralSecurityException e) {
+                            throw new RuntimeException(e);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    break;
+            }
+            myLog(TAG, dbMsg);
+        } catch (Exception e) {
+            myErrorLog(TAG ,  dbMsg + "で" + e);
+        }
+
+    }
+
+    /**
+     * 要求したパーミッションがユーザーに拒否された際に、EasyPermissionsライブラリから呼び出される。
+     *　サンプルでは何もしない
+     * @param requestCode 要求したパーミッションに関連した request code
+     * @param list        要求したパーミッションのリスト
+     */
+//    @Override
+    public void onPermissionsDenied(int requestCode, List<String> list) {
+        final String TAG = "onPermissionsDenied";
+        String dbMsg = "[MainActivity]";
+        try {
+            dbMsg += ",requestCode=" + requestCode;
+            dbMsg += ",list=" + list.toString();
+            myLog(TAG, dbMsg);
+        } catch (Exception e) {
+            myErrorLog(TAG ,  dbMsg + "で" + e);
+        }
+    }
+
+    /**
+     * Android 6.0 (API 23) 以降にて、実行時にパーミッションを要求した際の結果を受け取る。
+     *
+     * @param requestCode  requestPermissions(android.app.Activity, String, int, String[])
+     *                     を呼び出した際に渡した　request code
+     * @param permissions  要求したパーミッションの一覧
+     * @param grantResults 要求したパーミッションに対する承諾結果の配列
+     *                     PERMISSION_GRANTED または PERMISSION_DENIED　が格納される。
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode,@NonNull String[] permissions,@NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        final String TAG = "onRequestPermissionsResult";
+        String dbMsg = "[MainActivity]";
+        try {
+            dbMsg += ",requestCode[" + requestCode + "]";
+            int pCount =0;
+            for ( String permissionName : permissions ) {
+                dbMsg += "\n[" + pCount+ "]" + permissionName;
+                int grantRes = grantResults[pCount];
+                dbMsg += "=" + grantRes;
+                if(grantRes == -1){
+                    //    まだ１回も表示していない場合のfalseを回避できます。
+                    boolean isShouldShow = ActivityCompat.shouldShowRequestPermissionRationale(this, permissionName);
+                    dbMsg += ",isShouldShow=" + isShouldShow;
+                    if(! isShouldShow){
+                        dbMsg += "＝権限ダイアログは表示されない";
+                    }
+                }else{
+                    dbMsg += "＝許可された";
+                }
+                pCount++;
+            }
+            //       dbMsg += "]" + UnauthorizedPermission[requestCode];
+
+//                    dbMsg += ",permissions=" + Arrays.stream(permissions).toArray().toString();
+//            //     dbMsg = dbMsg + (",grantResults=" + grantResults[requestCode]);
+//            EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+            loadAlarms();
+            myLog(TAG, dbMsg);
+        } catch (Exception e) {
+            myErrorLog(TAG ,  dbMsg + "で" + e);
+        }
+    }
+
+    //    private void requestPermissionLauncher = registerForActivityResult(
+//            new ActivityResultContracts.RequestMultiplePermissions()) { granted ->
+//        // granted: Map<String, Boolean>
+//        if (granted[WRITE_EXTERNAL_STORAGE]) {
+//            // WRITE_EXTERNAL_STORAGE の権限を取得できた
+//        }
+//        if (granted[ACCESS_FINE_LOCATION]) {
+//            // ACCESS_FINE_LOCATION の権限を取得できた
+//        }
+//    }
+public String[] UnauthorizedPermission;
+    public void checkMyPermission() {
         final String TAG = "checkMyPermission";
         String dbMsg = "[MainActivity]";
         try {
+            String[] PERMISSIONS = {
+                    Manifest.permission.GET_ACCOUNTS
+                    ,Manifest.permission.INTERNET
+                    ,Manifest.permission.ACCESS_NETWORK_STATE
+                    ,Manifest.permission.ACCOUNT_MANAGER
+                    ,Manifest.permission.READ_CALENDAR
+                    ,Manifest.permission.READ_EXTERNAL_STORAGE
+                    ,Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    ,Manifest.permission_group.CALENDAR
+            };
+//            ダイアログが表示されたのは
+            // 連絡先（電話帳？）GET_ACCOUNTS　と カレンダー READ_CALENDAR
+            //設定できないもの
+            // AUTHENTICATE_ACCOUNTS,USE_CREDENTIALS
+            dbMsg += "許諾確認" + PERMISSIONS.length+ "件";
             if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ) {                //(初回起動で)全パーミッションの許諾を取る
-                dbMsg += "許諾確認";
-                boolean isNeedParmissionReqest = false;
+                List<String> removeParmissions = new ArrayList<String>(Arrays.asList(PERMISSIONS));
                 for ( String permissionName : PERMISSIONS ) {
-                    dbMsg += "," + permissionName;
+                    dbMsg += "\n" + permissionName;
                     int checkResalt = checkSelfPermission(permissionName);
                     dbMsg += "=" + checkResalt;
-                    if ( checkResalt != PackageManager.PERMISSION_GRANTED ) {//許可されていなければ -1 いれば 0
-                        isNeedParmissionReqest = true;
+                    boolean isShouldShow = ActivityCompat.shouldShowRequestPermissionRationale(this, permissionName);
+                    dbMsg += ",isShouldShow=" + isShouldShow;
+                    if(! isShouldShow) {
+                        dbMsg += "＝権限ダイアログは表示されない";
+                        //READ_CALENDAR,READ_EXTERNAL_STORAGE,WRITE_EXTERNAL_STORAGE
+                    }else{
+                        dbMsg += "＝権限ダイアログが表示される";
+                    }
+                    if ( checkResalt == PackageManager.PERMISSION_GRANTED ) {//許可されていなければ -1 いれば 0
+                        dbMsg += ";許可済みもしくは不要";
+                        removeParmissions.remove(permissionName);
+                        //許可不要；INTERNET、ACCESS_NETWORK_STATE
+                    }else{
+                        dbMsg += ";許可を求める";
                     }
                 }
-                dbMsg += "、許諾が必要=" + isNeedParmissionReqest;
-                if ( isNeedParmissionReqest ) {
-                    dbMsg += "::許諾処理へ";
-                    requestPermissionsLauncher.launch(PERMISSIONS);
+                UnauthorizedPermission = (String[]) removeParmissions.toArray(new String[removeParmissions.size()]);
+                dbMsg += "\n未許可=" + UnauthorizedPermission.length + "件";
+                dbMsg += ",未許可=" + this.getApplicationContext();
+                if ( UnauthorizedPermission.length > 0 ) {
+                        dbMsg += "::許諾処理へ";
+//                        ActivityCompat.requestPermissions(this, UnauthorizedPermission,1001);
+                        requestPermissionLauncher.launch(UnauthorizedPermission);
+             //       }
 
-//                    for ( String permissionName : PERMISSIONS ) {
-//                        SingleRequestPermissionLauncher.launch(permissionName);
+//                    int REQUEST_CODE=0;
+//                    for ( String permissionName : UnauthorizedPermission ) {
+//                        dbMsg += "," + permissionName;
+//                        EasyPermissions.requestPermissions(
+//                                this,
+//                                "このアプリでは次の権限が必要です",
+//                                REQUEST_CODE,permissionName);
+//                    //    SingleRequestPermissionLauncher.launch(permissionName);
+//                        REQUEST_CODE++;
 //                    }
+
 //                      new AlertDialog.Builder(MainActivity.this)
 //                            .setTitle( getResources().getString(R.string.permission_titol) )
 //                            .setMessage( getResources().getString(R.string.permission_msg))
@@ -1903,13 +2100,14 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
 //                                }
 //                            })
 //                            .create().show();
+            //        wakeUp();
                 }else{
                     dbMsg += "::許諾済み";
-                    wakeUp();
+                    loadAlarms();
                 }
             } else{
                 dbMsg += "::許諾操作不要";
-                wakeUp();
+                loadAlarms();
             }
             myLog(TAG , dbMsg);
         } catch (Exception er) {
@@ -1925,14 +2123,8 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
         String dbMsg = "[MainActivity]";
         try {
             mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
-
-            String[] PERMISSIONS = {
-                    Manifest.permission.INTERNET,
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-//                        android.Manifest.permission.WRITE_SETTINGS
-            };
-            checkMyPermission(PERMISSIONS);
+            wakeUp();
+            checkMyPermission();
             myLog(TAG, dbMsg);
         } catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);
