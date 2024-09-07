@@ -71,5 +71,8 @@
     <string name="gc_isPrivate">is Private</string>
     <string name="permission_titol">Saving the configuration data</string>
     <string name="permission_msg">Keep checked events on your device</string>
+    <string name="gcp_client_id">229798352400-f9j97lpasjgiejofn90i634igi3eura2.apps.googleusercontent.com</string>
+    <string name="gcp_api_key">AIzaSyB4Q2PlDNyb0j1fZNGSy_9mU2hX5j5jWnQ</string>
+    <string name="gcp_Project">TaPlan</string>
 
 </resources>
