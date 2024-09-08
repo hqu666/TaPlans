@@ -9,6 +9,7 @@ googleApiClientAndroid = "2.6.0"
 #googleApiClientAndroid = "1.22.0"
 googleApiServicesCalendar = "v3-rev214-1.22.0"
 #googleApiServicesCalendar = "v3-rev20220715-2.0.0"
+integrity = "1.4.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
@@ -35,6 +36,7 @@ google-api-client-android = { module = "com.google.api-client:google-api-client-
 google-api-services-calendar = { module = "com.google.apis:google-api-services-calendar", version.ref = "googleApiServicesCalendar" }
 #version.ref = "googleApiServicesCalendarVersion" }ではない
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
+integrity = { module = "com.google.android.play:integrity", version.ref = "integrity" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

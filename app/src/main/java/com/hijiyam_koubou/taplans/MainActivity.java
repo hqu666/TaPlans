@@ -3,6 +3,7 @@ package com.hijiyam_koubou.taplans;
 import android.Manifest;
 import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -27,14 +28,19 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
+import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
@@ -1059,7 +1065,7 @@ public class MainActivity extends AppCompatActivity  {
                 chooseAccount();
             }else if (!isDeviceOnline()) {
                 dbMsg += "端末がインターネットに接続されていない";
-                mOutputText.setText("ネットワーク接続が利用できません。");            //No network connection available.
+                Toast.makeText(this,"ネットワーク接続が利用できません。",Toast.LENGTH_LONG);
             }else {
                 new MakeRequestTask(mCredential).execute();
             }
@@ -1377,71 +1383,75 @@ public class MainActivity extends AppCompatActivity  {
         final String TAG = "googleLogIn";
         String dbMsg = "[MainActivity]";
         try {
-            GoogleSignInOptions signInOptions =
-                    new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                            .requestIdToken(getString(R.string.gcp_client_id))                             //   .requestScopes(Drive.SCOPE_FILE)
-                            .requestEmail()
-                            .build();
+            GoogleSignInAccount lastAccount = GoogleSignIn.getLastSignedInAccount(this);  // (a)
+            dbMsg += "、前回使用[" + lastAccount.getId();
+            dbMsg += "]" + lastAccount.getEmail();
+            mCredential = GoogleAccountCredential.usingOAuth2(
+                    getApplicationContext(),
+                    Arrays.asList(SCOPES)
+            ).setBackOff(new ExponentialBackOff());
+            dbMsg += ",Credential:AccountName=" + mCredential.getSelectedAccountName();
+            signedInResultLauncher.launch(mCredential.newChooseAccountIntent());
 
-            GoogleSignInClient client = GoogleSignIn.getClient(this, signInOptions);
-            Intent signInIntent = client.getSignInIntent();
-            startActivityForResult(signInIntent, REQUEST_CODE_SIGN_IN);
-
-
-//            startActivityForResult(client.getSignInIntent(), REQUEST_CODE_SIGN_IN);
-
-
-////            LinearLayout activityLayout = new LinearLayout(this);
-////            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-////                    LinearLayout.LayoutParams.MATCH_PARENT,
-////                    LinearLayout.LayoutParams.MATCH_PARENT);
-////            activityLayout.setLayoutParams(lp);
-////            activityLayout.setOrientation(LinearLayout.VERTICAL);
-////            activityLayout.setPadding(16, 16, 16, 16);
-////            ViewGroup.LayoutParams tlp = new ViewGroup.LayoutParams(
-////                    ViewGroup.LayoutParams.WRAP_CONTENT,
-////                    ViewGroup.LayoutParams.WRAP_CONTENT);
-////
-////            // Google Calendar API を呼び出す　Button を準備する
-////            mCallApiButton = new Button(this);
-////            mCallApiButton.setText(BUTTON_TEXT);
-////            mCallApiButton.setOnClickListener(new View.OnClickListener() {
-////                @Override
-////                public void onClick(View v) {
-////                    mCallApiButton.setEnabled(false);
-////                    mOutputText.setText("");
-////                    try {
-////                        getResultsFromApi();
-////                    } catch (GeneralSecurityException e) {
-////                        throw new RuntimeException(e);
-////                    } catch (IOException e) {
-////                        throw new RuntimeException(e);
-////                    }
-////                    mCallApiButton.setEnabled(true);
-////                }
-////            });
-////            activityLayout.addView(mCallApiButton);
-////            // Google Calendar API の呼び出し結果を表示する　TextView を準備する
-////            mOutputText = new TextView(this);
-////            mOutputText.setLayoutParams(tlp);
-////            mOutputText.setPadding(16, 16, 16, 16);
-////            mOutputText.setVerticalScrollBarEnabled(true);
-////            mOutputText.setMovementMethod(new ScrollingMovementMethod());
-////            mOutputText.setText("Click the \'" + BUTTON_TEXT + "\' button to test the API.");
-////            activityLayout.addView(mOutputText);
-//
-//            // Google Calendar API の呼び出し中を表す PrgressDialog を準備する
-//            mProgress = new ProgressDialog(this);
-//            mProgress.setMessage("Calling Google Calendar API ...");
-//
-            // ActivityにViewを設定する
-//            setContentView(activityLayout);            // Google Calendar API の呼び出しのための認証情報を初期化する                          202408
-
+//            GoogleSignInOptions signInOptions =
+//                    new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//                            .requestIdToken(getString(R.string.gcp_client_id))                             //   .requestScopes(Drive.SCOPE_FILE)
+//                            .requestEmail()
+//                            .build();
+//            GoogleSignInClient client = GoogleSignIn.getClient(this, signInOptions);
+//            Intent signInIntent = client.getSignInIntent();
+//            signedInResultLauncher.launch(signInIntent);
             myLog(TAG, dbMsg);
         } catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);
         }
     }
+
+    /**
+     * Googleサインイン画面から戻ってきた時に実行
+     * **/
+    private ActivityResultLauncher<Intent> signedInResultLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),result -> {
+                final String TAG = "signedInResultLauncher";
+                String dbMsg = "[MainActivity]";
+                try {
+                    dbMsg += ",ResultCode=" + result.getResultCode();
+                    if (result.getResultCode() == Activity.RESULT_CANCELED || result.getResultCode() == Activity.RESULT_OK) {
+                        String accountName = result.getData().getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+                        dbMsg += ",選択=" + accountName;
+                        if(! calenderAccount.equals(accountName)){
+                            setStrPref("calenderAccount",accountName);
+                            calenderAccount = accountName;
+                        }
+                        getResultsFromApi();
+                        //OKボタンが表示されなければRESULT_CANCELEDが返る
+    //                    GoogleSignInResult resultData = Auth.GoogleSignInApi.getSignInResultFromIntent(result.getData());
+    //                    if (resultData != null) {
+    //
+    //                        Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
+    //                        try {
+    //                            //Googleサインインに成功した場合、Firebaseで認証する
+    //                            GoogleSignInAccount account = task.getResult(ApiException.class);
+    //                            // com.google.android.gms.common.api.ApiException: も場合
+    //                            // 10:フィンガープリントがUPされていないか、UPされたフィンガープリントの署名が違うか。
+    //                            // 7:Wifiが切れていて、インターネットにつながっていなかった.
+    //                            //  12502:GCP OAuth 同意画面,サポートメール,GCP API 有効?
+    //                            dbMsg += ",account[" + account.getId();
+    //                            dbMsg += "]" + account.getEmail();
+    //                     //       onSignedIn();
+    //                            myLog(TAG, dbMsg);
+    //                        } catch (ApiException e) {
+    //                            //Googleサインインに失敗した場合、スナックバー表示
+    //                            dbMsg += "::Googleログインに失敗しました ";
+    //                            myErrorLog(TAG ,  dbMsg + "で" + e);
+    //                        }
+    //                    }
+                    }
+                    myLog(TAG, dbMsg);
+                } catch (Exception e) {
+                    myErrorLog(TAG ,  dbMsg + "で" + e);
+                }
+            });
 
     /**
      *　サインイン後の処理
@@ -1458,23 +1468,11 @@ public class MainActivity extends AppCompatActivity  {
                     Arrays.asList(SCOPES)
             ).setBackOff(new ExponentialBackOff());
             dbMsg += ",Credential:AccountName=" + mCredential.getSelectedAccountName();
-//        GoogleAccountCredential credential = GoogleAccountCredential.usingOAuth2(this, Collections.singleton(DriveScopes.DRIVE_FILE));  // (b)
-//        credential.setSelectedAccount(account.getAccount());                      // (c)
-//        com.google.api.services.drive.Drive googleDriveService =
-//                new com.google.api.services.drive.Drive.Builder(                      // (d)
-//                        AndroidHttp.newCompatibleTransport(),
-//                        new GsonFactory(),
-//                        credential)
-//                        .setApplicationName(MY_APP_NAME)
-//                        .build();
-//        mDriveServiceHelper = new DriveServiceHelper(googleDriveService);         // (e)
             myLog(TAG, dbMsg);
         } catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);
         }
     }
-
-
 
     /**
      * Googleカレンダーの色設定リストを作成する
@@ -1913,7 +1911,7 @@ public class MainActivity extends AppCompatActivity  {
         }
     }
 
-
+    /**パーミッション確認後**/
     private final ActivityResultLauncher<String[]> requestPermissionLauncher =
             registerForActivityResult(
                     new ActivityResultContracts.RequestMultiplePermissions(),
@@ -1943,13 +1941,6 @@ public class MainActivity extends AppCompatActivity  {
                             int unPassSize = unPass.size();
                             dbMsg += ">>未許可" +unPassSize + "件";
                             googleLogIn();
-//                            if(allPass){
-//                                wakeUp();
-//                            }else{
-//                                String[] PERMISSIONS = unPass.toArray(new String[unPassSize]);
-//                                dbMsg += ">>再表示";
-//                                checkMyPermission(PERMISSIONS);
-//                            }
                             myLog(TAG , dbMsg);
                         } catch (Exception er) {
                             myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
@@ -1994,17 +1985,30 @@ public class MainActivity extends AppCompatActivity  {
             dbMsg += ",resultCode=" + resultCode;
             switch (requestCode) {
                 case REQUEST_CODE_SIGN_IN:
-                    if(RESULT_OK == resultCode) {
-                        onSignedIn();
+                    dbMsg += ",サインイン画面";
+                    if(0 == resultCode) {           //RESULT_OK == resultCode
+                        Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+                        try {
+                            // Google Sign In was successful, authenticate with Firebase
+                            GoogleSignInAccount account = task.getResult(ApiException.class);
+                            dbMsg += "accountID:" + account.getId();
+                       //     firebaseAuthWithGoogle(account.getIdToken());
+                        } catch (ApiException e) {
+                            dbMsg += "Googleログインに失敗しました";
+                            // Google Sign In failed, update UI appropriately
+                        }
+
+                   //     onSignedIn();
                     } else{
                         dbMsg += ",キャンセルされた";
-
                     }
+                    break;
                 case REQUEST_GOOGLE_PLAY_SERVICES:
                     if (resultCode != RESULT_OK) {
                         mOutputText.setText(
                                 "This app requires Google Play Services. Please install " +
-                                        "Google Play Services on your device and relaunch this app.");  //このアプリにはGoogle Play Servicesが必要です。インストールしてください,デバイスで Google Play 開発者サービスを起動し、このアプリを再起動します。
+                                        "Google Play Services on your device and relaunch this app.");
+                        //このアプリにはGoogle Play Servicesが必要です。インストールしてください,デバイスで Google Play 開発者サービスを起動し、このアプリを再起動します。
                     } else {
                         try {
                             getResultsFromApi();
@@ -2113,7 +2117,7 @@ public class MainActivity extends AppCompatActivity  {
 //                    dbMsg += ",permissions=" + Arrays.stream(permissions).toArray().toString();
 //            //     dbMsg = dbMsg + (",grantResults=" + grantResults[requestCode]);
 //            EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
-            googleLogIn();
+    //        googleLogIn();
             myLog(TAG, dbMsg);
         } catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -2130,7 +2134,7 @@ public class MainActivity extends AppCompatActivity  {
 //            // ACCESS_FINE_LOCATION の権限を取得できた
 //        }
 //    }
-public String[] UnauthorizedPermission;
+    public String[] UnauthorizedPermission;
     public void checkMyPermission() {
         final String TAG = "checkMyPermission";
         String dbMsg = "[MainActivity]";

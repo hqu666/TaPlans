@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">TaPlans</string>
-    <string name="gcp_client_id">229798352400-f9j97lpasjgiejofn90i634igi3eura2.apps.googleusercontent.com</string>
+<!--    <string name="gcp_client_id">AD:85:A5:5A:B4:7B:74:24:4A:61:B1:55:4B:20:09:A7:AE:F2:F2:3E</string>-->
+    <string name="gcp_client_id">5A:D9:76:C6:5F:4E:28:4F:CB:15:35:3D:FA:9D:F0:6D:3E:9A:E9:EC</string>
+<!--    <string name="gcp_client_id">229798352400-f9j97lpasjgiejofn90i634igi3eura2.apps.googleusercontent.com</string>-->
     <string name="gcp_api_key">AIzaSyB4Q2PlDNyb0j1fZNGSy_9mU2hX5j5jWnQ</string>
     <string name="gcp_Project">TaPlan12451000</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
