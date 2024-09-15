@@ -8,6 +8,7 @@
         android:protectionLevel="signature" />
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"
         android:protectionLevel="signature" />
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS"
         android:protectionLevel="signature" />
     <uses-permission android:name="android.permission.READ_CALENDAR" />

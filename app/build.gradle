@@ -42,7 +42,9 @@ android {
     dataBinding {
         enabled true
     }
-    buildToolsVersion '34.0.0'
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+    }
 }
 
 //構成全体（またはすべての構成）から依存関係を除外
@@ -72,14 +74,24 @@ dependencies {
 
     implementation libs.integrity        //implementation 'com.google.android.play:integrity:1.4.0'
     implementation libs.play.services.auth                    //    compile 'com.google.android.gms:play-services-auth:9.6.1'
+//    implementation libs.google.api.client      // implementation 'com.google.api-client:google-api-client:2.0.0'
+//
     implementation(libs.google.api.client.android) {          //    compile('com.google.api-client:google-api-client-android:1.22.0') {
         exclude group: 'org.apache.httpcomponents'
     }
+    implementation libs.google.http.client.gson              // GsonFactory     'com.google.http-client:google-http-client-gson:1.45.0'
 
+//    implementation libs.google.oauth.client.jetty
+//    implementation(libs.google.oauth.client.jetty) {          //    compile('com.google.api-client:google-api-client-android:1.22.0') {
+//        exclude group: 'org.apache.httpcomponents'
+//    } //GsonFactory  'com.google.oauth-client:google-oauth-client-jetty:1.34.1'
+    // implementation libs.google.api.services.calendar.vv3rev20220715200      // implementation 'com.google.apis:google-api-services-calendar:v3-rev20220715-2.0.0'
     implementation(libs.google.api.services.calendar) {       //    compile('com.google.apis:google-api-services-calendar:v3-rev214-1.22.0') {
-                                                                //    implementation(libs.google.api.services.calendar.vv3rev2141220) {
         exclude group: 'org.apache.httpcomponents'
     }
+        //    implementation(libs.google.api.services.calendar.vv3rev2141220) {
+//        exclude group: 'org.apache.httpcomponents'
+//    }
 //    implementation libs.play.services.ads        //    'com.google.android.gms:play-services-ads:7.5.0'
     implementation libs.ext.junit
     // Adds a remote binary dependency only for local tests.
