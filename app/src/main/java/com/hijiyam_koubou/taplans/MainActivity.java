@@ -136,6 +136,9 @@ public class MainActivity extends AppCompatActivity  {
      * */
     private ArrayList<Date> tDates;
     public String targetDays;
+    public int targetYear;
+    public int targetMonth;
+    public int targetDay;
     /**アラームリスト*/
     public SharedPreferences alameListDatas;
     public SharedPreferences.Editor alEditor;
@@ -1076,14 +1079,30 @@ public class MainActivity extends AppCompatActivity  {
                 Toast.makeText(this,"ネットワーク接続が利用できません。",Toast.LENGTH_LONG);
             }else {
                 dbMsg += "接続開始";
-                Date date = new Date();
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(date);
-                DateTime timeMin = new DateTime(System.currentTimeMillis());
-                calendar.add(Calendar.MONTH,1);
-                date = calendar.getTime();
-                DateTime timeMax = new DateTime(date);
-                new MakeRequestTask(mCredential,timeMin,timeMax).execute();
+                dbMsg += "target="+ targetYear+"年"+ targetMonth +"月"+ targetDay+ "日";
+
+//                Date date = new Date();
+//                dbMsg += ",開始=" + date.toString();
+                Calendar calendarStart = Calendar.getInstance();
+                calendarStart.set(targetYear,targetMonth,targetDay);
+//                calendar.setTime(date);
+//                int sMonth = calendar.get(Calendar.MONTH);
+//                dbMsg += ",=" + sMonth + "月";
+                calendarStart.set(Calendar.DATE,1);
+                calendarStart.add(Calendar.DATE,-7);
+//                Long lomgVal = calendarStart.getTime().getTime();
+//                dbMsg += "=" + lomgVal;
+//                DateTime timeMin = new DateTime(lomgVal);            //mSからのシリアル値？
+//                dbMsg += ",timeMin=" + timeMin.toString();
+                Calendar calendarEnd = Calendar.getInstance();
+                calendarEnd.set(calendarStart.get(Calendar.YEAR),calendarStart.get(Calendar.MONTH),calendarStart.get(Calendar.DATE));
+                calendarEnd.add(Calendar.MONTH,2);
+//                date = calendar.getTime();
+//                dbMsg += ",終了=" + date.toString();
+//                lomgVal = date.getTime();
+//                dbMsg += "=" + lomgVal;
+//                DateTime timeMax = new DateTime(lomgVal);
+                new MakeRequestTask(mCredential,calendarStart,calendarEnd).execute();
             }
             myLog(TAG, dbMsg);
         } catch (Exception e) {
@@ -1236,21 +1255,32 @@ public class MainActivity extends AppCompatActivity  {
         private Events events;
         private List<Event> items;
 
-        public MakeRequestTask(GoogleAccountCredential credential,DateTime _timeMin,DateTime _timeMax) throws GeneralSecurityException, IOException {
+        public MakeRequestTask(GoogleAccountCredential credential,Calendar calendarStart,Calendar calendarEnd) throws GeneralSecurityException, IOException {
             final String TAG = "MakeRequestTask";
             String dbMsg = "[MainActivity]";
             try {
-                timeMin = _timeMin;
-                timeMax = _timeMax;
                 Account selectedAccount = credential.getSelectedAccount();
                 dbMsg += ",credential="+ selectedAccount.name;
                 mProgress = new ProgressDialog(MainActivity.this);
-                mProgress.setMessage(selectedAccount.name + "の" + timeMin.toString() + "から" + timeMax.toString());
+                String dlogCaption = selectedAccount.name + "の" + calendarStart.get(Calendar.YEAR) + "年" +calendarStart.get(Calendar.MONTH) + "月" + calendarStart.get(Calendar.DATE) + "日から" +calendarEnd.get(Calendar.MONTH) + "月" + calendarEnd.get(Calendar.DATE) + "日まで" ;
+                dbMsg += ",dlogCaption="+ dlogCaption;
+                mProgress.setMessage(dlogCaption);
+
+                calendarStart.add(Calendar.MONTH,-1);
+                Long lomgVal = calendarStart.getTime().getTime();
+                dbMsg += "\n取得開始=" + lomgVal;
+                timeMin = new DateTime(lomgVal);            //mSからのシリアル値
+                dbMsg += "=" + timeMin.toString();
+                calendarEnd.add(Calendar.MONTH,-1);
+                lomgVal = calendarEnd.getTime().getTime();
+                dbMsg += ",終了=" + lomgVal;
+                timeMax = new DateTime(lomgVal);
+                dbMsg += "=" + timeMax.toString();
 
                 File serviceCredentialFile = new File("cloud.json");
                 String SERVICE_CREDENTIALS_FILE_PATH = "assets" + serviceCredentialFile.getAbsolutePath();          //
                 //※getParentはnull
-                dbMsg += ",serviceファイル="+ SERVICE_CREDENTIALS_FILE_PATH;
+                dbMsg += "\nserviceファイル="+ SERVICE_CREDENTIALS_FILE_PATH;
                 InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(SERVICE_CREDENTIALS_FILE_PATH);
                 dbMsg += ",inputStream="+ inputStream.toString();
                 Credential serviceCredential = GoogleCredential.fromStream(inputStream)
@@ -1325,8 +1355,9 @@ public class MainActivity extends AppCompatActivity  {
             String retCale = null;
             try {
                 events = service.events().list("primary")
-                        .setMaxResults(100)
+//                        .setMaxResults(100)
                         .setTimeMin(timeMin)
+                        .setTimeMax(timeMax)
                         .setOrderBy("startTime")
                         .setSingleEvents(true)
                         .execute();             //ndroid.os.NetworkOnMainThreadException

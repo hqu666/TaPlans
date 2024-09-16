@@ -182,6 +182,10 @@ public class HomeFragment extends Fragment {
             int tSecond = setCal.get(Calendar.SECOND);
             dbMsg += tSecond + "秒";
 
+            pClass.targetYear = targetYear;
+            pClass.targetMonth = targetMonth;
+            pClass.targetDay = targetDay;
+
             calendarMembers = new ArrayList<>();
             Calendar vCalStart = Calendar.getInstance();
             vCalStart.set(targetYear, targetMonth-1, 1);
