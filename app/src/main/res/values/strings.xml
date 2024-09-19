@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">TaPlans</string>
     <string name="gcp_client_id">AD:85:A5:5A:B4:7B:74:24:4A:61:B1:55:4B:20:09:A7:AE:F2:F2:3E</string>
-<!--    <string name="gcp_client_id">5A:D9:76:C6:5F:4E:28:4F:CB:15:35:3D:FA:9D:F0:6D:3E:9A:E9:EC</string>-->
-<!--    <string name="gcp_client_id">229798352400-f9j97lpasjgiejofn90i634igi3eura2.apps.googleusercontent.com</string>-->
+    <!--    <string name="gcp_client_id">5A:D9:76:C6:5F:4E:28:4F:CB:15:35:3D:FA:9D:F0:6D:3E:9A:E9:EC</string>-->
+    <!--    <string name="gcp_client_id">229798352400-f9j97lpasjgiejofn90i634igi3eura2.apps.googleusercontent.com</string>-->
     <string name="gcp_api_key">AIzaSyB4Q2PlDNyb0j1fZNGSy_9mU2hX5j5jWnQ</string>
     <string name="gcp_Project">TaPlan12451000</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -54,7 +54,7 @@
 
     <string name="sett_alarm_time">アラーム時刻</string>
     <string name="sett_event_name">予定の名称</string>
-     <string name="set_alarm_sound">アラーム音</string>
+    <string name="set_alarm_sound">アラーム音</string>
     <string name="set_sequential_updates">逐次更新</string>
 
     <string name="gcc_base">カレンダーの色</string>
@@ -81,6 +81,8 @@
     <string name="gc_color">予定の色</string>
     <string name="gc_isPrivate">予定を限定公開にする</string>
     <string name="menu_alarm_list">本日以降の起床時刻</string>
-    <string name="common_time">common_time</string>     <!-- 11	●トマト	#D50000	rgb(213, 0, 0)-->
+    <string name="common_time">common_time</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>     <!-- 11	●トマト	#D50000	rgb(213, 0, 0)-->
 
 </resources>

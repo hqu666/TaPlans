@@ -1039,7 +1039,7 @@ public class MainActivity extends AppCompatActivity  {
     //Googleカレンダー//////////////////////////////////////////////////////////////
      private TextView mOutputText;
     private Button mCallApiButton;
-    private ProgressDialog mProgress;
+    private com.hijiyam_koubou.taplans.ProgressDialog mProgress;
 
     static final int REQUEST_CODE_SIGN_IN = 1000;
     static final int REQUEST_ACCOUNT_PICKER = REQUEST_CODE_SIGN_IN+1;
@@ -1081,27 +1081,17 @@ public class MainActivity extends AppCompatActivity  {
                 dbMsg += "接続開始";
                 dbMsg += "target="+ targetYear+"年"+ targetMonth +"月"+ targetDay+ "日";
 
-//                Date date = new Date();
-//                dbMsg += ",開始=" + date.toString();
                 Calendar calendarStart = Calendar.getInstance();
                 calendarStart.set(targetYear,targetMonth,targetDay);
-//                calendar.setTime(date);
-//                int sMonth = calendar.get(Calendar.MONTH);
-//                dbMsg += ",=" + sMonth + "月";
                 calendarStart.set(Calendar.DATE,1);
                 calendarStart.add(Calendar.DATE,-7);
-//                Long lomgVal = calendarStart.getTime().getTime();
-//                dbMsg += "=" + lomgVal;
-//                DateTime timeMin = new DateTime(lomgVal);            //mSからのシリアル値？
-//                dbMsg += ",timeMin=" + timeMin.toString();
                 Calendar calendarEnd = Calendar.getInstance();
                 calendarEnd.set(calendarStart.get(Calendar.YEAR),calendarStart.get(Calendar.MONTH),calendarStart.get(Calendar.DATE));
                 calendarEnd.add(Calendar.MONTH,2);
-//                date = calendar.getTime();
-//                dbMsg += ",終了=" + date.toString();
-//                lomgVal = date.getTime();
-//                dbMsg += "=" + lomgVal;
-//                DateTime timeMax = new DateTime(lomgVal);
+
+                String dlogCaption = mCredential.getSelectedAccount().name + "の\n" + calendarStart.get(Calendar.YEAR) + "年" +calendarStart.get(Calendar.MONTH) + "月" + calendarStart.get(Calendar.DATE) + "日から" +calendarEnd.get(Calendar.MONTH) + "月" + calendarEnd.get(Calendar.DATE) + "日まで" ;
+                dbMsg += ",dlogCaption="+ dlogCaption;
+                mProgress = com.hijiyam_koubou.taplans.ProgressDialog.newInstance(dlogCaption);
                 new MakeRequestTask(mCredential,calendarStart,calendarEnd).execute();
             }
             myLog(TAG, dbMsg);
@@ -1261,10 +1251,10 @@ public class MainActivity extends AppCompatActivity  {
             try {
                 Account selectedAccount = credential.getSelectedAccount();
                 dbMsg += ",credential="+ selectedAccount.name;
-                mProgress = new ProgressDialog(MainActivity.this);
-                String dlogCaption = selectedAccount.name + "の" + calendarStart.get(Calendar.YEAR) + "年" +calendarStart.get(Calendar.MONTH) + "月" + calendarStart.get(Calendar.DATE) + "日から" +calendarEnd.get(Calendar.MONTH) + "月" + calendarEnd.get(Calendar.DATE) + "日まで" ;
-                dbMsg += ",dlogCaption="+ dlogCaption;
-                mProgress.setMessage(dlogCaption);
+          //      mProgress = new com.hijiyam_koubou.taplans.ProgressDialog();                           //new ProgressDialog(MainActivity.this);
+//                String dlogCaption = selectedAccount.name + "の" + calendarStart.get(Calendar.YEAR) + "年" +calendarStart.get(Calendar.MONTH) + "月" + calendarStart.get(Calendar.DATE) + "日から" +calendarEnd.get(Calendar.MONTH) + "月" + calendarEnd.get(Calendar.DATE) + "日まで" ;
+//                dbMsg += ",dlogCaption="+ dlogCaption;
+           //     mProgress.setMessage(dlogCaption);
 
                 calendarStart.add(Calendar.MONTH,-1);
                 Long lomgVal = calendarStart.getTime().getTime();
@@ -1292,6 +1282,7 @@ public class MainActivity extends AppCompatActivity  {
                 service = new com.google.api.services.calendar.Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, serviceCredential)
                                 .setApplicationName("taplan")
                                 .build();
+                dbMsg += "="+ service.getServicePath();
 //                events = service.events().list("primary")
 //                        .setMaxResults(100)
 //                        .setTimeMin(timeMin)
@@ -1317,6 +1308,7 @@ public class MainActivity extends AppCompatActivity  {
 //                        .setApplicationName("Google カレンダー API Android クイックスタート")       //Google Calendar API Android Quickstart
 //                        .build();
 //                dbMsg += "\nmService="+mService.getApplicationName();
+                //java.lang.NullPointerException: Attempt to invoke virtual method 'android.view.View android.app.Dialog.findViewById(int)' on a null object reference
                 myLog(TAG, dbMsg);
             } catch (Exception e) {
                 myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -1340,7 +1332,7 @@ public class MainActivity extends AppCompatActivity  {
             final String TAG = "onPreExecute.MakeRequestTask";
             String dbMsg = "[MainActivity]";
             try {
-                mProgress.show();
+                mProgress.show(getSupportFragmentManager(), "tag");
                 //java.lang.NullPointerException: Attempt to invoke virtual method 'void android.app.ProgressDialog.show()' on a null object reference
                 //java.lang.RuntimeException: Can't create handler inside thread Thread[pool-4-thread-1,5,main] that has not called Looper.prepare()
                 myLog(TAG, dbMsg);
@@ -1363,7 +1355,7 @@ public class MainActivity extends AppCompatActivity  {
                         .execute();             //ndroid.os.NetworkOnMainThreadException
 
 //                retCale = createCalendar();
-//                dbMsg += ",retCale=" + retCale;
+                dbMsg += ",events=" + events.size() + "件";
                 myLog(TAG, dbMsg);
             } catch (Exception e) {
                 mLastError = e;
@@ -1419,7 +1411,7 @@ public class MainActivity extends AppCompatActivity  {
             final String TAG = "onPostExecute.MakeRequestTask";
             String dbMsg = "[MainActivity]";
             try {
-                mProgress.hide();
+                mProgress.dismiss();            //.hide();
                 items = events.getItems();
                 dbMsg += "\nitems="+ items.size()+"件";
 
@@ -1438,7 +1430,7 @@ public class MainActivity extends AppCompatActivity  {
             final String TAG = "cancelled.MakeRequestTask";
             String dbMsg = "[MainActivity]";
             try {
-                mProgress.hide();
+                mProgress.dismiss();            //.hide();
                 if (mLastError != null) {
                     if (mLastError instanceof GooglePlayServicesAvailabilityIOException) {
                         showGooglePlayServicesAvailabilityErrorDialog(
