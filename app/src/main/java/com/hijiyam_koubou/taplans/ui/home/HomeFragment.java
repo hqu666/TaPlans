@@ -323,6 +323,7 @@ public class HomeFragment extends Fragment {
             }else{
                 ffButton.setVisibility(View.VISIBLE);
             }
+            pClass.getCalenderData(targetYear,targetMonth);
             myLog(TAG , dbMsg);
         } catch (Exception er) {
             myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);

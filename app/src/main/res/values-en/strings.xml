@@ -76,5 +76,6 @@
     <string name="gc_isPrivate">is Private</string>
     <string name="permission_titol">Saving the configuration data</string>
     <string name="permission_msg">Keep checked events on your device</string>
+    <string name="sb_failure_google_signin">Googleログインに失敗しました</string>
 
 </resources>

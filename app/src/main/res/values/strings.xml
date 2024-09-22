@@ -83,6 +83,7 @@
     <string name="menu_alarm_list">本日以降の起床時刻</string>
     <string name="common_time">common_time</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>     <!-- 11	●トマト	#D50000	rgb(213, 0, 0)-->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="sb_failure_google_signin">Googleログインに失敗しました</string>     <!-- 11	●トマト	#D50000	rgb(213, 0, 0)-->
 
 </resources>

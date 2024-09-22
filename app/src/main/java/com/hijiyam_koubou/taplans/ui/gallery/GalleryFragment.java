@@ -1,6 +1,7 @@
 package com.hijiyam_koubou.taplans.ui.gallery;
 
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,13 +11,18 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import android.widget.ArrayAdapter;
 
+import com.google.api.services.calendar.model.Calendar;
+import com.google.api.services.calendar.model.Event;
+import com.hijiyam_koubou.taplans.MainActivity;
 import com.hijiyam_koubou.taplans.Util;
 import com.hijiyam_koubou.taplans.databinding.FragmentGalleryBinding;
 
 public class GalleryFragment extends Fragment {
 
     private FragmentGalleryBinding binding;
+    MainActivity pClass;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -29,13 +35,37 @@ public class GalleryFragment extends Fragment {
 
             binding = FragmentGalleryBinding.inflate(inflater, container, false);
             root = binding.getRoot();
-
-            ListView gCalLV = binding.gCalLV;
-            
-            
-
             final TextView textView = binding.textGallery;
-            galleryViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+            ListView gCalLV = binding.gCalLV;
+
+            pClass = (MainActivity) inflater.getContext();
+            dbMsg += ",events=" + pClass.calendarItems.size() + "件";
+           if(pClass.calendarItems.size() >0 ){
+               String[] items = new String[pClass.calendarItems.size()];
+               Event rItem = pClass.calendarItems.get(0);
+               String hStr = (String) rItem.get(CalendarContract.Events.ACCOUNT_NAME);
+               hStr += "の\n" +rItem.get(CalendarContract.Events.DTSTART) ;
+               rItem = pClass.calendarItems.get(pClass.calendarItems.size()-1);
+               hStr +=  "～" + rItem.get(CalendarContract.Events.LAST_DATE);
+               textView.setText(hStr);
+               int rCount = 0;
+               for (Event rEvent:pClass.calendarItems) {
+                    String wStr = (String) rEvent.get(CalendarContract.Events.DTSTART);
+                    wStr += " "+ rEvent.get(CalendarContract.Events.TITLE);
+                    items[rCount]=wStr;
+                    rCount++;
+                }
+                ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
+                        pClass.getApplicationContext(),
+                        android.R.layout.simple_list_item_1,    // Androidに組み込まれているレイアウト
+                        items
+                );
+                dbMsg += ",arrayAdapter=" + arrayAdapter.getCount() + "件";
+                gCalLV.setAdapter(arrayAdapter);
+            }else{
+                textView.setText("取得できません");
+            }
+         //   galleryViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
             myLog(TAG , dbMsg);
         } catch (Exception er) {
             myErrorLog(TAG , dbMsg + ";でエラー発生；" + er);
