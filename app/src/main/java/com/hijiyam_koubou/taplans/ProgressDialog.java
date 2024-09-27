@@ -24,11 +24,14 @@ import java.util.Objects;
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link ProgressDialog#newInstance} factory method to
- * create an instance of this fragment.
+ * create an instance of this fragment.<br>
+ * <a href="https://qiita.com/Uchikoba/items/478d604f417465700ba1">2017 ProgressDialogが非推奨らしいので自分で作ってみた</a>
  */
 public class ProgressDialog extends DialogFragment {
     private static final int DELAY_MILLISECOND = 450;
     private static final int SHOW_MIN_MILLISECOND = 300;
+
+    private Handler handler=null;
 
     private ProgressBar mProgressBar;
     private TextView mProgressMessage;
@@ -115,16 +118,21 @@ public class ProgressDialog extends DialogFragment {
             mStartMillisecond = System.currentTimeMillis();
             mStartedShowing = false;
             mStopMillisecond = Long.MAX_VALUE;
-
-            final Handler handler = new Handler(Looper.getMainLooper());
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (mStopMillisecond > System.currentTimeMillis()) {
-                        showDialogAfterDelay(manager, tag);
+            //重複して呼ばれるとクラッシュする
+            if(handler == null){
+                dbMsg += ",Handler作成";
+                handler = new Handler(Looper.getMainLooper());
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mStopMillisecond > System.currentTimeMillis()) {
+                            showDialogAfterDelay(manager, tag);
+                        }
                     }
-                }
-            }, DELAY_MILLISECOND);
+                }, DELAY_MILLISECOND);
+            }else{
+                dbMsg += ",作成済み";
+            }
             myLog(TAG, dbMsg);
         } catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -138,8 +146,8 @@ public class ProgressDialog extends DialogFragment {
         final String TAG = "showDialogAfterDelay";
         String dbMsg = "[ProgressDialog]";
         try {
+            dbMsg += ",FragmentManager=" + manager.toString();
             dbMsg += ",tag=" + tag;
-
             myLog(TAG, dbMsg);
         } catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -231,5 +239,5 @@ public class ProgressDialog extends DialogFragment {
     }
 }
 
-//2017 ProgressDialogが非推奨らしいので自分で作ってみた
-// https://qiita.com/Uchikoba/items/478d604f417465700ba1
+//
+//
