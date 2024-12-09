@@ -4,11 +4,17 @@ easypermissionsVersion = "3.0.0"
 #googleApiClient = "2.6.0"
 #googleApiServicesCalendarVersion = "v3-rev214-1.22.0"
 googleApiServicesCalendarVersion = "v3-rev20220715-2.0.0"
+googleAuthLibraryOauth2Http = "1.11.0"
 googleHttpClientGson = "1.45.0"
 googleOauthClientJetty = "1.36.0"
+googleOauthClientJettyVersion = "1.34.1"
 guava = "31.1-android"         #重複？消すと In version catalog libs, version reference 'guava' doesn't exist.
 googleApiClientAndroid = "2.6.0"
 googleApiServicesCalendar = "v3-rev214-1.22.0"
+http = "1.31.0"
+httpcredentialsadapter = "1.31"
+httpcredentialsadapterVersion = "1.31"
+httpVersion = "1.31"
 integrity = "1.4.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -17,19 +23,20 @@ appcompat = "1.7.0"
 kotlinStdlibJdk7 = "1.9.20"
 listenablefuture = "9999.0-empty-to-avoid-conflict-with-guava"
 material = "1.12.0"
-constraintlayout = "2.1.4"
-lifecycleLivedataKtx = "2.8.5"
-lifecycleViewmodelKtx = "2.8.5"
-navigationFragment = "2.8.0"
-navigationUi = "2.8.0"
+constraintlayout = "2.2.0"
+lifecycleLivedataKtx = "2.8.7"
+lifecycleViewmodelKtx = "2.8.7"
+navigationFragment = "2.8.4"
+navigationUi = "2.8.4"
 permissionutility = "0.1.0"
-playServicesAds = "23.3.00"
+playServicesAds = "23.6.0"
 playServicesAuth = "21.2.0"
 preference = "1.2.1"
 supportAnnotations = "28.0.0"
 
 [libraries]
 #noinspection SimilarGradleDependency
+auth-http = { module = "com.google.auth:http", version.ref = "httpVersion" }
 easypermissions = { module = "pub.devrel:easypermissions", version.ref = "easypermissionsVersion" }
 easypermissions-v300 = { module = "pub.devrel:easypermissions", version.ref = "easypermissionsVersion" }
 google-api-client = { module = "com.google.api-client:google-api-client", version.ref = "googleApiClientAndroid" }
@@ -38,9 +45,14 @@ google-api-client-android = { module = "com.google.api-client:google-api-client-
 google-api-services-calendar = { module = "com.google.apis:google-api-services-calendar", version.ref = "googleApiServicesCalendar" }
 #version.ref = "googleApiServicesCalendarVersion" }ではない
 google-api-services-calendar-vv3rev20220715200 = { module = "com.google.apis:google-api-services-calendar", version.ref = "googleApiServicesCalendarVersion" }
+google-auth-library-oauth2-http = { module = "com.google.auth:google-auth-library-oauth2-http", version.ref = "googleAuthLibraryOauth2Http" }
 google-http-client-gson = { module = "com.google.http-client:google-http-client-gson", version.ref = "googleHttpClientGson" }
+google-httpcredentialsadapter = { module = "com.google.auth.http:HttpCredentialsAdapter", version.ref = "httpcredentialsadapterVersion" }
 google-oauth-client-jetty = { module = "com.google.oauth-client:google-oauth-client-jetty", version.ref = "googleOauthClientJetty" }
+google-oauth-client-jetty-v1341 = { module = "com.google.oauth-client:google-oauth-client-jetty", version.ref = "googleOauthClientJettyVersion" }
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
+http = { module = "com.google.android.play:http", version.ref = "http" }
+httpcredentialsadapter = { module = "com.google.api.client.http:HttpCredentialsAdapter", version.ref = "httpcredentialsadapter" }
 integrity = { module = "com.google.android.play:integrity", version.ref = "integrity" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }

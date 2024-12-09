@@ -2,7 +2,10 @@ package com.hijiyam_koubou.taplans;
 
 import android.Manifest;
 import android.accounts.Account;
+import android.accounts.AccountAuthenticatorResponse;
 import android.accounts.AccountManager;
+import android.accounts.AccountManagerCallback;
+import android.accounts.NetworkErrorException;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -31,15 +34,16 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+//import com.google.android.gms.auth.GoogleAuthUtil;
+//import com.google.android.gms.auth.api.Auth;
+//import com.google.android.gms.auth.api.signin.GoogleSignIn;
+//import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+//import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
+//import com.google.android.gms.common.GoogleApiAvailability;
 
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.GoogleApi;
+//import com.google.android.gms.common.api.GoogleApi;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
@@ -58,31 +62,47 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
+import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
+import com.google.api.client.http.HttpRequestInitializer;
+//import com.google.auth.http.HttpCredentialsAdapter;
+//import com.google.api.services.bigquery.Bigquery;
+//import com.google.auth.http.HttpCredentialsAdapter;
+//import com.google.auth.oauth2.GoogleCredentials;
+
+import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
+import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
-import com.google.api.client.googleapis.extensions.android.gms.auth.GooglePlayServicesAvailabilityIOException;
-import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
+//import com.google.api.client.googleapis.auth.clientlogin.ClientLogin.*;
+//import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+//import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAuthIOException;
+//import com.google.api.client.googleapis.extensions.android.gms.auth.GooglePlayServicesAvailabilityIOException;
+//import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 //import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.json.gson.GsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
+//import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.DateTime;
 import com.google.api.client.util.ExponentialBackOff;
+import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.calendar.model.CalendarListEntry;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.Events;
+//import com.google.auth.oauth2.GoogleCredentials;
 import com.hijiyam_koubou.taplans.databinding.ActivityMainBinding;
 
+import org.apache.http.auth.AuthState;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -93,6 +113,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
@@ -1055,7 +1076,7 @@ public class MainActivity extends AppCompatActivity  {
     private static final String[] SCOPES = {Manifest.permission_group.CALENDAR};
 
 
-    private GoogleAccountCredential mCredential;
+//    private GoogleAccountCredential mCredential;
     public List<Event> calendarItems;
 
 
@@ -1073,17 +1094,18 @@ public class MainActivity extends AppCompatActivity  {
         final String TAG = "getResultsFromApi";
         String dbMsg = "[MainActivity]";
         try {
+//            dbMsg += ",Credential:AccountName=" + mCredential.getSelectedAccountName();             //Credential:AccountName=null
             if (!isGooglePlayServicesAvailable()) {
                 dbMsg += "Google Play Services が無効";
                 acquireGooglePlayServices();
-            }else if (mCredential.getSelectedAccountName() == null) {
-                dbMsg += "有効な Google アカウントが選択されていない";
-                chooseAccount();
+//            }else if (mCredential.getSelectedAccountName() == null) {
+//                dbMsg += "有効な Google アカウントが選択されていない";
+//                chooseAccount();
             }else if (!isDeviceOnline()) {
                 dbMsg += "端末がインターネットに接続されていない";
-                Toast.makeText(this,"ネットワーク接続が利用できません。",Toast.LENGTH_LONG);
+                Toast.makeText(this,"ネットワーク接続が利用できません。",Toast.LENGTH_LONG).show();
             }else {
-                dbMsg += "、AccountName="+ mCredential.getSelectedAccountName() ;     //+ targetDay+ "日";
+//                dbMsg += "、AccountName="+ mCredential.getSelectedAccountName() ;     //+ targetDay+ "日";
                 dbMsg += "、target="+ targetYear+"年"+ targetMonth +"月";     //+ targetDay+ "日";
                 getCalenderData(targetYear,targetMonth);
             }
@@ -1111,11 +1133,11 @@ public class MainActivity extends AppCompatActivity  {
             calendarEnd.set(calendarStart.get(Calendar.YEAR),calendarStart.get(Calendar.MONTH),calendarStart.get(Calendar.DATE));
             calendarEnd.add(Calendar.MONTH,2);
 //ここから
-            String dlogCaption = mCredential.getSelectedAccount().name + "の\n" + calendarStart.get(Calendar.YEAR) + "年" +calendarStart.get(Calendar.MONTH) + "月" + calendarStart.get(Calendar.DATE) + "日から" +calendarEnd.get(Calendar.MONTH) + "月" + calendarEnd.get(Calendar.DATE) + "日まで" ;
-            dbMsg += ",dlogCaption="+ dlogCaption;
-            mProgress = com.hijiyam_koubou.taplans.ProgressDialog.newInstance(dlogCaption);
+//            String dlogCaption = mCredential.getSelectedAccount().name + "の\n" + calendarStart.get(Calendar.YEAR) + "年" +calendarStart.get(Calendar.MONTH) + "月" + calendarStart.get(Calendar.DATE) + "日から" +calendarEnd.get(Calendar.MONTH) + "月" + calendarEnd.get(Calendar.DATE) + "日まで" ;
+//            dbMsg += ",dlogCaption="+ dlogCaption;
+//            mProgress = com.hijiyam_koubou.taplans.ProgressDialog.newInstance(dlogCaption);
 //ここまで onPreExecute.MakeRequestTask　へ
-            new MakeRequestTask(mCredential, calendarStart, calendarEnd).execute();
+//            new MakeRequestTask(mCredential, calendarStart, calendarEnd).execute();
             myLog(TAG, dbMsg);
         } catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -1135,14 +1157,14 @@ public class MainActivity extends AppCompatActivity  {
         boolean retBool = false;
         int connectionStatusCode;
         try {
-            GoogleApiAvailability apiAvailability =GoogleApiAvailability.getInstance();
-            connectionStatusCode =apiAvailability.isGooglePlayServicesAvailable(this);
-            dbMsg += ",connectionStatusCode=" + connectionStatusCode;
-            if(connectionStatusCode == ConnectionResult.SUCCESS){
-                retBool = true;
-            }else{
-                dbMsg += ",Google Play Services がインストールされてないか、アップデートされていない";
-            }
+//            GoogleApiAvailability apiAvailability =GoogleApiAvailability.getInstance();
+//            connectionStatusCode =apiAvailability.isGooglePlayServicesAvailable(this);
+//            dbMsg += ",connectionStatusCode=" + connectionStatusCode;
+//            if(connectionStatusCode == ConnectionResult.SUCCESS){
+//                retBool = true;
+//            }else{
+//                dbMsg += ",Google Play Services がインストールされてないか、アップデートされていない";
+//            }
             myLog(TAG, dbMsg);
         } catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -1159,12 +1181,12 @@ public class MainActivity extends AppCompatActivity  {
         final String TAG = "acquireGooglePlayServices";
         String dbMsg = "[MainActivity]";
         try {
-            GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
-            final int connectionStatusCode = apiAvailability.isGooglePlayServicesAvailable(this);
-            dbMsg += ",connectionStatusCode=" + connectionStatusCode;
-            if (apiAvailability.isUserResolvableError(connectionStatusCode)) {
-                showGooglePlayServicesAvailabilityErrorDialog(connectionStatusCode);
-            }
+//            GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+//            final int connectionStatusCode = apiAvailability.isGooglePlayServicesAvailable(this);
+//            dbMsg += ",connectionStatusCode=" + connectionStatusCode;
+//            if (apiAvailability.isUserResolvableError(connectionStatusCode)) {
+//                showGooglePlayServicesAvailabilityErrorDialog(connectionStatusCode);
+//            }
             myLog(TAG, dbMsg);
         } catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -1181,13 +1203,13 @@ public class MainActivity extends AppCompatActivity  {
         final String TAG = "showGooglePlayServicesAvailabilityErrorDialog";
         String dbMsg = "[MainActivity]";
         try {
-            GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
-            Dialog dialog = apiAvailability.getErrorDialog(
-                    MainActivity.this,
-                    connectionStatusCode,
-                    REQUEST_GOOGLE_PLAY_SERVICES
-            );
-            Objects.requireNonNull(dialog).show();
+//            GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+//            Dialog dialog = apiAvailability.getErrorDialog(
+//                    MainActivity.this,
+//                    connectionStatusCode,
+//                    REQUEST_GOOGLE_PLAY_SERVICES
+//            );
+//            Objects.requireNonNull(dialog).show();
             myLog(TAG, dbMsg);
         } catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -1213,14 +1235,14 @@ public class MainActivity extends AppCompatActivity  {
                 // SharedPreferencesから保存済みGoogleアカウントを取得する
                 String accountName = getPreferences(Context.MODE_PRIVATE).getString(PREF_ACCOUNT_NAME, null);
                 dbMsg += ",accountName=" + accountName;
-                if (accountName != null) {
-                    mCredential.setSelectedAccountName(accountName);
-                    getResultsFromApi();
-                } else {
-                    // Googleアカウントの選択を表示する
-                    // GoogleAccountCredentialのアカウント選択画面を使用する
-                    startActivityForResult(mCredential.newChooseAccountIntent(),REQUEST_ACCOUNT_PICKER);
-                }
+//                if (accountName != null) {
+//                    mCredential.setSelectedAccountName(accountName);
+//                    getResultsFromApi();
+//                } else {
+//                    // Googleアカウントの選択を表示する
+//                    // GoogleAccountCredentialのアカウント選択画面を使用する
+//                    startActivityForResult(mCredential.newChooseAccountIntent(),REQUEST_ACCOUNT_PICKER);
+//                }
             }else {
                 // ダイアログを表示して、ユーザーに"GET_ACCOUNTS"パーミッションを要求する
                 EasyPermissions.requestPermissions(
@@ -1234,6 +1256,33 @@ public class MainActivity extends AppCompatActivity  {
             myErrorLog(TAG ,  dbMsg + "で" + e);
         }
     }
+
+//    public static final String ACCOUNT_TYPE = "com.hijiyam_koubou.taplans";
+// //   @Override
+//    public Bundle getAuthToken(Account account,
+//                               String authTokenType, Bundle options) throws NetworkErrorException {
+//
+//        AccountManager manager = AccountManager.get(this);
+//        String name = account.name;
+//        // TODO:本来はパスワードを復号化する必要があります
+//        String password = manager.getPassword(account);
+//
+//        // TODO:本来はここで通信を行い、ユーザ名とパスワードからトークンの取得を行う
+//        String authToken = "AUTH_TOKEN";
+//        // トークンをキャッシュ
+//        manager.setAuthToken(account,authTokenType,authToken);
+//
+//        // トークンを返却する
+//        Bundle result = new Bundle();
+//        result.putString(AccountManager.KEY_ACCOUNT_NAME, name);
+//        result.putString(AccountManager.KEY_ACCOUNT_TYPE, ACCOUNT_TYPE);
+//        result.putString(AccountManager.KEY_AUTHTOKEN, authToken);
+//        return result;
+//    }
+
+
+    private com.google.api.services.calendar.Calendar service;
+
 
      /**
      * 非同期で　Google Calendar API の呼び出しを行うクラス。<br>
@@ -1271,8 +1320,7 @@ public class MainActivity extends AppCompatActivity  {
 
         private com.google.api.services.calendar.Calendar mService = null;
         private Exception mLastError = null;
-        private GoogleAccountCredential credential;
-        private com.google.api.services.calendar.Calendar service;
+//        private GoogleAccountCredential credential;
         private DateTime timeMin;
         private DateTime timeMax;
         private Events events;
@@ -1281,35 +1329,36 @@ public class MainActivity extends AppCompatActivity  {
         private Calendar calendarEnd;
 
         //コンストラクターのパラメーターを追加
-        public MakeRequestTask(GoogleAccountCredential _credential,Calendar _calendarStart,Calendar _calendarEnd) throws GeneralSecurityException, IOException {
-            final String TAG = "MakeRequestTask";
-            String dbMsg = "[MainActivity]";
-            try {
-                credential = _credential;
+//        public MakeRequestTask(GoogleAccountCredential _credential,Calendar _calendarStart,Calendar _calendarEnd) throws GeneralSecurityException, IOException {
+//            final String TAG = "MakeRequestTask";
+//            String dbMsg = "[MainActivity]";
+//            try {
+//                credential = _credential;
 //                Account selectedAccount = credential.getSelectedAccount();
 //                dbMsg += ",credential="+ selectedAccount.name;
-          //      mProgress = new com.hijiyam_koubou.taplans.ProgressDialog();                           //new ProgressDialog(MainActivity.this);
-//                String dlogCaption = selectedAccount.name + "の" + calendarStart.get(Calendar.YEAR) + "年" +calendarStart.get(Calendar.MONTH) + "月" + calendarStart.get(Calendar.DATE) + "日から" +calendarEnd.get(Calendar.MONTH) + "月" + calendarEnd.get(Calendar.DATE) + "日まで" ;
-//                dbMsg += ",dlogCaption="+ dlogCaption;
-           //     mProgress.setMessage(dlogCaption);
-                calendarStart=_calendarStart;
-                calendarEnd=_calendarEnd;
-                calendarStart.add(Calendar.MONTH,-1);
-                Long lomgVal = calendarStart.getTime().getTime();
-                dbMsg += "\n取得開始=" + lomgVal;
-                timeMin = new DateTime(lomgVal);            //mSからのシリアル値
-                dbMsg += "=" + timeMin.toString();
-                calendarEnd.add(Calendar.MONTH,-1);
-                lomgVal = calendarEnd.getTime().getTime();
-                dbMsg += ",終了=" + lomgVal;
-                timeMax = new DateTime(lomgVal);
-                dbMsg += "=" + timeMax.toString();
-                myLog(TAG, dbMsg);
-            } catch (Exception e) {
-                myErrorLog(TAG ,  dbMsg + "で" + e);
-            }
-
-        }
+//
+//
+//                //      mProgress = new com.hijiyam_koubou.taplans.ProgressDialog();                           //new ProgressDialog(MainActivity.this);
+////                String dlogCaption = selectedAccount.name + "の" + calendarStart.get(Calendar.YEAR) + "年" +calendarStart.get(Calendar.MONTH) + "月" + calendarStart.get(Calendar.DATE) + "日から" +calendarEnd.get(Calendar.MONTH) + "月" + calendarEnd.get(Calendar.DATE) + "日まで" ;
+////                dbMsg += ",dlogCaption="+ dlogCaption;
+//           //     mProgress.setMessage(dlogCaption);
+//                =_calendarStart;
+//                calendarEnd=_calendarEnd;
+//                calendarStart.add(Calendar.MONTH,-1);
+//                Long lomgVal = calendarStart.getTime().getTime();
+//                dbMsg += "\n取得開始=" + lomgVal;
+//                timeMin = new DateTime(lomgVal);            //mSからのシリアル値
+//                dbMsg += "=" + timeMin.toString();
+//                calendarEnd.add(Calendar.MONTH,-1);
+//                lomgVal = calendarEnd.getTime().getTime();
+//                dbMsg += ",終了=" + lomgVal;
+//                timeMax = new DateTime(lomgVal);
+//                dbMsg += "=" + timeMax.toString();
+//                myLog(TAG, dbMsg);
+//            } catch (Exception e) {
+//                myErrorLog(TAG ,  dbMsg + "で" + e);
+//            }
+//        }
 
         public void execute() {
             final String TAG = "execute.MakeRequestTask";
@@ -1343,16 +1392,17 @@ public class MainActivity extends AppCompatActivity  {
 //                        .createScoped(Collections.singleton(CalendarScopes.CALENDAR));
 //                //　　cloud.json: open failed: ENOENT (No such file or directory)
 //                dbMsg += "\nservice="+ serviceCredential.toString();
-                final NetHttpTransport HTTP_TRANSPORT =  new com.google.api.client.http.javanet.NetHttpTransport();
-                // GoogleNetHttpTransport.newTrustedTransport();   https://www.web-dev-qa-db-ja.com/ja/android/googlenethttptransport%E3%82%92%E8%A9%A6%E8%A1%8C%E3%81%99%E3%82%8B%E3%81%A8%E3%80%8Cjks%E3%81%8C%E8%A6%8B%E3%81%A4%E3%81%8B%E3%82%8A%E3%81%BE%E3%81%9B%E3%82%93%E3%80%8D/838239464/
 
-                // 選択したmCredentialのカレンダーサービスを作製
-                JsonFactory JSON_FACTORY= JacksonFactory.getDefaultInstance();          // = GsonFactory.getDefaultInstance();
-                service = new com.google.api.services.calendar.Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
-                        .setApplicationName("taplans")
-                        .build();
-                dbMsg += ",service="+ service.getServicePath();
-
+//                final NetHttpTransport HTTP_TRANSPORT =  new com.google.api.client.http.javanet.NetHttpTransport();
+//                // GoogleNetHttpTransport.newTrustedTransport();   https://www.web-dev-qa-db-ja.com/ja/android/googlenethttptransport%E3%82%92%E8%A9%A6%E8%A1%8C%E3%81%99%E3%82%8B%E3%81%A8%E3%80%8Cjks%E3%81%8C%E8%A6%8B%E3%81%A4%E3%81%8B%E3%82%8A%E3%81%BE%E3%81%9B%E3%82%93%E3%80%8D/838239464/
+//
+//                // 選択したmCredentialのカレンダーサービスを作製
+//                JsonFactory JSON_FACTORY= JacksonFactory.getDefaultInstance();          // = GsonFactory.getDefaultInstance();
+//                service = new com.google.api.services.calendar.Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, mCredential)
+//                        .setApplicationName("com.hijiyam_koubou.taplans")
+//                        .build();
+                dbMsg += ",service="+ service.calendars();
+//                com.google.api.services.calendar.Calendar.Calendars cale = service.calendars();
 
 //                dbMsg += "\ncredential="+ credential.getSelectedAccount();
 //                 HttpTransport transport = AndroidHttp.newCompatibleTransport();           //org;AndroidHttpは廃止
@@ -1371,15 +1421,15 @@ public class MainActivity extends AppCompatActivity  {
 //                        .build();
 //                dbMsg += "\nmService="+mService.getApplicationName();
                 //java.lang.NullPointerException: Attempt to invoke virtual method 'android.view.View android.app.Dialog.findViewById(int)' on a null object reference
-                dbMsg += ",mProgress表示=" + mProgress.isVisible();
-//ここから
-                String dlogCaption = mCredential.getSelectedAccount().name + "の\n" + calendarStart.get(Calendar.YEAR) + "年" +calendarStart.get(Calendar.MONTH) + "月" + calendarStart.get(Calendar.DATE) + "日から" +calendarEnd.get(Calendar.MONTH) + "月" + calendarEnd.get(Calendar.DATE) + "日まで" ;
-                dbMsg += ",dlogCaption="+ dlogCaption;
-                mProgress = com.hijiyam_koubou.taplans.ProgressDialog.newInstance(dlogCaption);
-//ここまで onPreExecute.MakeRequestTask　へ
-                mProgress.show(getSupportFragmentManager(), "tag");
-                //java.lang.NullPointerException: Attempt to invoke virtual method 'com.google.api.services.calendar.Calendar$Calendars com.google.api.services.calendar.Calendar.calendars()' on a null object reference
-                dbMsg += ">>" + mProgress.isVisible();
+//                dbMsg += ",mProgress表示=" + mProgress.isVisible();
+////ここから
+//                String dlogCaption = mCredential.getSelectedAccount().name + "の\n" + calendarStart.get(Calendar.YEAR) + "年" +calendarStart.get(Calendar.MONTH) + "月" + calendarStart.get(Calendar.DATE) + "日から" +calendarEnd.get(Calendar.MONTH) + "月" + calendarEnd.get(Calendar.DATE) + "日まで" ;
+//                dbMsg += ",dlogCaption="+ dlogCaption;
+//                mProgress = com.hijiyam_koubou.taplans.ProgressDialog.newInstance(dlogCaption);
+////ここまで onPreExecute.MakeRequestTask　へ
+//                mProgress.show(getSupportFragmentManager(), "tag");
+//                //java.lang.NullPointerException: Attempt to invoke virtual method 'com.google.api.services.calendar.Calendar$Calendars com.google.api.services.calendar.Calendar.calendars()' on a null object reference
+//                dbMsg += ">>" + mProgress.isVisible();
                 myLog(TAG, dbMsg);
             } catch (Exception e) {
                 myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -1406,23 +1456,30 @@ public class MainActivity extends AppCompatActivity  {
 //                calendar.setTimeZone("Asia/Tokyo");
 //                com.google.api.services.calendar.model.Calendar createdCalendar = mService.calendars().insert(calendar).execute();
 //                retCale = createdCalendar.getId();
+                int listSize = service.calendarList().list().size();
+                dbMsg += ",calendar=" + listSize + "件";
+                if(listSize > 0){
+                    events = service.events().list("primary")
+                            //        .setMaxResults(100)
+                            .setTimeMin(timeMin)
+                            .setTimeMax(timeMax)
+                            .setOrderBy("startTime")
+                            .setSingleEvents(true)
+                            .execute();
+                    //com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAuthIOException
+                    dbMsg += ",events=" + events.getDescription();
+                }
 
-                events = service.events().list("primary")
-                //        .setMaxResults(100)
-                        .setTimeMin(timeMin)
-                        .setTimeMax(timeMax)
-                        .setOrderBy("startTime")
-                        .setSingleEvents(true)
-                        .execute();
-                //com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAuthIOException
-                dbMsg += ",events=" + events.getDescription();
-
-//                retCale = createCalendar();
+                retCale = createCalendar();
                 myLog(TAG, dbMsg);
+//            } catch (GoogleAuthIOException eg) {
+//                mLastError = eg;
+//                myErrorLog(TAG ,  dbMsg + "で" + eg);
+//                cancelled();
             } catch (Exception e) {
                 mLastError = e;
-                cancelled();
                 myErrorLog(TAG ,  dbMsg + "で" + e);
+                cancelled();
             }
             return retCale;
         }
@@ -1446,18 +1503,20 @@ public class MainActivity extends AppCompatActivity  {
                 calendar.setTimeZone("Asia/Tokyo");
 
                 // 作成したカレンダーをGoogleカレンダーに追加する
-                com.google.api.services.calendar.model.Calendar createdCalendar = mService.calendars().insert(calendar).execute();
+                com.google.api.services.calendar.model.Calendar createdCalendar = service.calendars().insert(calendar).execute();
+                // mService だと　java.lang.NullPointerException: Attempt to invoke virtual method 'com.google.api.services.calendar.Calendar$Calendars com.google.api.services.calendar.Calendar.calendars()' on a null object reference
+                // serviceだと com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAuthIOException
                 calendarId = createdCalendar.getId();
                 dbMsg += ",calendarId=" + calendarId;
                 // カレンダー一覧から新規に作成したカレンダーのエントリを取得する
-                CalendarListEntry calendarListEntry = mService.calendarList().get(calendarId).execute();
+                CalendarListEntry calendarListEntry = service.calendarList().get(calendarId).execute();
 
                 // カレンダーのデフォルトの背景色を設定する
                 calendarListEntry.setBackgroundColor("#ff0000");
 
                 // カレンダーのデフォルトの背景色をGoogleカレンダーに反映させる
                 CalendarListEntry updatedCalendarListEntry =
-                        mService.calendarList()
+                        service.calendarList()
                                 .update(calendarListEntry.getId(), calendarListEntry)
                                 .setColorRgbFormat(true)
                                 .execute();
@@ -1467,7 +1526,6 @@ public class MainActivity extends AppCompatActivity  {
             }
             return calendarId;                // 新規に作成したカレンダーのIDを返却する
         }
-
 
         /**
          * バックグランド処理終了後の処理
@@ -1482,9 +1540,13 @@ public class MainActivity extends AppCompatActivity  {
                     mProgress.dismiss();            //.hide();
                     dbMsg += "＞＞" + mProgress.isVisible();
                 }
-                dbMsg += ",events=" + events.size() + "件";
-                calendarItems = events.getItems();
-                dbMsg += ",items="+ calendarItems.size()+"件";
+                if(events != null){
+                    dbMsg += ",events=" + events.size() + "件";
+                    calendarItems = events.getItems();
+                    dbMsg += ",items="+ calendarItems.size()+"件";
+                }else{
+                    dbMsg += ",events取得できず";
+                }
 
 //                if (output == null || output.isEmpty()) {
 //                    dbMsg = ",No results returned.";
@@ -1505,17 +1567,17 @@ public class MainActivity extends AppCompatActivity  {
                     mProgress.dismiss();            //.hide();
                 }
                 if (mLastError != null) {
-                    if (mLastError instanceof GooglePlayServicesAvailabilityIOException) {
-                        showGooglePlayServicesAvailabilityErrorDialog(
-                                ((GooglePlayServicesAvailabilityIOException) mLastError)
-                                        .getConnectionStatusCode());
-                    } else if (mLastError instanceof UserRecoverableAuthIOException) {
-                        startActivityForResult(
-                                ((UserRecoverableAuthIOException) mLastError).getIntent(),
-                                MainActivity.REQUEST_AUTHORIZATION);
-                    } else {
-                        dbMsg = ",次のエラーが発生しました:\n" + mLastError.getMessage();       //The following error occurred
-                    }
+//                    if (mLastError instanceof GooglePlayServicesAvailabilityIOException) {
+//                        showGooglePlayServicesAvailabilityErrorDialog(
+//                                ((GooglePlayServicesAvailabilityIOException) mLastError)
+//                                        .getConnectionStatusCode());
+//                    } else if (mLastError instanceof UserRecoverableAuthIOException) {
+//                        startActivityForResult(
+//                                ((UserRecoverableAuthIOException) mLastError).getIntent(),
+//                                MainActivity.REQUEST_AUTHORIZATION);
+//                    } else {
+//                        dbMsg = ",次のエラーが発生しました:\n" + mLastError.getMessage();       //The following error occurred
+//                    }
                 } else {
                     dbMsg = ",リクエストはキャンセルされました。";                              //Request cancelled.
                 }
@@ -1568,27 +1630,113 @@ public class MainActivity extends AppCompatActivity  {
         }
     }
 
+
+    /** Authorizes the installed application to access user's protected data. */
+//    private static Credential authorize() throws Exception {
+//        JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
+//        NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+//        // load client secrets
+//        GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY,
+//                new InputStreamReader(MainActivity.class.getResourceAsStream("/cloud.json")));
+//        // set up authorization code flow
+//        GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
+//                httpTransport, JSON_FACTORY, clientSecrets,
+//                Collections.singleton(CalendarScopes.CALENDAR)).setDataStoreFactory(dataStoreFactory)
+//                .build();
+//        // authorize
+//        return new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
+//    }
+
+    /**
+     * <a href="https://console.cloud.google.com/apis/credentials/key/639a0ad2-7f09-41e4-ade9-42eb885b2521?orgonly=true&project=taplan&supportedpurview=organizationId">GoogleCloud</a>で作成したAPI
+     * */
+    private static final String API_KEY = "AIzaSyB4Q2PlDNyb0j1fZNGSy_9mU2hX5j5jWnQ";
+
     /**
      * アカウント選択(サインイン画面)の表示
-     *
-     * 参照；Android から"Google Calendar API"を使って、Googleカレンダーに新規カレンダーを追加する
-     * <a href="https://qiita.com/couzie/items/ce8f7780f9a722b2a87d">...</a>
+     * <br>
+     * <a href="https://qiita.com/couzie/items/ce8f7780f9a722b2a87d">Android から"Google Calendar API"を使って、Googleカレンダーに新規カレンダーを追加する</a><br>
+     * <a href="https://developers.google.com/api-client-library/java/google-api-java-client/requests?hl=ja">API リクエスト</a>を参照
      * */
     public void googleLogIn() {
         final String TAG = "googleLogIn";
         String dbMsg = "[MainActivity]";
         try {
-            GoogleSignInAccount lastAccount = GoogleSignIn.getLastSignedInAccount(this);  // (a)
-            dbMsg += "、前回使用[" + lastAccount.getId();
-            dbMsg += "]" + lastAccount.getEmail();
-            mCredential = GoogleAccountCredential.usingOAuth2(
-                    getApplicationContext(),
-                    Arrays.asList(SCOPES)
-            ).setBackOff(new ExponentialBackOff());
-            dbMsg += ",Credential:AccountName=" + mCredential.getSelectedAccountName();
-            signedInResultLauncher.launch(mCredential.newChooseAccountIntent());
+            //アプリケーションのデフォルト認証情報。
+//            GoogleCredential gCredentials = GoogleCredential.getApplicationDefault();
+//            dbMsg += ",ServiceAccountId="+ gCredentials.getServiceAccountId();
+//            //サービスクラスをインスタンス化①
+//            NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+//            JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
+//            HttpRequestInitializer initializer = new HttpCredentialsAdapter(gCredentials);
+//        //    HttpCredentialsAdapter credentialsAdapter = new HttpCredentialsAdapter(gCredentials);
+ /*環境から事前承認されたユーザー資格情報を読み込みます。.*/
+//            GoogleCredentials credentials = GoogleCredentials.getApplicationDefault()
+//                    .createScoped(Arrays.asList(CalendarScopes.CALENDAR));
+//            HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(
+//                    credentials);
+//            service = new com.google.api.services.calendar.Calendar.Builder(new NetHttpTransport(),
+//                    GsonFactory.getDefaultInstance(),
+//                    requestInitializer)
+//                    .setApplicationName("com.hijiyam_koubou.taplans")
+//                    .build();
+//            dbMsg += "\nservice="+ service.toString();
 
-            //前回使用[117614357113854377356]hqu666@gmail.com,Credential:AccountName=null
+
+//            File serviceCredentialFile = new File("cloud.json");
+//
+//            String SERVICE_CREDENTIALS_FILE_PATH = "assets" + serviceCredentialFile.getAbsolutePath();          //
+//                //※getParentはnull
+//            dbMsg += "\nserviceファイル="+ SERVICE_CREDENTIALS_FILE_PATH ;
+//            dbMsg += ",exists="+ serviceCredentialFile.exists() ;
+//            InputStream inputStream = Objects.requireNonNull(this.getClass().getClassLoader()).getResourceAsStream(SERVICE_CREDENTIALS_FILE_PATH);
+//            dbMsg += ",inputStream="+ inputStream.toString();
+//            Credential serviceCredential = GoogleCredential.fromStream(inputStream)
+//                    .createScoped(Collections.singleton(CalendarScopes.CALENDAR));
+//            //　　cloud.json: open failed: ENOENT (No such file or directory)
+//            dbMsg += "\nservice="+ serviceCredential.toString();
+
+
+
+//            // フォイルに保存されているトークン情報の読み込み  2022 https://www.alpha.co.jp/blog/202211_02/
+//            String tokenFilepath = SERVICE_CREDENTIALS_FILE_PATH;
+//            String jsonStr = inputStream.toString();        //FileUtil.readFile(tokenFilepath);
+//            JSONObject jsonObject = new JSONObject(jsonStr);
+//            AuthState tokenData = AuthState.jsonDeserialize(jsonObject);
+//
+//            // 認証情報の初期化
+//            AccessToken accessToken = new AccessToken(
+//                    tokenData.getAccessToken(),
+//                    tokenData.getAccessTokenExpirationTime());
+//            GoogleCredentials credentials = GoogleCredentials.create(accessToken);
+//            HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
+
+
+
+//            InputStream in = getResourceAsStream(CREDENTIALS_FILE_PATH);
+//            if (in == null) {
+//                throw new FileNotFoundException("Resource not found: " + CREDENTIALS_FILE_PATH);
+//            }
+      //      NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+            // java.security.KeyStoreException: JKS not found   初期化されてない？
+   //         JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
+
+//            String TOKENS_DIRECTORY_PATH = "tokens";
+//            GoogleClientSecrets clientSecrets =
+//                    GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(inputStream));
+//
+//            ArrayList <String> dSCOPE = new ArrayList <String>();
+//            dSCOPE.add(Manifest.permission_group.CALENDAR);
+//
+//            GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
+//                    HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, dSCOPE)
+//                    .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
+//                    .setAccessType("offline")
+//                    .build();
+//            LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
+//            Credential credential = new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
+//            dbMsg += ",mCredential:AccountName=" + credential.toString();
+
 
 //            GoogleSignInOptions signInOptions =
 //                    new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -1598,6 +1746,19 @@ public class MainActivity extends AppCompatActivity  {
 //            GoogleSignInClient client = GoogleSignIn.getClient(this, signInOptions);
 //            Intent signInIntent = client.getSignInIntent();
 //            signedInResultLauncher.launch(signInIntent);
+
+            //アカウントセレクターの表示
+//            GoogleSignInAccount lastAccount = GoogleSignIn.getLastSignedInAccount(this);  // (a)
+//            dbMsg += "、前回使用[" + lastAccount.getId();
+//            dbMsg += "]" + lastAccount.getEmail();
+//            // Google Calendar API の呼び出しのための認証情報を初期化する
+//            mCredential = GoogleAccountCredential.usingOAuth2(
+//                    getApplicationContext(),
+//                    Arrays.asList(SCOPES)
+//            ).setBackOff(new ExponentialBackOff());
+//            dbMsg += ",mCredential:AccountName=" + mCredential.getSelectedAccountName();             //Credential:AccountName=null
+//            signedInResultLauncher.launch(mCredential.newChooseAccountIntent());
+
             myLog(TAG, dbMsg);
         } catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);
@@ -1617,16 +1778,16 @@ public class MainActivity extends AppCompatActivity  {
                         //OKボタンが表示されなければRESULT_CANCELEDが返る
                         String selectedName = result.getData().getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
                         dbMsg += ",選択=" + selectedName;
-                        mCredential = GoogleAccountCredential.usingOAuth2(this, Collections.singleton(Manifest.permission_group.CALENDAR));  // (b)
-                        mCredential.setSelectedAccountName(selectedName);
-                        String accountName=mCredential.getSelectedAccountName();
-                        dbMsg += ",account=" + accountName;
-                        if(! calenderAccount.equals(selectedName)){
-                            dbMsg += "(" + calenderAccount + "から変更)";
-                            setStrPref("calenderAccount",selectedName);
-                            calenderAccount = selectedName;
-                        }
-                        getResultsFromApi();
+
+            //            mCredential = GoogleAccountCredential.usingOAuth2(this, Collections.singleton(Manifest.permission_group.CALENDAR));  // (b)
+//                        mCredential.setSelectedAccountName(selectedName);
+//                        dbMsg += ",Credential:AccountName=" + mCredential.getSelectedAccountName();             //Credential:AccountName=null
+//                        String accountName=mCredential.getSelectedAccountName();
+//                        if(! calenderAccount.equals(selectedName)){
+//                            dbMsg += "(" + calenderAccount + "から変更)";
+//                            setStrPref("calenderAccount",selectedName);
+//                            calenderAccount = selectedName;
+//                        }
 
 //                        GoogleSignInResult resultData = Auth.GoogleSignInApi.getSignInResultFromIntent(result.getData());           //GoogleSignInResult は非推奨
 //
@@ -1658,6 +1819,8 @@ public class MainActivity extends AppCompatActivity  {
 ////                                myErrorLog(TAG ,  dbMsg + "で" + e);
 ////                            }
 //                         }
+
+                        getResultsFromApi();
                     }
                     myLog(TAG, dbMsg);
                 } catch (Exception e) {
@@ -1668,37 +1831,37 @@ public class MainActivity extends AppCompatActivity  {
     /**
      *　サインイン後の処理
      * */
-    public void onSignedIn(GoogleSignInAccount account){
-        final String TAG = "onSignedIn";
-        String dbMsg = "[MainActivity]";
-        try {
-//            GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);  // (a)
-            String accountName=account.getDisplayName();;
-            dbMsg += ",account=" + accountName;
-            if(! calenderAccount.equals(accountName)){
-                dbMsg += "(" + calenderAccount + "から変更)";
-                setStrPref("calenderAccount",accountName);
-                calenderAccount = accountName;
-            }
-            mCredential = GoogleAccountCredential.usingOAuth2(this, Collections.singleton(Manifest.permission_group.CALENDAR));  // (b)
-            mCredential.setSelectedAccount(account.getAccount());                      // (c)
-
-
-
-//            mCredential = GoogleAccountCredential.usingOAuth2(
-//                    getApplicationContext(),
-//                    Arrays.asList(SCOPES)
-//            ).setBackOff(new ExponentialBackOff());
-
-
-            dbMsg += ",Credential:AccountName=" + mCredential.getSelectedAccountName();
-            myLog(TAG, dbMsg);
-       //     getResultsFromApi();
-        } catch (Exception e) {
-            dbMsg += "::Googleログインに失敗しました ";
-            myErrorLog(TAG ,  dbMsg + "で" + e);
-        }
-    }
+//    public void onSignedIn(GoogleSignInAccount account){
+//        final String TAG = "onSignedIn";
+//        String dbMsg = "[MainActivity]";
+//        try {
+////            GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);  // (a)
+//            String accountName=account.getDisplayName();;
+//            dbMsg += ",account=" + accountName;
+//            if(! calenderAccount.equals(accountName)){
+//                dbMsg += "(" + calenderAccount + "から変更)";
+//                setStrPref("calenderAccount",accountName);
+//                calenderAccount = accountName;
+//            }
+//            mCredential = GoogleAccountCredential.usingOAuth2(this, Collections.singleton(Manifest.permission_group.CALENDAR));  // (b)
+//            mCredential.setSelectedAccount(account.getAccount());                      // (c)
+//
+//
+//
+////            mCredential = GoogleAccountCredential.usingOAuth2(
+////                    getApplicationContext(),
+////                    Arrays.asList(SCOPES)
+////            ).setBackOff(new ExponentialBackOff());
+//
+//
+//            dbMsg += ",Credential:AccountName=" + mCredential.getSelectedAccountName();
+//            myLog(TAG, dbMsg);
+//       //     getResultsFromApi();
+//        } catch (Exception e) {
+//            dbMsg += "::Googleログインに失敗しました ";
+//            myErrorLog(TAG ,  dbMsg + "で" + e);
+//        }
+//    }
 
     /**
      * Googleカレンダーの色設定リストを作成する
@@ -2213,16 +2376,16 @@ public class MainActivity extends AppCompatActivity  {
                 case REQUEST_CODE_SIGN_IN:
                     dbMsg += ",サインイン画面";
                     if(0 == resultCode) {           //RESULT_OK == resultCode
-                        Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-                        try {
-                            // Google Sign In was successful, authenticate with Firebase
-                            GoogleSignInAccount account = task.getResult(ApiException.class);
-                            dbMsg += "accountID:" + account.getId();
-                       //     firebaseAuthWithGoogle(account.getIdToken());
-                        } catch (ApiException e) {
-                            dbMsg += "Googleログインに失敗しました";
-                            // Google Sign In failed, update UI appropriately
-                        }
+//                        Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+//                        try {
+//                            // Google Sign In was successful, authenticate with Firebase
+//                            GoogleSignInAccount account = task.getResult(ApiException.class);
+//                            dbMsg += "accountID:" + account.getId();
+//                       //     firebaseAuthWithGoogle(account.getIdToken());
+//                        } catch (ApiException e) {
+//                            dbMsg += "Googleログインに失敗しました";
+//                            // Google Sign In failed, update UI appropriately
+//                        }
 
                    //     onSignedIn();
                     } else{
@@ -2255,7 +2418,7 @@ public class MainActivity extends AppCompatActivity  {
                             SharedPreferences.Editor editor = settings.edit();
                             editor.putString(PREF_ACCOUNT_NAME, accountName);
                             editor.apply();
-                            mCredential.setSelectedAccountName(accountName);
+//                            mCredential.setSelectedAccountName(accountName);
                             try {
                                 getResultsFromApi();
                             } catch (GeneralSecurityException e) {
@@ -2465,17 +2628,25 @@ public class MainActivity extends AppCompatActivity  {
         try {
             mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
             wakeUp();
-            checkMyPermission();
             myLog(TAG, dbMsg);
         } catch (Exception e) {
             myErrorLog(TAG ,  dbMsg + "で" + e);
         }
     }
 
-//    private PendingIntent getPendingIntent() {
-//        PendingIntent pInt =null;
-//        return pInt;
-//    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        final String TAG = "onStart";
+        String dbMsg = "[MainActivity]";
+        try {
+            checkMyPermission();
+            myLog(TAG, dbMsg);
+        } catch (Exception e) {
+            myErrorLog(TAG ,  dbMsg + "で" + e);
+        }
+    }
 
     //////////////////////////////////////////////////////////////ライフサイクル//
     public static void myLog(String TAG , String dbMsg) {
